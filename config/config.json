@@ -1,0 +1,19 @@
+{
+  "pprof_enabled":false,
+  "clientDir":"/go/src/github.com/maleck13/locals/client/dist",
+  "admin":{
+    "user":"admin@test.com",
+    "auth":"1VeryComplexPass2"
+  },
+  "google": {
+    "clientId": "550624010352-95rn5pn9g58hqvqk7077j37v80r3v5nj.apps.googleusercontent.com",
+    "validatorUrl":"https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s"
+  },
+  "database":{
+    "addrs":["localhost:28015"],
+    "timeout":0,
+    "database":"locals",
+    "username":"locals",
+    "password":"localspass"
+  }
+}

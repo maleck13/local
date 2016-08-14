@@ -1,0 +1,346 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  GoaLocalUser:
+    description: A User of locals (default view)
+    example:
+      area: Velit quia commodi dolorem.
+      email: In harum dolores consequatur et.
+      firstName: Ipsum optio magnam eos.
+      href: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      secondName: Recusandae aut.
+      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
+      type: Aut corporis et.
+    properties:
+      area:
+        description: The area of the users local council
+        example: Velit quia commodi dolorem.
+        type: string
+      email:
+        description: The email of the user
+        example: In harum dolores consequatur et.
+        type: string
+      firstName:
+        description: Name of the user
+        example: Ipsum optio magnam eos.
+        type: string
+      href:
+        description: API href for making requests on the bottle
+        example: Et non similique.
+        type: string
+      id:
+        description: Unique bottle ID
+        example: Eos earum vitae magnam sunt.
+        type: string
+      secondName:
+        description: Name of the user
+        example: Recusandae aut.
+        type: string
+      signupType:
+        description: the signupType of user google local
+        example: Id recusandae qui mollitia blanditiis corrupti eum.
+        type: string
+      type:
+        default: local
+        description: the type of user admin local councillor
+        example: Aut corporis et.
+        type: string
+    required:
+    - firstName
+    - secondName
+    - email
+    title: 'Mediatype identifier: application/vnd.goa.local.user+json; view=default'
+    type: object
+  GoaLocalUserCollection:
+    description: GoaLocalUserCollection is the media type for an array of GoaLocalUser
+      (default view)
+    example:
+    - area: Velit quia commodi dolorem.
+      email: In harum dolores consequatur et.
+      firstName: Ipsum optio magnam eos.
+      href: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      secondName: Recusandae aut.
+      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
+      type: Aut corporis et.
+    - area: Velit quia commodi dolorem.
+      email: In harum dolores consequatur et.
+      firstName: Ipsum optio magnam eos.
+      href: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      secondName: Recusandae aut.
+      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
+      type: Aut corporis et.
+    - area: Velit quia commodi dolorem.
+      email: In harum dolores consequatur et.
+      firstName: Ipsum optio magnam eos.
+      href: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      secondName: Recusandae aut.
+      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
+      type: Aut corporis et.
+    items:
+      $ref: '#/definitions/GoaLocalUser'
+    title: 'Mediatype identifier: application/vnd.goa.local.user+json; type=collection'
+    type: array
+  Location:
+    example:
+      Lat: 0.19498105
+      Lon: 0.6245239
+    properties:
+      Lat:
+        example: 0.19498105
+        format: double
+        type: number
+      Lon:
+        example: 0.6245239
+        format: double
+        type: number
+    title: Location
+    type: object
+  Login:
+    example:
+      email: Sed sapiente nemo rerum eum.
+      signupType: Qui dolores dolores incidunt labore.
+      token: Enim nesciunt minima ab.
+    properties:
+      email:
+        example: Sed sapiente nemo rerum eum.
+        type: string
+      signupType:
+        example: Qui dolores dolores incidunt labore.
+        type: string
+      token:
+        example: Enim nesciunt minima ab.
+        type: string
+    required:
+    - email
+    - token
+    - signupType
+    title: Login
+    type: object
+  User:
+    example:
+      area: Cum ea quod accusamus aliquam.
+      email: Voluptatem officia eum natus aut.
+      firstName: Omnis facilis ratione odio.
+      id: Culpa doloribus.
+      image: Earum inventore optio alias rerum debitis ut.
+      location:
+        Lat: 0.19498105
+        Lon: 0.6245239
+      secondName: Sapiente nihil quod architecto harum dolorum.
+      signupType: Earum voluptas.
+      token: Ipsa mollitia error impedit minima.
+      type: Ea ex.
+    properties:
+      area:
+        default: ""
+        description: The area of the users local council
+        example: Cum ea quod accusamus aliquam.
+        type: string
+      email:
+        description: The email of the user
+        example: Voluptatem officia eum natus aut.
+        type: string
+      firstName:
+        description: Name of the user
+        example: Omnis facilis ratione odio.
+        type: string
+      id:
+        description: Unique user ID
+        example: Culpa doloribus.
+        type: string
+      image:
+        default: ""
+        description: an image url for the user
+        example: Earum inventore optio alias rerum debitis ut.
+        type: string
+      location:
+        $ref: '#/definitions/Location'
+      secondName:
+        description: Name of the user
+        example: Sapiente nihil quod architecto harum dolorum.
+        type: string
+      signupType:
+        default: ""
+        description: the signupType of user google local
+        example: Earum voluptas.
+        type: string
+      token:
+        description: This can be an oauth token or a password
+        example: Ipsa mollitia error impedit minima.
+        type: string
+      type:
+        default: local
+        description: the type of user admin local councillor
+        example: Ea ex.
+        type: string
+    required:
+    - firstName
+    - secondName
+    - email
+    - token
+    title: User
+    type: object
+host: localhost:3000
+info:
+  description: A platform for interacting with you and local government
+  title: You and local government
+  version: ""
+paths:
+  /user:
+    get:
+      description: get a list user
+      operationId: user#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUserCollection'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list user
+      tags:
+      - user
+  /user/{id}:
+    delete:
+      description: delete a user
+      operationId: user#delete
+      parameters:
+      - description: user ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Accepted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: delete user
+      tags:
+      - user
+    get:
+      description: get a user
+      operationId: user#read
+      parameters:
+      - description: user ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: read user
+      tags:
+      - user
+    post:
+      description: update a user
+      operationId: user#update
+      parameters:
+      - description: user ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: update user
+      tags:
+      - user
+  /user/login:
+    post:
+      description: login user
+      operationId: user#login
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/Login'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      summary: login user
+      tags:
+      - user
+  /user/signup:
+    post:
+      description: Signup a user
+      operationId: user#create
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "201":
+          description: Created
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: create user
+      tags:
+      - user
+produces:
+- application/json
+responses:
+  Accepted:
+    description: Accepted
+  Created:
+    description: Created
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/GoaLocalUser'
+  Unauthorized:
+    description: Unauthorized
+schemes:
+- http
+swagger: "2.0"

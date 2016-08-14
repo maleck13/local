@@ -1,0 +1,24 @@
+package: github.com/maleck13/local
+import:
+- package: github.com/goadesign/goa
+  version: ~1.0.0
+  subpackages:
+  - client
+  - design
+  - design/apidsl
+  - dslengine
+  - goagen
+  - middleware
+- package: golang.org/x/tools
+  subpackages:
+  - go/ast/astutil
+- package: gopkg.in/yaml.v2
+- package: github.com/spf13/cobra
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: gopkg.in/dancannon/gorethink.v2
+  version: ~2.1.3
+- package: github.com/cenk/backoff
+- package: github.com/dgrijalva/jwt-go
+  version: ~3.0.0
