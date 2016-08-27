@@ -151,10 +151,10 @@ func NewLoginUserContext(ctx context.Context, service *goa.Service) (*LoginUserC
 	return &rctx, err
 }
 
-// OK sends a HTTP response with status code 200.
-func (ctx *LoginUserContext) OK(r *GoaLocalUser) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+// NoContent sends a HTTP response with status code 204.
+func (ctx *LoginUserContext) NoContent() error {
+	ctx.ResponseData.WriteHeader(204)
+	return nil
 }
 
 // Unauthorized sends a HTTP response with status code 401.

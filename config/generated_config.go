@@ -17,7 +17,10 @@ type Config struct {
 		ClientID     string `json:"clientId"`
 		ValidatorURL string `json:"validatorUrl"`
 	} `json:"google"`
+	Jwt struct {
+		Expire string `json:"expire"`
+		Secret string `json:"secret"`
+	} `json:"jwt"`
 	PprofEnabled bool `json:"pprof_enabled"`
 }
-
 //THIS IS A GENERATED FILE. USE scripts/generate_config to regen

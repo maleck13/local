@@ -70,10 +70,10 @@ var _ = Resource("user", func() {
 	DefaultMedia(User, "default")
 	Action("create", func() { // Actions define a single API endpoint together
 		Description("Signup a user") // with its path, parameters (both path
-		Routing(POST("/signup"))            // parameters and querystring values) and payload
+		Routing(POST("/signup"))     // parameters and querystring values) and payload
 		Payload(UserPayload)
-		Response(Created)            // Responses define the shape and status code
-		Response(NotFound)           // of HTTP responses.
+		Response(Created)  // Responses define the shape and status code
+		Response(NotFound) // of HTTP responses.
 	})
 	Action("list", func() {
 		Description("get a list user")
@@ -120,7 +120,7 @@ var _ = Resource("user", func() {
 		Description("login user")
 		Routing(POST("login"))
 		Payload(Login)
-		Response(OK)
+		Response(NoContent)
 		Response(Unauthorized)
 	})
 
@@ -136,7 +136,7 @@ var Login = Type("Login", func() {
 	Attribute("email", String)
 	Attribute("token", String)
 	Attribute("signupType", String)
-	Required("email","token","signupType")
+	Required("email", "token", "signupType")
 })
 
 var UserPayload = Type("User", func() {

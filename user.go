@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/goadesign/goa"
 	"github.com/maleck13/local/app"
-	"github.com/maleck13/local/domain"
 	"github.com/maleck13/local/config"
+	"github.com/maleck13/local/domain"
 	"github.com/maleck13/local/errors"
 )
 
@@ -22,11 +22,11 @@ func NewUserController(service *goa.Service) *UserController {
 func (c *UserController) Create(ctx *app.CreateUserContext) error {
 	signUpService := domain.NewSignUpFactory(config.Conf)
 	signup, err := signUpService.Factory(ctx.Payload.SignupType)
-	if err != nil{
+	if err != nil {
 		return errors.LogAndReturnError(err)
 	}
-	_, err =signup.Register(ctx.Payload)
-	if err != nil{
+	_, err = signup.Register(ctx.Payload)
+	if err != nil {
 		return errors.LogAndReturnError(err)
 	}
 
@@ -37,6 +37,7 @@ func (c *UserController) Create(ctx *app.CreateUserContext) error {
 
 // Delete runs the delete action.
 func (c *UserController) Delete(ctx *app.DeleteUserContext) error {
+
 	// UserController_Delete: start_implement
 
 	// Put your logic here
@@ -70,9 +71,7 @@ func (c *UserController) Login(ctx *app.LoginUserContext) error {
 		return errors.LogAndReturnError(err)
 	}
 
-	ctx.OK(nil)
-
-	return nil
+	return ctx.NoContent()
 }
 
 // Read runs the read action.

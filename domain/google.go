@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/data"
 	e "github.com/maleck13/local/errors"
-	"github.com/Sirupsen/logrus"
+	"github.com/dgrijalva/jwt-go"
 )
 
 type TokenInfoRetriever interface {
@@ -47,33 +48,34 @@ func NewGoogleApi(config *config.Config) *GoogleApi {
 	}
 }
 
-func (ga *GoogleApi) Authenticate(token, email string) error {
+func (ga *GoogleApi) Authenticate(token, email string) (*jwt.Token,error) {
 	info, err := ga.Retrieve(token)
 	if err != nil {
-		return err
+		return nil,err
 	}
 	clientId := ga.Config.Google.ClientID
 
 	if info.EmailVerified != "true" {
-		return e.NewServiceError("failed to authenticate with google", http.StatusUnauthorized)
+		return nil,e.NewServiceError("failed to authenticate with google", http.StatusUnauthorized)
 	}
 	if info.Aud != clientId {
-		return e.NewServiceError("failed to authenticate with google. Client id mismatch", http.StatusUnauthorized)
+		return nil,e.NewServiceError("failed to authenticate with google. Client id mismatch", http.StatusUnauthorized)
 	}
 	if info.Email != email {
-		return e.NewServiceError("failed to authenticate with google. user mismatch", http.StatusUnauthorized)
+		return nil,e.NewServiceError("failed to authenticate with google. user mismatch", http.StatusUnauthorized)
 	}
 	userRepo := &data.UserRepo{}
 	user, err := userRepo.FindOneByFieldAndValue("Email", email)
 	if err != nil {
-		return err
+		return nil,err
 	}
 	if nil == user {
-		return e.NewServiceError("failed to find user ", http.StatusNotFound)
+		return nil,e.NewServiceError("failed to find user ", http.StatusNotFound)
 	}
 
-	return nil
+	return nil, token
 }
+
 
 func (ga *GoogleApi) Retrieve(token string) (*GoogleTokenInfo, error) {
 	url := fmt.Sprintf(ga.Config.Google.ValidatorURL, token)

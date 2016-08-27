@@ -295,10 +295,8 @@ paths:
         schema:
           $ref: '#/definitions/Login'
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/GoaLocalUser'
+        "204":
+          description: No Content
         "401":
           description: Unauthorized
       schemes:
@@ -333,6 +331,8 @@ responses:
     description: Accepted
   Created:
     description: Created
+  NoContent:
+    description: No Content
   NotFound:
     description: Not Found
   OK:
