@@ -100,6 +100,48 @@ func (mt *GoaLocalUserFull) Validate() (err error) {
 	return
 }
 
+// A User of locals (login view)
+//
+// Identifier: application/vnd.goa.local.user+json; view=login
+type GoaLocalUserLogin struct {
+	// Unique bottle ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// The area of the users local council
+	LoginExpires *int `form:"loginExpires,omitempty" json:"loginExpires,omitempty" xml:"loginExpires,omitempty"`
+	// This can be an oauth token or a password
+	Token string `form:"token" json:"token" xml:"token"`
+}
+
+// Validate validates the GoaLocalUserLogin media type instance.
+func (mt *GoaLocalUserLogin) Validate() (err error) {
+	if mt.Token == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "token"))
+	}
+
+	return
+}
+
+// A User of locals (public view)
+//
+// Identifier: application/vnd.goa.local.user+json; view=public
+type GoaLocalUserPublic struct {
+	// The area of the users local council
+	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// Name of the user
+	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
+	// Unique bottle ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// Validate validates the GoaLocalUserPublic media type instance.
+func (mt *GoaLocalUserPublic) Validate() (err error) {
+	if mt.FirstName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+
+	return
+}
+
 // DecodeGoaLocalUser decodes the GoaLocalUser instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUser(resp *http.Response) (*GoaLocalUser, error) {
 	var decoded GoaLocalUser
@@ -110,6 +152,20 @@ func (c *Client) DecodeGoaLocalUser(resp *http.Response) (*GoaLocalUser, error) 
 // DecodeGoaLocalUserFull decodes the GoaLocalUserFull instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUserFull(resp *http.Response) (*GoaLocalUserFull, error) {
 	var decoded GoaLocalUserFull
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// DecodeGoaLocalUserLogin decodes the GoaLocalUserLogin instance encoded in resp body.
+func (c *Client) DecodeGoaLocalUserLogin(resp *http.Response) (*GoaLocalUserLogin, error) {
+	var decoded GoaLocalUserLogin
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// DecodeGoaLocalUserPublic decodes the GoaLocalUserPublic instance encoded in resp body.
+func (c *Client) DecodeGoaLocalUserPublic(resp *http.Response) (*GoaLocalUserPublic, error) {
+	var decoded GoaLocalUserPublic
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
@@ -161,6 +217,38 @@ func (mt GoaLocalUserFullCollection) Validate() (err error) {
 	return
 }
 
+// GoaLocalUserCollection is the media type for an array of GoaLocalUser (login view)
+//
+// Identifier: application/vnd.goa.local.user+json; type=collection; view=login
+type GoaLocalUserLoginCollection []*GoaLocalUserLogin
+
+// Validate validates the GoaLocalUserLoginCollection media type instance.
+func (mt GoaLocalUserLoginCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.Token == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "token"))
+		}
+
+	}
+	return
+}
+
+// GoaLocalUserCollection is the media type for an array of GoaLocalUser (public view)
+//
+// Identifier: application/vnd.goa.local.user+json; type=collection; view=public
+type GoaLocalUserPublicCollection []*GoaLocalUserPublic
+
+// Validate validates the GoaLocalUserPublicCollection media type instance.
+func (mt GoaLocalUserPublicCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.FirstName == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "firstName"))
+		}
+
+	}
+	return
+}
+
 // DecodeGoaLocalUserCollection decodes the GoaLocalUserCollection instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUserCollection(resp *http.Response) (GoaLocalUserCollection, error) {
 	var decoded GoaLocalUserCollection
@@ -171,6 +259,20 @@ func (c *Client) DecodeGoaLocalUserCollection(resp *http.Response) (GoaLocalUser
 // DecodeGoaLocalUserFullCollection decodes the GoaLocalUserFullCollection instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUserFullCollection(resp *http.Response) (GoaLocalUserFullCollection, error) {
 	var decoded GoaLocalUserFullCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// DecodeGoaLocalUserLoginCollection decodes the GoaLocalUserLoginCollection instance encoded in resp body.
+func (c *Client) DecodeGoaLocalUserLoginCollection(resp *http.Response) (GoaLocalUserLoginCollection, error) {
+	var decoded GoaLocalUserLoginCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// DecodeGoaLocalUserPublicCollection decodes the GoaLocalUserPublicCollection instance encoded in resp body.
+func (c *Client) DecodeGoaLocalUserPublicCollection(resp *http.Response) (GoaLocalUserPublicCollection, error) {
+	var decoded GoaLocalUserPublicCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

@@ -195,7 +195,11 @@ info:
 paths:
   /user:
     get:
-      description: get a list user
+      description: |-
+        get a list user
+
+        Required security scopes:
+          * `api:access`
       operationId: user#list
       responses:
         "200":
@@ -208,12 +212,19 @@ paths:
           description: Not Found
       schemes:
       - http
+      security:
+      - jwt:
+        - api:access
       summary: list user
       tags:
       - user
   /user/{id}:
     delete:
-      description: delete a user
+      description: |-
+        delete a user
+
+        Required security scopes:
+          * `api:access`
       operationId: user#delete
       parameters:
       - description: user ID
@@ -230,11 +241,18 @@ paths:
           description: Not Found
       schemes:
       - http
+      security:
+      - jwt:
+        - api:access
       summary: delete user
       tags:
       - user
     get:
-      description: get a user
+      description: |-
+        get a user
+
+        Required security scopes:
+          * `api:access`
       operationId: user#read
       parameters:
       - description: user ID
@@ -253,11 +271,18 @@ paths:
           description: Not Found
       schemes:
       - http
+      security:
+      - jwt:
+        - api:access
       summary: read user
       tags:
       - user
     post:
-      description: update a user
+      description: |-
+        update a user
+
+        Required security scopes:
+          * `api:access`
       operationId: user#update
       parameters:
       - description: user ID
@@ -281,6 +306,9 @@ paths:
           description: Not Found
       schemes:
       - http
+      security:
+      - jwt:
+        - api:access
       summary: update user
       tags:
       - user
@@ -295,10 +323,10 @@ paths:
         schema:
           $ref: '#/definitions/Login'
       responses:
-        "204":
-          description: No Content
-        "401":
-          description: Unauthorized
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
       schemes:
       - http
       summary: login user
@@ -331,8 +359,6 @@ responses:
     description: Accepted
   Created:
     description: Created
-  NoContent:
-    description: No Content
   NotFound:
     description: Not Found
   OK:
@@ -343,4 +369,14 @@ responses:
     description: Unauthorized
 schemes:
 - http
+securityDefinitions:
+  jwt:
+    description: |2-
+
+
+      **Security Scopes**:
+        * `api:access`: API access
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

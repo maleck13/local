@@ -1,5 +1,5 @@
-hash: 9ccd878521f1ce5a2fafb7df7acbe5cfc3bf76d608bc0b6b22f092244f4072c9
-updated: 2016-08-14T16:28:34.577859602+01:00
+hash: 6d6fc64c2a2fd3a88c290f7bff730bed4a4e11fa46c9e82083e0c65882036dc8
+updated: 2016-08-28T12:46:42.602023451+01:00
 imports:
 - name: github.com/armon/go-metrics
   version: 3df31a1ada83e310c2e24b267c8e8b68836547b4
@@ -20,6 +20,7 @@ imports:
   - dslengine
   - goagen
   - middleware
+  - middleware/security/jwt
   - cors
   - goatest
   - uuid
@@ -34,7 +35,7 @@ imports:
 - name: github.com/manveru/faker
   version: 717f7cf83fb78669bfab612749c2e8ff63d5be11
 - name: github.com/satori/go.uuid
-  version: 0aa62d5ddceb50dbcb909d790b5345affd3669b6
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/Sirupsen/logrus
   version: a283a10442df8dc09befd873fab202bf8a253d6a
 - name: github.com/spf13/cobra

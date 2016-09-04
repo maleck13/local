@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/goadesign/goa"
+	gJwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
@@ -31,7 +32,6 @@ func (c *UserController) Create(ctx *app.CreateUserContext) error {
 	}
 
 	ctx.Created()
-	// SignupController_Create: end_implement
 	return nil
 }
 
@@ -60,28 +60,52 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 
 // Login runs the login action.
 func (c *UserController) Login(ctx *app.LoginUserContext) error {
-	authFactory := domain.NewAuthenticatorFactory(config.Conf)
+	authFactory := &domain.AuthenticatorFactory{Config: config.Conf}
 
 	authenticator, err := authFactory.Factory(ctx.Payload.SignupType)
 	if err != nil {
 		return errors.LogAndReturnError(err)
 
 	}
-	if err := authenticator.Authenticate(ctx.Payload.Token, ctx.Payload.Email); err != nil {
+	user, err := authenticator.Authenticate(ctx.Payload.Token, ctx.Payload.Email)
+	if err != nil {
 		return errors.LogAndReturnError(err)
 	}
-
-	return ctx.NoContent()
+	jsonWT := domain.JWT{Config: config.Conf}
+	token, err := jsonWT.CreateToken(user)
+	if err != nil {
+		return errors.LogAndReturnError(err)
+	}
+	ctx.ResponseWriter.Header().Add("Bearer", token)
+	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID}
+	return ctx.OKLogin(userLogin)
 }
 
 // Read runs the read action.
 func (c *UserController) Read(ctx *app.ReadUserContext) error {
 	// UserController_Read: start_implement
-
-	// Put your logic here
-
+	var access = domain.Access{}
+	actor := ctx.Value("actor").(domain.AuthActor)
+	userRepo := domain.UserRepo{Config: config.Conf, Actor: actor, Authorisor: access}
+	user, err := userRepo.FindOneByFieldAndValue("id", ctx.Params.Get("id"))
+	if err != nil {
+		return errors.LogAndReturnError(err)
+	}
+	if user == nil {
+		return ctx.NotFound()
+	}
+	if err := access.Authorise(user, "read", actor); err != nil {
+		return err
+	}
 	// UserController_Read: end_implement
-	res := &app.GoaLocalUser{}
+	res := &app.GoaLocalUser{
+		Area:       &user.Area,
+		Email:      user.Email,
+		ID:         &user.ID,
+		SignupType: &user.SignupType,
+		FirstName:  user.FirstName,
+		SecondName: user.SecondName,
+	}
 	return ctx.OK(res)
 }
 
@@ -89,9 +113,11 @@ func (c *UserController) Read(ctx *app.ReadUserContext) error {
 func (c *UserController) Update(ctx *app.UpdateUserContext) error {
 	// UserController_Update: start_implement
 
-	// Put your logic here
+	token := gJwt.ContextJWT(ctx)
+	if nil == token {
+		return ctx.Unauthorized()
+	}
 
-	// UserController_Update: end_implement
 	res := &app.GoaLocalUser{}
 	return ctx.OK(res)
 }

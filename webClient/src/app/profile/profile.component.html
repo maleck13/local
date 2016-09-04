@@ -1,0 +1,25 @@
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<div *ngIf="profile">
+  <form>
+    <div class="form-group">
+      <label for="email">Email address:</label>
+      <input type="email" class="form-control" id="email" placeholder="Email" value="{{profile.email}}">
+    </div>
+    <div class="form-group">
+      <label for="firstName">First name:</label>
+      <input type="text" class="form-control" id="firstName" placeholder="First name" value="{{profile.firstName}}">
+    </div>
+    <div class="form-group">
+      <label for="secondName">Second name:</label>
+      <input type="text" class="form-control" id="secondName" placeholder="Second name" value="{{profile.secondName}}">
+    </div>
+    <div class="form-group">
+      <label for="area">Area:</label>
+      <input type="text" class="form-control required" id="area" placeholder="Area" value="{{profile.area}}">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
+</div>
+<div class="col-md-4"></div>

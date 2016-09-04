@@ -8,8 +8,9 @@ import (
 // Client is the locals service client.
 type Client struct {
 	*goaclient.Client
-	Encoder *goa.HTTPEncoder
-	Decoder *goa.HTTPDecoder
+	JWTSigner goaclient.Signer
+	Encoder   *goa.HTTPEncoder
+	Decoder   *goa.HTTPDecoder
 }
 
 // New instantiates the client.
@@ -31,4 +32,9 @@ func New(c goaclient.Doer) *Client {
 	client.Decoder.Register(goa.NewJSONDecoder, "*/*")
 
 	return client
+}
+
+// SetJWTSigner sets the request signer for the jwt security scheme.
+func (c *Client) SetJWTSigner(signer goaclient.Signer) {
+	c.JWTSigner = signer
 }

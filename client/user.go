@@ -73,6 +73,9 @@ func (c *Client) NewDeleteUserRequest(ctx context.Context, path string) (*http.R
 	if err != nil {
 		return nil, err
 	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
+	}
 	return req, nil
 }
 
@@ -100,6 +103,9 @@ func (c *Client) NewListUserRequest(ctx context.Context, path string) (*http.Req
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
 	}
 	return req, nil
 }
@@ -169,6 +175,9 @@ func (c *Client) NewReadUserRequest(ctx context.Context, path string) (*http.Req
 	if err != nil {
 		return nil, err
 	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
+	}
 	return req, nil
 }
 
@@ -208,6 +217,9 @@ func (c *Client) NewUpdateUserRequest(ctx context.Context, path string, payload 
 	header := req.Header
 	if contentType != "*/*" {
 		header.Set("Content-Type", contentType)
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
 	}
 	return req, nil
 }

@@ -97,6 +97,48 @@ func (mt *GoaLocalUserFull) Validate() (err error) {
 	return
 }
 
+// A User of locals (login view)
+//
+// Identifier: application/vnd.goa.local.user+json; view=login
+type GoaLocalUserLogin struct {
+	// Unique bottle ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// The area of the users local council
+	LoginExpires *int `form:"loginExpires,omitempty" json:"loginExpires,omitempty" xml:"loginExpires,omitempty"`
+	// This can be an oauth token or a password
+	Token string `form:"token" json:"token" xml:"token"`
+}
+
+// Validate validates the GoaLocalUserLogin media type instance.
+func (mt *GoaLocalUserLogin) Validate() (err error) {
+	if mt.Token == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "token"))
+	}
+
+	return
+}
+
+// A User of locals (public view)
+//
+// Identifier: application/vnd.goa.local.user+json; view=public
+type GoaLocalUserPublic struct {
+	// The area of the users local council
+	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// Name of the user
+	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
+	// Unique bottle ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// Validate validates the GoaLocalUserPublic media type instance.
+func (mt *GoaLocalUserPublic) Validate() (err error) {
+	if mt.FirstName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+
+	return
+}
+
 // GoaLocalUserCollection is the media type for an array of GoaLocalUser (default view)
 //
 // Identifier: application/vnd.goa.local.user+json; type=collection; view=default
@@ -138,6 +180,38 @@ func (mt GoaLocalUserFullCollection) Validate() (err error) {
 		}
 		if e.Token == "" {
 			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "token"))
+		}
+
+	}
+	return
+}
+
+// GoaLocalUserCollection is the media type for an array of GoaLocalUser (login view)
+//
+// Identifier: application/vnd.goa.local.user+json; type=collection; view=login
+type GoaLocalUserLoginCollection []*GoaLocalUserLogin
+
+// Validate validates the GoaLocalUserLoginCollection media type instance.
+func (mt GoaLocalUserLoginCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.Token == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "token"))
+		}
+
+	}
+	return
+}
+
+// GoaLocalUserCollection is the media type for an array of GoaLocalUser (public view)
+//
+// Identifier: application/vnd.goa.local.user+json; type=collection; view=public
+type GoaLocalUserPublicCollection []*GoaLocalUserPublic
+
+// Validate validates the GoaLocalUserPublicCollection media type instance.
+func (mt GoaLocalUserPublicCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.FirstName == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "firstName"))
 		}
 
 	}

@@ -87,8 +87,9 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		return ctrl.Delete(rctx)
 	}
 	h = handleUserOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("DELETE", "/user/:id", ctrl.MuxHandler("Delete", h, nil))
-	service.LogInfo("mount", "ctrl", "User", "action", "Delete", "route", "DELETE /user/:id")
+	service.LogInfo("mount", "ctrl", "User", "action", "Delete", "route", "DELETE /user/:id", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -103,8 +104,9 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		return ctrl.List(rctx)
 	}
 	h = handleUserOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("GET", "/user", ctrl.MuxHandler("List", h, nil))
-	service.LogInfo("mount", "ctrl", "User", "action", "List", "route", "GET /user")
+	service.LogInfo("mount", "ctrl", "User", "action", "List", "route", "GET /user", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -141,8 +143,9 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		return ctrl.Read(rctx)
 	}
 	h = handleUserOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("GET", "/user/:id", ctrl.MuxHandler("Read", h, nil))
-	service.LogInfo("mount", "ctrl", "User", "action", "Read", "route", "GET /user/:id")
+	service.LogInfo("mount", "ctrl", "User", "action", "Read", "route", "GET /user/:id", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -163,8 +166,9 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		return ctrl.Update(rctx)
 	}
 	h = handleUserOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("POST", "/user/:id", ctrl.MuxHandler("Update", h, unmarshalUpdateUserPayload))
-	service.LogInfo("mount", "ctrl", "User", "action", "Update", "route", "POST /user/:id")
+	service.LogInfo("mount", "ctrl", "User", "action", "Update", "route", "POST /user/:id", "security", "jwt")
 }
 
 // handleUserOrigin applies the CORS response headers corresponding to the origin.

@@ -120,6 +120,18 @@ func (ctx *ListUserContext) OKFull(r GoaLocalUserFullCollection) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
+// OKLogin sends a HTTP response with status code 200.
+func (ctx *ListUserContext) OKLogin(r GoaLocalUserLoginCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKPublic sends a HTTP response with status code 200.
+func (ctx *ListUserContext) OKPublic(r GoaLocalUserPublicCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
 // Unauthorized sends a HTTP response with status code 401.
 func (ctx *ListUserContext) Unauthorized() error {
 	ctx.ResponseData.WriteHeader(401)
@@ -151,16 +163,10 @@ func NewLoginUserContext(ctx context.Context, service *goa.Service) (*LoginUserC
 	return &rctx, err
 }
 
-// NoContent sends a HTTP response with status code 204.
-func (ctx *LoginUserContext) NoContent() error {
-	ctx.ResponseData.WriteHeader(204)
-	return nil
-}
-
-// Unauthorized sends a HTTP response with status code 401.
-func (ctx *LoginUserContext) Unauthorized() error {
-	ctx.ResponseData.WriteHeader(401)
-	return nil
+// OKLogin sends a HTTP response with status code 200.
+func (ctx *LoginUserContext) OKLogin(r *GoaLocalUserLogin) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // ReadUserContext provides the user read action context.

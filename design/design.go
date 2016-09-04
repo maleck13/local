@@ -5,6 +5,11 @@ import (
 	. "github.com/goadesign/goa/design/apidsl"
 )
 
+var JWT = JWTSecurity("jwt", func() {
+	Header("Authorization")
+	Scope("api:access", "API access") // Define "api:access" scope
+})
+
 var _ = API("locals", func() { // API defines the microservice endpoint and
 	Title("You and local government")                                       // other global properties. There should be one
 	Description("A platform for interacting with you and local government") // and exactly one API definition appearing in
@@ -52,6 +57,12 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("token")
 	})
 
+	View("login", func() {
+		Attribute("token")
+		Attribute("id") //users id
+		Attribute("loginExpires")
+	})
+
 	View("default", func() { // View defines a rendering of the media type. this is used to return to the client
 		Attribute("id")   // Media types may have multiple views and must
 		Attribute("href") // have a "default" view.
@@ -62,18 +73,29 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("area")
 		Attribute("type")
 	})
+	//visible to everyone
+	View("public", func() {
+		Attribute("id")
+		Attribute("firstName")
+		Attribute("area")
+	})
 })
 
 //User handler definition host:3001/user
 var _ = Resource("user", func() {
 	BasePath("/user") // together. They map to REST resources for REST
 	DefaultMedia(User, "default")
+	Security(JWT, func() { // Use JWT to auth requests to this endpoint
+		Scope("api:access") // Enforce presence of "api" scope in JWT claims.
+	})
+
 	Action("create", func() { // Actions define a single API endpoint together
 		Description("Signup a user") // with its path, parameters (both path
 		Routing(POST("/signup"))     // parameters and querystring values) and payload
 		Payload(UserPayload)
 		Response(Created)  // Responses define the shape and status code
 		Response(NotFound) // of HTTP responses.
+		NoSecurity()
 	})
 	Action("list", func() {
 		Description("get a list user")
@@ -120,8 +142,10 @@ var _ = Resource("user", func() {
 		Description("login user")
 		Routing(POST("login"))
 		Payload(Login)
-		Response(NoContent)
-		Response(Unauthorized)
+		Response(OK, func() {
+			Media(User, "login")
+		})
+		NoSecurity()
 	})
 
 })
