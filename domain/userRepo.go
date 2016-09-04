@@ -14,7 +14,7 @@ type UserRepo struct {
 	Authorisor Authorisor
 }
 
-//NewUserRepo returns a configured UserRepo with it dependencies
+//NewUserRepo returns a configured UserRepo with it dependencies. This should be used when acting on behalf of a user
 func NewUserRepo(conf *config.Config, actor Actor, authorisor Authorisor) UserRepo {
 	return UserRepo{
 		Config:     conf,
@@ -79,6 +79,9 @@ func (ur UserRepo) FindOneByFieldAndValue(field, val string) (*User, error) {
 }
 
 func (ur UserRepo) Save(u *User) error {
+	if err := ur.Authorisor.Authorise(u, "write", ur.Actor); err != nil {
+		return err
+	}
 	sess, err := data.DbSession(ur.Config)
 	if err != nil {
 		return errors.NewServiceError(err.Error(), 500)

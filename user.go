@@ -21,7 +21,9 @@ func NewUserController(service *goa.Service) *UserController {
 
 // Create runs the create action.
 func (c *UserController) Create(ctx *app.CreateUserContext) error {
-	signUpService := domain.NewSignUpFactory(config.Conf)
+	//setup an admin user repo to allow write acces to anonymous user
+	userRepo := domain.NewUserRepo(config.Conf, domain.AdminActor{}, domain.Access{})
+	signUpService := domain.NewSignUpFactory(config.Conf, userRepo)
 	signup, err := signUpService.Factory(ctx.Payload.SignupType)
 	if err != nil {
 		return errors.LogAndReturnError(err)
@@ -60,7 +62,9 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 
 // Login runs the login action.
 func (c *UserController) Login(ctx *app.LoginUserContext) error {
-	authFactory := &domain.AuthenticatorFactory{Config: config.Conf}
+	//setup an admin user repo to allow write acces to anonymous user
+	userRepo := domain.NewUserRepo(config.Conf, domain.AdminActor{}, domain.Access{})
+	authFactory := &domain.AuthenticatorFactory{Config: config.Conf, UserRepo: userRepo}
 
 	authenticator, err := authFactory.Factory(ctx.Payload.SignupType)
 	if err != nil {

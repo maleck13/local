@@ -17,13 +17,14 @@ type Authenticator interface {
 
 //AuthenticatorFactory decides which type of authenticator to return
 type AuthenticatorFactory struct {
-	Config *config.Config
+	Config   *config.Config
+	UserRepo UserRepo
 }
 
 //Factory is the method to be called to get your Authenticator
 func (af *AuthenticatorFactory) Factory(authType string) (Authenticator, error) {
 	if authType == "google" {
-		return NewGoogleAPI(af.Config), nil
+		return NewGoogleAPI(af.Config, af.UserRepo), nil
 	}
 	return nil, e.NewServiceError("unknown authentication type "+authType, http.StatusUnauthorized)
 }

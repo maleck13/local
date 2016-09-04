@@ -21,6 +21,7 @@ type TokenInfoRetriever interface {
 type GoogleAPI struct {
 	Config             *config.Config
 	TokenInfoRetriever TokenInfoRetriever
+	UserRepo           UserRepo
 }
 
 type googleTokenInfo struct {
@@ -43,10 +44,11 @@ type googleTokenInfo struct {
 }
 
 //NewGoogleAPI interact with google
-func NewGoogleAPI(config *config.Config) *GoogleAPI {
+func NewGoogleAPI(config *config.Config, userRepo UserRepo) *GoogleAPI {
 	return &GoogleAPI{
 		Config:             config,
 		TokenInfoRetriever: http.DefaultClient,
+		UserRepo:           userRepo,
 	}
 }
 
@@ -67,8 +69,7 @@ func (ga *GoogleAPI) Authenticate(token, email string) (*User, error) {
 	if info.Email != email {
 		return nil, e.NewServiceError("failed to authenticate with google. user mismatch", http.StatusUnauthorized)
 	}
-	userRepo := &UserRepo{}
-	user, err := userRepo.FindOneByFieldAndValue("Email", email)
+	user, err := ga.UserRepo.FindOneByFieldAndValue("Email", email)
 	if err != nil {
 		return nil, err
 	}
@@ -122,15 +123,15 @@ func (ga *GoogleAPI) Register(userSp *app.User) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	userRepo := UserRepo{}
-	exist, err := userRepo.FindOneByFieldAndValue("Email", user.Email)
+
+	exist, err := ga.UserRepo.FindOneByFieldAndValue("Email", user.Email)
 	if err != nil {
 		return nil, err
 	}
 	if exist != nil {
 		return nil, e.NewServiceError("user already exists ", http.StatusConflict)
 	}
-	if err := userRepo.Save(user); err != nil {
+	if err := ga.UserRepo.Save(user); err != nil {
 		return nil, e.NewServiceError("failed to register user "+err.Error(), http.StatusInternalServerError)
 	}
 	return user, nil

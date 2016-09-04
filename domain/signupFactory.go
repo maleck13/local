@@ -14,20 +14,22 @@ type Registerer interface {
 }
 
 //NewSignUpFactory returns a instance of SignUpFactory
-func NewSignUpFactory(conf *config.Config) *SignUpFactory {
+func NewSignUpFactory(conf *config.Config, userRepo UserRepo) *SignUpFactory {
 	return &SignUpFactory{
-		Config: conf,
+		Config:   conf,
+		UserRepo: userRepo,
 	}
 }
 
 type SignUpFactory struct {
-	Config *config.Config
+	Config   *config.Config
+	UserRepo UserRepo
 }
 
 //Factory depending on the signup type it will return the correct Registerer
 func (sf *SignUpFactory) Factory(signUpType string) (Registerer, error) {
 	if signUpType == "google" {
-		return NewGoogleAPI(sf.Config), nil
+		return NewGoogleAPI(sf.Config, sf.UserRepo), nil
 	}
 	return nil, e.NewServiceError("unknown sign up type ", http.StatusBadRequest)
 }
