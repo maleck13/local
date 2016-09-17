@@ -30,6 +30,8 @@ type SignUpFactory struct {
 func (sf *SignUpFactory) Factory(signUpType string) (Registerer, error) {
 	if signUpType == "google" {
 		return NewGoogleAPI(sf.Config, sf.UserRepo), nil
+	} else if signUpType == "local" {
+		return NewLocalSignup(sf.Config, sf.UserRepo), nil
 	}
 	return nil, e.NewServiceError("unknown sign up type ", http.StatusBadRequest)
 }

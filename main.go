@@ -17,31 +17,33 @@ import (
 )
 
 var confPath = flag.String("config", "config/config-local.json", "config path")
-var port = flag.String("port", ":3000", "port to listen on")
+var port = flag.String("port", ":3001", "port to listen on")
 
-func main() {
+func buildService(conf *config.Config) *goa.Service {
+
 	// Create service
 	service := goa.New("locals")
-	//set up config
-	conf := initConfig()
-
 	// Mount middleware
 	service.Mux.Handle("GET", "/", assetHandler())
 	service.Mux.Handle("GET", "/*.js", assetHandler())
 	service.Mux.Handle("GET", "/app/*", assetHandler())
 	service.Mux.Handle("GET", "/vendor/*", assetHandler())
 
-	service.Use(middleware.RequestID())
+	service.Use(middleware.RequestIDWithHeader(middleware.RequestIDHeader))
 	service.Use(middleware.LogRequest(false))
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 	app.UseJWTMiddleware(service, NewJWTMiddleware(conf))
-
-	setupDb(conf)
-
 	uc := NewUserController(service)
 	app.MountUserController(service, uc)
+	return service
+}
 
+func main() {
+	//set up config
+	conf := initConfig()
+	setupDb(conf)
+	service := buildService(conf)
 	// Start service
 	if err := service.ListenAndServe(*port); err != nil {
 		service.LogError("startup", "err", err)

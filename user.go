@@ -32,7 +32,6 @@ func (c *UserController) Create(ctx *app.CreateUserContext) error {
 	if err != nil {
 		return errors.LogAndReturnError(err)
 	}
-
 	ctx.Created()
 	return nil
 }
