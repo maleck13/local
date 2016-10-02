@@ -1,5 +1,5 @@
 hash: 6d6fc64c2a2fd3a88c290f7bff730bed4a4e11fa46c9e82083e0c65882036dc8
-updated: 2016-08-28T12:46:42.602023451+01:00
+updated: 2016-09-28T08:40:40.871791553+01:00
 imports:
 - name: github.com/armon/go-metrics
   version: 3df31a1ada83e310c2e24b267c8e8b68836547b4
@@ -12,7 +12,7 @@ imports:
 - name: github.com/dimfeld/httptreemux
   version: 2b442cd17d33755a60a283b7e133ea51a94994a4
 - name: github.com/goadesign/goa
-  version: ab3c7a17b736722ca9200b9536f5dcb1efcec9f6
+  version: 2ca3cc085ab12afbc1679f00dd04b7ea29716a0e
   subpackages:
   - client
   - design
@@ -34,6 +34,8 @@ imports:
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/manveru/faker
   version: 717f7cf83fb78669bfab612749c2e8ff63d5be11
+- name: github.com/pkg/errors
+  version: a887431f7f6ef7687b556dbf718d9f351d4858a0
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/Sirupsen/logrus
@@ -48,8 +50,8 @@ imports:
   version: 6c932297e16070bd20e9384ea78e8afabaa3fae2
   subpackages:
   - bcrypt
-  - blowfish
   - pbkdf2
+  - blowfish
 - name: golang.org/x/net
   version: 07b51741c1d6423d4a6abab1c49940ec09cb1aaf
   subpackages:

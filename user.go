@@ -6,6 +6,7 @@ import (
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
+	"github.com/maleck13/local/domain/local"
 	"github.com/maleck13/local/errors"
 )
 
@@ -21,15 +22,21 @@ func NewUserController(service *goa.Service) *UserController {
 
 // Create runs the create action.
 func (c *UserController) Create(ctx *app.CreateUserContext) error {
+	var (
+		user *app.User
+		err  error
+	)
 	//setup an admin user repo to allow write acces to anonymous user
-	userRepo := domain.NewUserRepo(config.Conf, domain.AdminActor{}, domain.Access{})
-	signUpService := domain.NewSignUpFactory(config.Conf, userRepo)
-	signup, err := signUpService.Factory(ctx.Payload.SignupType)
-	if err != nil {
-		return errors.LogAndReturnError(err)
+	var userRepo = domain.NewUserRepo(config.Conf, domain.NewAdminActor(), local.AuthorisationService{})
+	var localService = local.NewService(config.Conf, userRepo)
+	if ctx.Payload.Type == "google" {
+		gapi := local.NewGoogleAPI(config.Conf)
+		user, err = gapi.AddGoogleData(ctx.Payload)
+		if err != nil {
+			return err
+		}
 	}
-	_, err = signup.Register(ctx.Payload)
-	if err != nil {
+	if _, err := localService.Register(user); err != nil {
 		return errors.LogAndReturnError(err)
 	}
 	ctx.Created()
@@ -62,22 +69,15 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 // Login runs the login action.
 func (c *UserController) Login(ctx *app.LoginUserContext) error {
 	//setup an admin user repo to allow write acces to anonymous user
-	userRepo := domain.NewUserRepo(config.Conf, domain.AdminActor{}, domain.Access{})
-	authFactory := &domain.AuthenticatorFactory{Config: config.Conf, UserRepo: userRepo}
-
-	authenticator, err := authFactory.Factory(ctx.Payload.SignupType)
+	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), local.AuthorisationService{})
+	localService := local.NewService(config.Conf, userRepo)
+	token, err := localService.Authenticate(ctx.Payload.SignupType, ctx.Payload.Token, ctx.Payload.Email)
 	if err != nil {
-		return errors.LogAndReturnError(err)
-
+		return err
 	}
-	user, err := authenticator.Authenticate(ctx.Payload.Token, ctx.Payload.Email)
+	user, err := userRepo.FindOneByFieldAndValue("Email", ctx.Payload.Email)
 	if err != nil {
-		return errors.LogAndReturnError(err)
-	}
-	jsonWT := domain.JWT{Config: config.Conf}
-	token, err := jsonWT.CreateToken(user)
-	if err != nil {
-		return errors.LogAndReturnError(err)
+		return err
 	}
 	ctx.ResponseWriter.Header().Add("Bearer", token)
 	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID}
@@ -87,8 +87,8 @@ func (c *UserController) Login(ctx *app.LoginUserContext) error {
 // Read runs the read action.
 func (c *UserController) Read(ctx *app.ReadUserContext) error {
 	// UserController_Read: start_implement
-	var access = domain.Access{}
-	actor := ctx.Value("actor").(domain.AuthActor)
+	var access = local.AuthorisationService{}
+	actor := ctx.Value("actor").(domain.Actor)
 	userRepo := domain.UserRepo{Config: config.Conf, Actor: actor, Authorisor: access}
 	user, err := userRepo.FindOneByFieldAndValue("id", ctx.Params.Get("id"))
 	if err != nil {

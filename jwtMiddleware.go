@@ -26,7 +26,7 @@ func JwtActorMiddeware(conf *config.Config) goa.Middleware {
 	actorMW := func(h goa.Handler) goa.Handler {
 		return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 			token := gJwt.ContextJWT(ctx)
-			actor := domain.NewAuthActor(token)
+			actor := domain.NewLocalActor(token)
 			ctx = context.WithValue(ctx, "actor", actor)
 			return h(ctx, rw, req)
 		}

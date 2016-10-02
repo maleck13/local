@@ -70,8 +70,15 @@ func CreateTables(session *r.Session) error {
 	return nil
 }
 
+type dummyAuth struct{}
+
+// Authorise allow anonymous access for setup
+func (dummyAuth) Authorise(entity AccessDefinor, action string, actor Actor) error {
+	return nil
+}
+
 func CreateAdminUser(config *config.Config, session *r.Session) error {
-	userRepo := UserRepo{Config: config, Authorisor: Access{}, Actor: AdminActor{}}
+	userRepo := UserRepo{Config: config, Authorisor: dummyAuth{}, Actor: NewAdminActor()}
 	adminUser := config.Admin.User
 	adminPass := config.Admin.Auth
 	exist, err := userRepo.FindOneByFieldAndValue("Email", adminUser)

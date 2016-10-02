@@ -16,7 +16,7 @@ var (
 	existingEmail = "testcreate@test.com"
 )
 
-func setUp(t *testing.T) func() {
+func setUp(t *testing.T) func(emails []string) {
 	conf, err := config.LoadConfig("./config/config.json")
 	if err != nil {
 		t.Fail()
@@ -27,11 +27,14 @@ func setUp(t *testing.T) func() {
 
 	userSetup := test.NewUser(conf)
 	testCreateEmail := "testcreate@test.com"
-	return func() {
+	return func(emails []string) {
+		emails = append(emails, testCreateEmail)
 		testServer.Close()
-		userSetup.Delete(testCreateEmail)
-		if _, err := userSetup.Setup(testCreateEmail, "testcreate", "smith"); err != nil {
-			t.Fail()
+		for _, e := range emails {
+			userSetup.Delete(e)
+			if _, err := userSetup.Setup(testCreateEmail, "testcreate", "smith"); err != nil {
+				t.Fail()
+			}
 		}
 	}
 }
@@ -57,6 +60,7 @@ func TestCreateUser(t *testing.T) {
 	if !*test.IntegrationEnabled {
 		t.Skipf("integration not enabled")
 	}
+	var()
 	tearDown := setUp(t)
 	defer tearDown()
 
@@ -81,6 +85,13 @@ func TestCreateUser(t *testing.T) {
 		}
 	})
 	t.Run("should add user that doesnt exist", func(t *testing.T) {
-
+		res, err := http.Post(testServer.URL+"/user/signup", "application/json", userJSON(, "john", "smith"))
+		if err != nil {
+			t.Fatalf(err.Error())
+		}
+		defer res.Body.Close()
+		if res.StatusCode != 409 {
+			t.Fatal("expected a conflict")
+		}
 	})
 }

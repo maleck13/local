@@ -2,10 +2,12 @@ package errors
 
 import (
 	"fmt"
+	"net/http"
+	"runtime"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/goadesign/goa"
-	"runtime"
-	"net/http"
+	"github.com/pkg/errors"
 )
 
 type ServiceError struct {
@@ -59,4 +61,8 @@ func LogAndReturnError(err error) ServiceErrorLogger {
 	wErr := &ServiceError{Message: err.Error(), Code: http.StatusInternalServerError, Line: n, File: f}
 	wErr.Log()
 	return wErr
+}
+
+func NewUnexpectedError(err error, msg string) error {
+	return errors.Wrap(err, msg)
 }
