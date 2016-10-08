@@ -1432,7 +1432,7 @@ func ReadUserUnauthorized(t *testing.T, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserNotFound(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) http.ResponseWriter {
+func UpdateUserNotFound(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1503,7 +1503,7 @@ func UpdateUserNotFound(t *testing.T, ctx context.Context, service *goa.Service,
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) (http.ResponseWriter, *app.GoaLocalUser) {
+func UpdateUserOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) (http.ResponseWriter, *app.GoaLocalUser) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1586,7 +1586,7 @@ func UpdateUserOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl 
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserOKFull(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) (http.ResponseWriter, *app.GoaLocalUserFull) {
+func UpdateUserOKFull(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) (http.ResponseWriter, *app.GoaLocalUserFull) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1669,7 +1669,7 @@ func UpdateUserOKFull(t *testing.T, ctx context.Context, service *goa.Service, c
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserOKLogin(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) (http.ResponseWriter, *app.GoaLocalUserLogin) {
+func UpdateUserOKLogin(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) (http.ResponseWriter, *app.GoaLocalUserLogin) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1752,7 +1752,7 @@ func UpdateUserOKLogin(t *testing.T, ctx context.Context, service *goa.Service, 
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserOKPublic(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) (http.ResponseWriter, *app.GoaLocalUserPublic) {
+func UpdateUserOKPublic(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) (http.ResponseWriter, *app.GoaLocalUserPublic) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1835,7 +1835,7 @@ func UpdateUserOKPublic(t *testing.T, ctx context.Context, service *goa.Service,
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateUserUnauthorized(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.User) http.ResponseWriter {
+func UpdateUserUnauthorized(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.UserController, id string, payload *app.UpdateUser) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer

@@ -217,7 +217,7 @@ type UpdateUserContext struct {
 	*goa.ResponseData
 	*goa.RequestData
 	ID      string
-	Payload *User
+	Payload *UpdateUser
 }
 
 // NewUpdateUserContext parses the incoming request URL and body, performs validations and creates the

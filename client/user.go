@@ -187,7 +187,7 @@ func UpdateUserPath(id string) string {
 }
 
 // update a user
-func (c *Client) UpdateUser(ctx context.Context, path string, payload *User, contentType string) (*http.Response, error) {
+func (c *Client) UpdateUser(ctx context.Context, path string, payload *UpdateUser, contentType string) (*http.Response, error) {
 	req, err := c.NewUpdateUserRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
@@ -196,7 +196,7 @@ func (c *Client) UpdateUser(ctx context.Context, path string, payload *User, con
 }
 
 // NewUpdateUserRequest create the request corresponding to the update action endpoint of the user resource.
-func (c *Client) NewUpdateUserRequest(ctx context.Context, path string, payload *User, contentType string) (*http.Request, error) {
+func (c *Client) NewUpdateUserRequest(ctx context.Context, path string, payload *UpdateUser, contentType string) (*http.Request, error) {
 	var body bytes.Buffer
 	if contentType == "" {
 		contentType = "*/*" // Use default encoder

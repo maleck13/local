@@ -159,7 +159,7 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*User)
+			rctx.Payload = rawPayload.(*UpdateUser)
 		} else {
 			return goa.MissingPayloadError()
 		}
@@ -229,7 +229,7 @@ func unmarshalLoginUserPayload(ctx context.Context, service *goa.Service, req *h
 
 // unmarshalUpdateUserPayload unmarshals the request body into the context request data Payload field.
 func unmarshalUpdateUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &user{}
+	payload := &updateUser{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}

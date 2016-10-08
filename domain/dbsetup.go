@@ -100,7 +100,7 @@ func CreateAdminUser(config *config.Config, session *r.Session) error {
 			Token: string(enc),
 		},
 	}
-	if err := userRepo.Save(adminUserModel); err != nil {
+	if err := userRepo.SaveUpdate(adminUserModel); err != nil {
 		return err
 	}
 	return nil

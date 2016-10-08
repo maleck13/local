@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"fmt"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
@@ -156,7 +158,7 @@ func (ur UserRepo) FindOneByFieldAndValue(field, val string) (*User, error) {
 	return res, nil
 }
 
-func (ur UserRepo) Save(u *User) error {
+func (ur UserRepo) SaveUpdate(u *User) error {
 	if err := ur.Authorisor.Authorise(u, "write", ur.Actor); err != nil {
 		return err
 	}
@@ -164,9 +166,16 @@ func (ur UserRepo) Save(u *User) error {
 	if err != nil {
 		return errors.NewServiceError(err.Error(), 500)
 	}
-	_, err = r.DB(data.DB_NAME).Table(data.USER_TABLE).Insert(u).RunWrite(sess)
+	var q = r.DB(data.DB_NAME).Table(data.USER_TABLE)
+	fmt.Println("updating with id ", u.ID)
+	if u.ID == "" {
+		q = q.Insert(u)
+	} else {
+		q = q.Get(u.ID).Update(u)
+	}
+	_, err = q.RunWrite(sess)
 	if err != nil {
-		return errors.NewServiceError("failed to insert councillor "+err.Error(), 500)
+		return errors.NewServiceError("failed to insert user "+err.Error(), 500)
 	}
 	return nil
 }

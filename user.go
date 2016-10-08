@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	gJwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
@@ -25,16 +24,13 @@ func (c *UserController) Create(ctx *app.CreateUserContext) error {
 	var (
 		user *app.User
 		err  error
+		// userRepo is configured with AdminActor to allow anonymous write
+		userRepo     = domain.NewUserRepo(config.Conf, domain.NewAdminActor(), local.AuthorisationService{})
+		localService = local.NewService(config.Conf, userRepo)
 	)
-	//setup an admin user repo to allow write acces to anonymous user
-	var userRepo = domain.NewUserRepo(config.Conf, domain.NewAdminActor(), local.AuthorisationService{})
-	var localService = local.NewService(config.Conf, userRepo)
-	if ctx.Payload.Type == "google" {
-		gapi := local.NewGoogleAPI(config.Conf)
-		user, err = gapi.AddGoogleData(ctx.Payload)
-		if err != nil {
-			return err
-		}
+	user, err = localService.AddProviderData(ctx.Payload)
+	if err != nil {
+		return errors.LogAndReturnError(err)
 	}
 	if _, err := localService.Register(user); err != nil {
 		return errors.LogAndReturnError(err)
@@ -108,6 +104,7 @@ func (c *UserController) Read(ctx *app.ReadUserContext) error {
 		SignupType: &user.SignupType,
 		FirstName:  user.FirstName,
 		SecondName: user.SecondName,
+		Type:       user.Type(),
 	}
 	return ctx.OK(res)
 }
@@ -115,12 +112,22 @@ func (c *UserController) Read(ctx *app.ReadUserContext) error {
 // Update runs the update action.
 func (c *UserController) Update(ctx *app.UpdateUserContext) error {
 	// UserController_Update: start_implement
-
-	token := gJwt.ContextJWT(ctx)
-	if nil == token {
-		return ctx.Unauthorized()
+	var access = local.AuthorisationService{}
+	actor := ctx.Value("actor").(domain.Actor)
+	userRepo := domain.UserRepo{Config: config.Conf, Actor: actor, Authorisor: access}
+	localService := local.NewService(config.Conf, userRepo)
+	user, err := localService.Update(ctx.Payload)
+	if err != nil {
+		return err
 	}
-
-	res := &app.GoaLocalUser{}
+	res := &app.GoaLocalUser{
+		Area:       &user.Area,
+		Email:      user.Email,
+		ID:         &user.ID,
+		SignupType: &user.SignupType,
+		FirstName:  user.FirstName,
+		SecondName: user.SecondName,
+		Type:       user.Type(),
+	}
 	return ctx.OK(res)
 }

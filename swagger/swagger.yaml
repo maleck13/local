@@ -123,6 +123,49 @@ definitions:
     - signupType
     title: Login
     type: object
+  UpdateUser:
+    example:
+      area: Qui velit natus officia reiciendis aut.
+      email: Recusandae perferendis et optio id expedita.
+      firstName: Aliquam exercitationem earum provident qui.
+      id: Pariatur ut.
+      image: Molestiae voluptatem quis voluptates.
+      secondName: Eaque quia ut ut.
+    properties:
+      area:
+        default: ""
+        description: The area of the users local council
+        example: Qui velit natus officia reiciendis aut.
+        type: string
+      email:
+        description: The email of the user
+        example: Recusandae perferendis et optio id expedita.
+        type: string
+      firstName:
+        description: Name of the user
+        example: Aliquam exercitationem earum provident qui.
+        type: string
+      id:
+        description: Unique user ID
+        example: Pariatur ut.
+        type: string
+      image:
+        default: ""
+        description: an image url for the user
+        example: Molestiae voluptatem quis voluptates.
+        type: string
+      secondName:
+        description: Name of the user
+        example: Eaque quia ut ut.
+        type: string
+    required:
+    - firstName
+    - secondName
+    - email
+    - id
+    - area
+    title: UpdateUser
+    type: object
   User:
     example:
       area: Cum ea quod accusamus aliquam.
@@ -294,7 +337,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/User'
+          $ref: '#/definitions/UpdateUser'
       responses:
         "200":
           description: OK

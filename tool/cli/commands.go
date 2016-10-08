@@ -174,19 +174,12 @@ Payload example:
 Payload example:
 
 {
-   "area": "Cum ea quod accusamus aliquam.",
-   "email": "Voluptatem officia eum natus aut.",
-   "firstName": "Omnis facilis ratione odio.",
-   "id": "Culpa doloribus.",
-   "image": "Earum inventore optio alias rerum debitis ut.",
-   "location": {
-      "Lat": 0.19498104724300513,
-      "Lon": 0.62452386199952
-   },
-   "secondName": "Sapiente nihil quod architecto harum dolorum.",
-   "signupType": "Earum voluptas.",
-   "token": "Ipsa mollitia error impedit minima.",
-   "type": "Ea ex."
+   "area": "Qui velit natus officia reiciendis aut.",
+   "email": "Recusandae perferendis et optio id expedita.",
+   "firstName": "Aliquam exercitationem earum provident qui.",
+   "id": "Pariatur ut.",
+   "image": "Molestiae voluptatem quis voluptates.",
+   "secondName": "Eaque quia ut ut."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -499,7 +492,7 @@ func (cmd *UpdateUserCommand) Run(c *client.Client, args []string) error {
 	} else {
 		path = fmt.Sprintf("/user/%v", cmd.ID)
 	}
-	var payload client.User
+	var payload client.UpdateUser
 	if cmd.Payload != "" {
 		err := json.Unmarshal([]byte(cmd.Payload), &payload)
 		if err != nil {

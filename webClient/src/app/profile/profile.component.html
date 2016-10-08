@@ -1,25 +1,33 @@
 <div class="col-md-4"></div>
 <div class="col-md-4">
-<div *ngIf="profile">
-  <form>
-    <div class="form-group">
-      <label for="email">Email address:</label>
-      <input type="email" class="form-control" id="email" placeholder="Email" value="{{profile.email}}">
-    </div>
-    <div class="form-group">
-      <label for="firstName">First name:</label>
-      <input type="text" class="form-control" id="firstName" placeholder="First name" value="{{profile.firstName}}">
-    </div>
-    <div class="form-group">
-      <label for="secondName">Second name:</label>
-      <input type="text" class="form-control" id="secondName" placeholder="Second name" value="{{profile.secondName}}">
-    </div>
-    <div class="form-group">
-      <label for="area">Area:</label>
-      <input type="text" class="form-control required" id="area" placeholder="Area" value="{{profile.area}}">
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form>
+<div *ngIf="updated"  class="alert alert-success">
+  <strong>Success</strong> Profile Updated.
+</div>
+<div *ngIf="profile" class="well"><b>Profile: {{profile.firstName}} {{profile.secondName}}</b>
+  <div *ngIf="profile">
+    <form (ngSubmit)="profileSubmit()">
+      <div class="form-group">
+        <label for="email">Email address:</label>
+        <input [(ngModel)]="profile.email" type="email" class="form-control" id="email" placeholder="Email" value="{{profile.email}}">
+      </div>
+      <div class="form-group">
+        <label for="firstName">First name:</label>
+        <input [(ngModel)]="profile.firstName" type="text" class="form-control" id="firstName" placeholder="First name" value="{{profile.firstName}}">
+      </div>
+      <div class="form-group">
+        <label for="secondName">Second name:</label>
+        <input [(ngModel)]="profile.secondName" type="text" class="form-control" id="secondName" placeholder="Second name" value="{{profile.secondName}}">
+      </div>
+      <div class="form-group">
+        <label for="area">Area:</label>
+        <select [(ngModel)]="profile.area" class="form-control required" id="area">
+          <option type="text" value="">Select an area</option>
+          <option *ngFor="let p of profileAreas" [selected]="profile.Area == p" [value]="p">{{p}}</option> 
+        </select>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
 </div>
 </div>
 <div class="col-md-4"></div>

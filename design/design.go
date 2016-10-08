@@ -129,7 +129,7 @@ var _ = Resource("user", func() {
 	Action("update", func() {
 		Description("update a user")
 		Routing(POST("/:id"))
-		Payload(UserPayload)
+		Payload(UpdateUserPayload)
 		Params(func() { // (shape of the request body).
 			Param("id", String, "user ID")
 		})
@@ -184,4 +184,18 @@ var UserPayload = Type("User", func() {
 		Default("")
 	})
 	Required("firstName", "secondName", "email", "token")
+})
+
+var UpdateUserPayload = Type("UpdateUser", func() {
+	Attribute("id", String, "Unique user ID")
+	Attribute("firstName", String, "Name of the user")
+	Attribute("secondName", String, "Name of the user")
+	Attribute("email", String, "The email of the user")
+	Attribute("area", String, "The area of the users local council", func() {
+		Default("")
+	})
+	Attribute("image", String, "an image url for the user", func() {
+		Default("")
+	})
+	Required("firstName", "secondName", "email", "id", "area")
 })

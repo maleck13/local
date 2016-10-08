@@ -17,7 +17,7 @@ import (
 )
 
 var confPath = flag.String("config", "config/config-local.json", "config path")
-var port = flag.String("port", ":3001", "port to listen on")
+var port = flag.String("port", ":3000", "port to listen on")
 
 func buildService(conf *config.Config) *goa.Service {
 

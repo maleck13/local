@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute }       from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import {ProfileService} from '../profile.service'
+import {ProfileService,Profile} from '../profile.service'
 
 @Component({
   moduleId: module.id,
@@ -13,6 +13,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private paramSub: Subscription
   private profile: Profile
+  private profileAreas = ["Tramore Waterford City West","Waterford City East","Waterford City South"]
+  private updated = false
 
   constructor(
     private route: ActivatedRoute,
@@ -28,7 +30,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
            return;
          }
          console.log("user ", u);
-         this.profile = new Profile(u.area,u.email,u.firstName,u.secondName);
+         this.profile = new Profile(u.id,u.area,u.email,u.firstName,u.secondName);
        }).catch((e)=>console.error);
      });
   }
@@ -36,11 +38,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.paramSub.unsubscribe();
   }
 
+  profileSubmit(){
+    this.service.updateProfile(this.profile)
+    .then((p)=>{
+      console.log("updated profile", p)
+      this.updated = true; 
+      setTimeout(()=>{
+        this.updated = false;
+      },750)
+    })
+    .catch((e)=>console.error)
+  }
 }
 
-export class Profile {
-  constructor(public area:string,
-  public email:string,
-  public firstName:string,
-  public secondName:string){}
-}

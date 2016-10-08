@@ -80,8 +80,19 @@ export class ProfileService implements AuthenticatedService{
             .toPromise()
             .then((res)=>res.json())
             .catch(this.handleError);
-    });
-    
+    }); 
+  }
+
+  public updateProfile(profile: Profile):Promise{
+    return this.getTokenHeader().then((header)=>{
+      let headers = new Headers(header);
+      headers.append("Content-type","application/json");
+      let options = new RequestOptions({ headers: headers });
+        return this.http.post(this.profileUrl + "/" + profile.id, profile ,options)
+            .toPromise()
+            .then((res)=>res.json())
+            .catch(this.handleError);
+    }); 
   }
 
   private handleError(error: any) {
@@ -94,4 +105,13 @@ export class ProfileService implements AuthenticatedService{
 
 export class UserData{
   constructor(public id: string , public token:string){}
+}
+
+export class Profile {
+  constructor(
+  public id:string,  
+  public area:string,
+  public email:string,
+  public firstName:string,
+  public secondName:string){}
 }

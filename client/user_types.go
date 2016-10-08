@@ -97,6 +97,116 @@ func (ut *Login) Validate() (err error) {
 	return
 }
 
+// updateUser user type.
+type updateUser struct {
+	// The area of the users local council
+	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// The email of the user
+	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	// Name of the user
+	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	// Unique user ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// an image url for the user
+	Image *string `form:"image,omitempty" json:"image,omitempty" xml:"image,omitempty"`
+	// Name of the user
+	SecondName *string `form:"secondName,omitempty" json:"secondName,omitempty" xml:"secondName,omitempty"`
+}
+
+// Finalize sets the default values for updateUser type instance.
+func (ut *updateUser) Finalize() {
+	var defaultArea = ""
+	if ut.Area == nil {
+		ut.Area = &defaultArea
+	}
+	var defaultImage = ""
+	if ut.Image == nil {
+		ut.Image = &defaultImage
+	}
+}
+
+// Validate validates the updateUser type instance.
+func (ut *updateUser) Validate() (err error) {
+	if ut.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+	if ut.SecondName == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
+	}
+	if ut.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	if ut.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
+	}
+	if ut.Area == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "area"))
+	}
+
+	return
+}
+
+// Publicize creates UpdateUser from updateUser
+func (ut *updateUser) Publicize() *UpdateUser {
+	var pub UpdateUser
+	if ut.Area != nil {
+		pub.Area = *ut.Area
+	}
+	if ut.Email != nil {
+		pub.Email = *ut.Email
+	}
+	if ut.FirstName != nil {
+		pub.FirstName = *ut.FirstName
+	}
+	if ut.ID != nil {
+		pub.ID = *ut.ID
+	}
+	if ut.Image != nil {
+		pub.Image = *ut.Image
+	}
+	if ut.SecondName != nil {
+		pub.SecondName = *ut.SecondName
+	}
+	return &pub
+}
+
+// UpdateUser user type.
+type UpdateUser struct {
+	// The area of the users local council
+	Area string `form:"area" json:"area" xml:"area"`
+	// The email of the user
+	Email string `form:"email" json:"email" xml:"email"`
+	// Name of the user
+	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
+	// Unique user ID
+	ID string `form:"id" json:"id" xml:"id"`
+	// an image url for the user
+	Image string `form:"image" json:"image" xml:"image"`
+	// Name of the user
+	SecondName string `form:"secondName" json:"secondName" xml:"secondName"`
+}
+
+// Validate validates the UpdateUser type instance.
+func (ut *UpdateUser) Validate() (err error) {
+	if ut.FirstName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+	if ut.SecondName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
+	}
+	if ut.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	if ut.ID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
+	}
+	if ut.Area == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "area"))
+	}
+
+	return
+}
+
 // user user type.
 type user struct {
 	// The area of the users local council
