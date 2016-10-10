@@ -10,10 +10,10 @@ import (
 
 // CreateUserPath computes a request path to the create action of user.
 func CreateUserPath() string {
-	return fmt.Sprintf("/user/signup")
+	return fmt.Sprintf("/user")
 }
 
-// Signup a user
+// admin api to add a user
 func (c *Client) CreateUser(ctx context.Context, path string, payload *User, contentType string) (*http.Response, error) {
 	req, err := c.NewCreateUserRequest(ctx, path, payload, contentType)
 	if err != nil {
@@ -44,6 +44,9 @@ func (c *Client) NewCreateUserRequest(ctx context.Context, path string, payload 
 	header := req.Header
 	if contentType != "*/*" {
 		header.Set("Content-Type", contentType)
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
 	}
 	return req, nil
 }
@@ -177,6 +180,46 @@ func (c *Client) NewReadUserRequest(ctx context.Context, path string) (*http.Req
 	}
 	if c.JWTSigner != nil {
 		c.JWTSigner.Sign(req)
+	}
+	return req, nil
+}
+
+// SignupUserPath computes a request path to the signup action of user.
+func SignupUserPath() string {
+	return fmt.Sprintf("/user/signup")
+}
+
+// Signup a user
+func (c *Client) SignupUser(ctx context.Context, path string, payload *User, contentType string) (*http.Response, error) {
+	req, err := c.NewSignupUserRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewSignupUserRequest create the request corresponding to the signup action endpoint of the user resource.
+func (c *Client) NewSignupUserRequest(ctx context.Context, path string, payload *User, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("POST", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType != "*/*" {
+		header.Set("Content-Type", contentType)
 	}
 	return req, nil
 }

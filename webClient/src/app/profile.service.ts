@@ -33,7 +33,7 @@ export class ProfileService implements AuthenticatedService{
         let user:UserData ;
         try{
           let u = JSON.parse(data); 
-          user = new UserData(u.id,u.token);
+          user = new UserData(u.id,u.token,u.type);
           return res(user);
         }catch(e){
           return rej(e);
@@ -71,6 +71,20 @@ export class ProfileService implements AuthenticatedService{
     return p;
   }
 
+  public getJwtToken():Promise{
+    let p = new Promise((res,rej)=>{
+      this.getUserData().then((d)=>{
+        if(d){
+          return res(d.token);
+        }
+        return res();
+      }).catch((err)=>{
+         return rej(err);
+      })
+    });
+      return p;
+  }
+
   public getProfile(id : string):Promise{
     return this.getTokenHeader().then((header)=>{
       let headers = new Headers(header);
@@ -104,7 +118,7 @@ export class ProfileService implements AuthenticatedService{
 
 
 export class UserData{
-  constructor(public id: string , public token:string){}
+  constructor(public id: string , public token:string, public type:string){}
 }
 
 export class Profile {

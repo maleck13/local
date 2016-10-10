@@ -36,6 +36,10 @@ func buildService(conf *config.Config) *goa.Service {
 	app.UseJWTMiddleware(service, NewJWTMiddleware(conf))
 	uc := NewUserController(service)
 	app.MountUserController(service, uc)
+	ac := NewAdminController(service)
+	app.MountAdminController(service, ac)
+	sc := NewSwaggerController(service)
+	app.MountSwaggerController(service, sc)
 	return service
 }
 

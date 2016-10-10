@@ -45,6 +45,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.updated = true; 
       setTimeout(()=>{
         this.updated = false;
+        
       },750)
     })
     .catch((e)=>console.error)

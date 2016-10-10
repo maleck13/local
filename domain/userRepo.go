@@ -1,108 +1,14 @@
 package domain
 
 import (
-	"fmt"
-
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/data"
-	"github.com/maleck13/local/errors"
+	"github.com/pkg/errors"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-//Authorisor defines a Authorise api Service is an implementor
-type Authorisor interface {
-	Authorise(entity AccessDefinor, action string, actor Actor) error
-}
-
-//Actor is who is looking to act on an entity
-type Actor interface {
-	Id() string
-	Type() string
-}
-
-// AccessDefinor defines the inteface for determining the access an actor has
-type AccessDefinor interface {
-	AccessTypes() map[string][]string
-	Owner() string
-}
-
-//NewLocalActor returns an Local Actor based on a jwtToken
-func NewLocalActor(t *jwt.Token) Actor {
-	return localActor{
-		t,
-	}
-}
-
-type localActor struct {
-	*jwt.Token
-}
-
-//Id return the userId of the acting user
-func (aa localActor) Id() string {
-	if nil == aa.Token {
-		return ""
-	}
-	if claims, ok := aa.Token.Claims.(jwt.MapClaims); ok {
-		return claims["id"].(string)
-	}
-	return ""
-}
-
-//Type return the type of the acting user
-func (aa localActor) Type() string {
-	if nil == aa.Token {
-		return ""
-	}
-	if claims, ok := aa.Token.Claims.(jwt.MapClaims); ok {
-		return claims["type"].(string)
-	}
-	return ""
-}
-
-type adminActor struct {
-}
-
-func (aa adminActor) Id() string {
-	return "admin"
-}
-func (aa adminActor) Type() string {
-	return "admin"
-}
-
-type AdminAccessDefinor struct {
-}
-
-func (AdminAccessDefinor) AccessTypes() map[string][]string {
-	return map[string][]string{
-		"admin": []string{"admin"},
-	}
-}
-
-func (AdminAccessDefinor) Owner() string {
-	return "admin"
-}
-
-func NewAdminActor() Actor {
-	return adminActor{}
-}
-
-type UserRepo struct {
-	Config     *config.Config
-	Actor      Actor
-	Authorisor Authorisor
-}
-
-//NewUserRepo returns a configured UserRepo with it dependencies. This should be used when acting on behalf of a user
-func NewUserRepo(conf *config.Config, actor Actor, authorisor Authorisor) UserRepo {
-	return UserRepo{
-		Config:     conf,
-		Actor:      actor,
-		Authorisor: authorisor,
-	}
-}
-
+// User represents a user of locals in the database
 type User struct {
 	*app.User
 	ID           string `gorethink:"id,omitempty"`
@@ -137,16 +43,53 @@ func NewUserFromRequest(u *app.User) *User {
 	return &User{User: u}
 }
 
+// UserSaver defines something that saves users
+type UserSaver interface {
+	SaveUpdate(u *User) error
+}
+
+type UserDeleter interface {
+	DeleteByFieldAndValue(field string, value interface{}) error
+}
+
+type UserFinder interface {
+	FindOneByFieldAndValue(field, val string) (*User, error)
+	FindAllByTypeAndArea(uType, area string) ([]*User, error)
+}
+
+type UserFinderDeleterSaver interface {
+	UserSaver
+	UserDeleter
+	UserFinder
+}
+
+// UserRepo access users in the data layer
+type UserRepo struct {
+	Config     *config.Config
+	Actor      Actor
+	Authorisor Authorisor
+}
+
+//NewUserRepo returns a configured UserRepo with it dependencies. This should be used when acting on behalf of a user
+func NewUserRepo(conf *config.Config, actor Actor, authorisor Authorisor) UserRepo {
+	return UserRepo{
+		Config:     conf,
+		Actor:      actor,
+		Authorisor: authorisor,
+	}
+}
+
+// FindOneByFieldAndValue returns a user based on a field and value if there is no user found both error and user will be nil
 func (ur UserRepo) FindOneByFieldAndValue(field, val string) (*User, error) {
 	sess, err := data.DbSession(ur.Config)
 	if err != nil {
-		return nil, errors.NewServiceError(err.Error(), 500)
+		return nil, errors.Wrap(err, "unexpected error FindOneByFieldAndValue")
 	}
 	res := &User{}
 	q := map[string]interface{}{field: val}
 	c, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Run(sess)
 	if err != nil {
-		return nil, errors.NewServiceError("failed to find a user "+err.Error(), 500)
+		return nil, errors.Wrap(err, "unexpected error FindOneByFieldAndValue")
 	}
 	if c.IsNil() {
 		return nil, nil
@@ -158,16 +101,42 @@ func (ur UserRepo) FindOneByFieldAndValue(field, val string) (*User, error) {
 	return res, nil
 }
 
+// FindAllByTypeAndArea finds all users by type and by area
+func (ur UserRepo) FindAllByTypeAndArea(uType, area string) ([]*User, error) {
+	sess, err := data.DbSession(ur.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error FindAllByTypeAndArea")
+	}
+	res := []*User{}
+	q := map[string]string{"Type": uType, "Area": area}
+	c, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error FindAllByTypeAndArea")
+	}
+	if c.IsNil() {
+		return nil, nil
+	}
+	if err := c.All(&res); err != nil {
+		return nil, errors.Wrap(err, "unexpected error FindAllByTypeAndArea")
+	}
+	for _, u := range res {
+		if err := ur.Authorisor.Authorise(u, "read", ur.Actor); err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+// SaveUpdate will save or update a User
 func (ur UserRepo) SaveUpdate(u *User) error {
+	sess, err := data.DbSession(ur.Config)
+	if err != nil {
+		return errors.Wrap(err, "unexpected error SaveUpdate")
+	}
 	if err := ur.Authorisor.Authorise(u, "write", ur.Actor); err != nil {
 		return err
 	}
-	sess, err := data.DbSession(ur.Config)
-	if err != nil {
-		return errors.NewServiceError(err.Error(), 500)
-	}
 	var q = r.DB(data.DB_NAME).Table(data.USER_TABLE)
-	fmt.Println("updating with id ", u.ID)
 	if u.ID == "" {
 		q = q.Insert(u)
 	} else {
@@ -175,19 +144,21 @@ func (ur UserRepo) SaveUpdate(u *User) error {
 	}
 	_, err = q.RunWrite(sess)
 	if err != nil {
-		return errors.NewServiceError("failed to insert user "+err.Error(), 500)
+		return errors.Wrap(err, "unexpected error SaveUpdate")
 	}
 	return nil
 }
 
+// DeleteByFieldAndValue remove a user based of the value of the field
 func (ur UserRepo) DeleteByFieldAndValue(field string, value interface{}) error {
+
 	sess, err := data.DbSession(ur.Config)
 	if err != nil {
-		return errors.NewServiceError(err.Error(), 500)
+		return errors.Wrap(err, "unexpected error DeleteByFieldAndValue")
 	}
 	q := map[string]interface{}{field: value}
 	if _, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Delete().Run(sess); err != nil {
-		return errors.NewServiceError("failed to delete users "+err.Error(), 500)
+		return errors.Wrap(err, "unexpected error DeleteByFieldAndValue")
 	}
 	return nil
 }

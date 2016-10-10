@@ -17,6 +17,36 @@ import (
 	"golang.org/x/net/context"
 )
 
+// CreateCouncillorAdminContext provides the admin createCouncillor action context.
+type CreateCouncillorAdminContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewCreateCouncillorAdminContext parses the incoming request URL and body, performs validations and creates the
+// context used by the admin controller createCouncillor action.
+func NewCreateCouncillorAdminContext(ctx context.Context, service *goa.Service) (*CreateCouncillorAdminContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := CreateCouncillorAdminContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// Created sends a HTTP response with status code 201.
+func (ctx *CreateCouncillorAdminContext) Created() error {
+	ctx.ResponseData.WriteHeader(201)
+	return nil
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *CreateCouncillorAdminContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
 // CreateUserContext provides the user create action context.
 type CreateUserContext struct {
 	context.Context
@@ -207,6 +237,37 @@ func (ctx *ReadUserContext) Unauthorized() error {
 
 // NotFound sends a HTTP response with status code 404.
 func (ctx *ReadUserContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// SignupUserContext provides the user signup action context.
+type SignupUserContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *User
+}
+
+// NewSignupUserContext parses the incoming request URL and body, performs validations and creates the
+// context used by the user controller signup action.
+func NewSignupUserContext(ctx context.Context, service *goa.Service) (*SignupUserContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := SignupUserContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// Created sends a HTTP response with status code 201.
+func (ctx *SignupUserContext) Created() error {
+	ctx.ResponseData.WriteHeader(201)
+	return nil
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *SignupUserContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
 	return nil
 }

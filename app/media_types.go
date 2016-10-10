@@ -107,6 +107,8 @@ type GoaLocalUserLogin struct {
 	LoginExpires *int `form:"loginExpires,omitempty" json:"loginExpires,omitempty" xml:"loginExpires,omitempty"`
 	// This can be an oauth token or a password
 	Token string `form:"token" json:"token" xml:"token"`
+	// the type of user admin local councillor
+	Type string `form:"type" json:"type" xml:"type"`
 }
 
 // Validate validates the GoaLocalUserLogin media type instance.

@@ -28,7 +28,7 @@ type user struct {
 func NewUser(conf *config.Config) user {
 	return user{
 		Config:   conf,
-		userRepo: domain.NewUserRepo(conf, domain.AdminActor{}, domain.Access{}),
+		userRepo: domain.NewUserRepo(conf, domain.NewAdminActor(), domain.AuthorisationService{}),
 	}
 }
 
@@ -51,7 +51,7 @@ func (u user) Setup(email, firstName, secondName string) (*domain.User, error) {
 			SignupType: DEFAULT_SIGNUP_TYPE,
 		},
 	}
-	if err := u.userRepo.Save(user); err != nil {
+	if err := u.userRepo.SaveUpdate(user); err != nil {
 		return nil, err
 	}
 	return user, nil

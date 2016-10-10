@@ -13,6 +13,15 @@ type Config struct {
 		Timeout  int      `json:"timeout"`
 		Username string   `json:"username"`
 	} `json:"database"`
+	Files struct {
+		Aws struct {
+			Enabled bool `json:"enabled"`
+		} `json:"aws"`
+		Local struct {
+			DirPath string `json:"dirPath"`
+			Enabled bool   `json:"enabled"`
+		} `json:"local"`
+	} `json:"files"`
 	Google struct {
 		ClientID     string `json:"clientId"`
 		ValidatorURL string `json:"validatorUrl"`

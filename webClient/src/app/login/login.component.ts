@@ -43,19 +43,33 @@ export class LoginComponent implements OnInit {
       this.userEmail = loggedInUser.getBasicProfile().getEmail();
       let login = new Login(this.userAuthToken,this.userEmail,"google");
       this.loginService.login(login)
-      .then((res)=>{
-        console.log(res);
-        let ud = new UserData(res.id,res.token);
-        let pStore = this.profileService.storeUserData(ud)
-        pStore.then(()=>{
-          this.router.navigate(["/profile/"+ud.id]);
-        });
-        pStore.catch((err)=>console.error);
-      })
+      .then(this.handleLoginSuccess(this.profileService, this.router))
       .catch((err)=>{
         console.log("error logging in ", err);
       });
     });
+  }
+
+  handleLoginSuccess(profileService, router){
+    return function (res){
+        console.log("loginSuccess",res);
+        let ud = new UserData(res.id,res.token,res.type);
+        let pStore = profileService.storeUserData(ud)
+        pStore.then(()=>{
+          router.navigate(["/profile/"+ud.id]);
+        });
+        pStore.catch((err)=>console.error);
+    }
+  }
+
+  login(){
+    console.log("login called", this.userEmail, this.userAuthToken);
+    let login = new Login(this.userAuthToken,this.userEmail,"local");
+      this.loginService.login(login)
+      .then(this.handleLoginSuccess(this.profileService, this.router))
+      .catch((err)=>{
+        console.log("error logging in ", err);
+      });
   }
 
   ngOnInit() {

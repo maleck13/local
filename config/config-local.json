@@ -1,6 +1,15 @@
 {
   "pprof_enabled": false,
   "clientDir": "./client/dist",
+  "files":{
+      "aws":{
+        "enabled":false
+      },
+      "local":{
+        "enabled":true,
+        "dirPath":"/tmp/locals/files"
+      }
+  },
   "admin": {
     "user": "admin@test.com",
     "auth": "local123"

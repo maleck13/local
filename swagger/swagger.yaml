@@ -230,12 +230,102 @@ definitions:
     - token
     title: User
     type: object
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1.458609e+09
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1.458609e+09
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error'
+    type: object
 host: localhost:3000
 info:
   description: A platform for interacting with you and local government
   title: You and local government
   version: ""
 paths:
+  /admin/councillor:
+    post:
+      description: |-
+        admin api to add a councillor
+
+        Required security scopes:
+          * `admin:access`
+      operationId: admin#createCouncillor
+      responses:
+        "201":
+          description: Created
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - admin:access
+      summary: createCouncillor admin
+      tags:
+      - admin
+  /swagger-ui/{filepath}:
+    get:
+      operationId: swagger#/swagger-ui/*filepath
+      parameters:
+      - description: Relative file path
+        in: path
+        name: filepath
+        required: true
+        type: string
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: Download swagger-ui/
+  /swagger.json:
+    get:
+      operationId: swagger#/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
+      summary: Download swagger/swagger.json
   /user:
     get:
       description: |-
@@ -259,6 +349,32 @@ paths:
       - jwt:
         - api:access
       summary: list user
+      tags:
+      - user
+    post:
+      description: |-
+        admin api to add a user
+
+        Required security scopes:
+          * `admin:access`
+      operationId: user#create
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "201":
+          description: Created
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - admin:access
+      summary: create user
       tags:
       - user
   /user/{id}:
@@ -378,7 +494,7 @@ paths:
   /user/signup:
     post:
       description: Signup a user
-      operationId: user#create
+      operationId: user#signup
       parameters:
       - in: body
         name: payload
@@ -392,7 +508,7 @@ paths:
           description: Not Found
       schemes:
       - http
-      summary: create user
+      summary: signup user
       tags:
       - user
 produces:

@@ -17,7 +17,9 @@ import (
 // and validates its content. A real app would probably use goa's JWT security middleware instead.
 func NewJWTMiddleware(conf *config.Config) goa.Middleware {
 	key := conf.Jwt.Secret
-	middleware := gJwt.New(key, JwtActorMiddeware(conf), app.NewJWTSecurity())
+	securityContext := app.NewJWTSecurity()
+	securityContext.Scopes["admin:access"] = "admin access"
+	middleware := gJwt.New(key, JwtActorMiddeware(conf), securityContext)
 	return middleware
 }
 

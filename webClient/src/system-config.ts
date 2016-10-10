@@ -9,12 +9,14 @@
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
-  //'angular2-localstorage':'vendor/angular2-localStorage'
+  'angular2-localstorage':'vendor/angular2-localStorage',
+  'ng2-uploader':'vendor/ng2-uploader'
 };
 
 /** User packages configuration. */
 const packages: any = {
-  //'angular2-localstorage':{main:"index"}
+  'angular2-localstorage':{main:"index"},
+  'ng2-uploader':{main:"ng2-uploader"}
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +36,7 @@ const barrels: string[] = [
 
   // Thirdparty barrels.
   'rxjs',
-
+  'ng2-uploader',
   // App specific barrels.
   'app',
   'app/shared',
@@ -42,6 +44,7 @@ const barrels: string[] = [
   'app/home',
   'app/signup',
   'app/profile',
+  'app/admin',
   /** @cli-barrel */
 ];
 
@@ -58,6 +61,7 @@ System.config({
   map: {
     '@angular': 'vendor/@angular',
     'rxjs': 'vendor/rxjs',
+    'ng2-uploader': 'vendor/ng2-uploader',
     'main': 'main.js'
   },
   packages: cliSystemConfigPackages
