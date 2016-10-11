@@ -16,6 +16,8 @@ import "github.com/goadesign/goa"
 
 // councillor user type.
 type councillor struct {
+	// a phone contact for the user
+	Address *string `form:"address,omitempty" json:"address,omitempty" xml:"address,omitempty"`
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
 	// email for the councillor
@@ -40,6 +42,10 @@ type councillor struct {
 
 // Finalize sets the default values for councillor type instance.
 func (ut *councillor) Finalize() {
+	var defaultAddress = ""
+	if ut.Address == nil {
+		ut.Address = &defaultAddress
+	}
 	var defaultArea = ""
 	if ut.Area == nil {
 		ut.Area = &defaultArea
@@ -89,6 +95,9 @@ func (ut *councillor) Validate() (err error) {
 	if ut.Party == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "party"))
 	}
+	if ut.Address == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "address"))
+	}
 
 	return
 }
@@ -96,6 +105,9 @@ func (ut *councillor) Validate() (err error) {
 // Publicize creates Councillor from councillor
 func (ut *councillor) Publicize() *Councillor {
 	var pub Councillor
+	if ut.Address != nil {
+		pub.Address = *ut.Address
+	}
 	if ut.Area != nil {
 		pub.Area = *ut.Area
 	}
@@ -131,6 +143,8 @@ func (ut *councillor) Publicize() *Councillor {
 
 // Councillor user type.
 type Councillor struct {
+	// a phone contact for the user
+	Address string `form:"address" json:"address" xml:"address"`
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
 	// email for the councillor
@@ -175,6 +189,9 @@ func (ut *Councillor) Validate() (err error) {
 	}
 	if ut.Party == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "party"))
+	}
+	if ut.Address == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "address"))
 	}
 
 	return

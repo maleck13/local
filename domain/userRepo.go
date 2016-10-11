@@ -39,6 +39,7 @@ func (u *User) Type() string {
 	return u.User.Type
 }
 
+// NewUserFromRequest conversts an app.User to domain.User
 func NewUserFromRequest(u *app.User) *User {
 	return &User{User: u}
 }
@@ -48,15 +49,18 @@ type UserSaver interface {
 	SaveUpdate(u *User) error
 }
 
+// UserDeleter defines how a user should be deleted
 type UserDeleter interface {
 	DeleteByFieldAndValue(field string, value interface{}) error
 }
 
+// UserFinder defines how users should be found
 type UserFinder interface {
 	FindOneByFieldAndValue(field, val string) (*User, error)
 	FindAllByTypeAndArea(uType, area string) ([]*User, error)
 }
 
+// UserFinderDeleterSaver composite interface
 type UserFinderDeleterSaver interface {
 	UserSaver
 	UserDeleter

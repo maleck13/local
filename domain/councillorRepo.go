@@ -44,6 +44,11 @@ func NewCouncillor(c *app.Councillor) *Councillor {
 	}
 }
 
+// CouncillorSaver is the interface for persisting councillors to the db
+type CouncillorSaver interface {
+	SaveUpdate(councillor *Councillor) error
+}
+
 // CouncillorRepo is a repository for handling data interactions for councillors
 type CouncillorRepo struct {
 	Config     *config.Config
@@ -72,6 +77,44 @@ func (cr CouncillorRepo) SaveUpdate(councillor *Councillor) error {
 		return errors.Wrap(err, "unexpected error writing data to db")
 	}
 	return nil
+}
+
+// DeleteAllByKeyValue will remove all entities that match. Can only be called by an admin user
+func (cr CouncillorRepo) DeleteAllByKeyValue(key string, value interface{}) error {
+	sess, err := data.DbSession(cr.Config)
+	if err != nil {
+		return errors.Wrap(err, "unexpected error getting database session")
+	}
+	if cr.Actor.Type() != "admin" {
+		return errors.New("only admins can delete all")
+	}
+	filter := map[string]interface{}{key: value}
+	_, err = r.DB(data.DB_NAME).Table(data.COUNCILLORS_TABLE).Filter(filter).Delete().RunWrite(sess)
+	if err != nil {
+		return errors.Wrap(err, "failed to delete councillors")
+	}
+	return nil
+}
+
+// FindOneByKeyValue will find the first row that matches key and value
+func (cr CouncillorRepo) FindOneByKeyValue(key string, value interface{}) (*Councillor, error) {
+	sess, err := data.DbSession(cr.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error getting database session")
+	}
+	q := map[string]interface{}{key: value}
+	c, err := r.DB(data.DB_NAME).Table(data.COUNCILLORS_TABLE).Filter(q).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to read councillor")
+	}
+	if c.IsNil() {
+		return nil, nil
+	}
+	councillor := &Councillor{}
+	if err := c.One(councillor); err != nil {
+		return nil, errors.Wrap(err, "failed to marshal result into a councillor")
+	}
+	return councillor, nil
 }
 
 // NewCouncillorRepo returns a configured CouncillorRepo

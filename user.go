@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/goadesign/goa"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
@@ -63,7 +61,6 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 	if userType == "" || area == "" {
 		return goa.ErrBadRequest("expected a user type and area", 400)
 	}
-	fmt.Println("looking for user with type ", userType, "area ", area)
 	userRepo := domain.UserRepo{Config: config.Conf, Actor: actor, Authorisor: access}
 	domainUsers, err := userRepo.FindAllByTypeAndArea(userType, area)
 	if err != nil {
@@ -81,8 +78,8 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 func (c *UserController) Login(ctx *app.LoginUserContext) error {
 	//setup an admin user repo to allow write acces to anonymous user
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
-	localService := local.NewService(config.Conf, userRepo)
-	token, err := localService.Authenticate(ctx.Payload.SignupType, ctx.Payload.Token, ctx.Payload.Email)
+	authService := domain.NewAuthenticateService(ctx.Payload.SignupType, config.Conf, userRepo)
+	token, err := authService.Authenticate(ctx.Payload.Token, ctx.Payload.Email)
 	if err != nil {
 		return err
 	}

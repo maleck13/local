@@ -66,3 +66,16 @@ func LogAndReturnError(err error) ServiceErrorLogger {
 func NewUnexpectedError(err error, msg string) error {
 	return errors.Wrap(err, msg)
 }
+
+type CodedError struct {
+	Message string
+	ErrCode int
+}
+
+func (ce CodedError) Error() string {
+	return ce.Message
+}
+
+func (ce CodedError) Code() int {
+	return ce.ErrCode
+}

@@ -35,6 +35,9 @@ var adminCouncillorPayload = Type("Councillor", func() {
 	Attribute("phone", String, "a phone contact for the user", func() {
 		Default("")
 	})
+	Attribute("address", String, "a phone contact for the user", func() {
+		Default("")
+	})
 	Attribute("web", String, "a web link for the user", func() {
 		Default("")
 	})
@@ -44,5 +47,5 @@ var adminCouncillorPayload = Type("Councillor", func() {
 	Attribute("twitter", String, "twitter handle for the user")
 	Attribute("facebook", String, "facebook handle for the user")
 
-	Required("firstName", "secondName", "area", "image", "phone", "email", "party")
+	Required("firstName", "secondName", "area", "image", "phone", "email", "party", "address")
 })
