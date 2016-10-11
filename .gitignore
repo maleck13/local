@@ -1,6 +1,6 @@
 node_modules
 .idea/
-local
+./local
 dist
 tmp
 config.json
