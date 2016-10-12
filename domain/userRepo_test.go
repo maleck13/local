@@ -22,7 +22,7 @@ func init() {
 
 func setUpUserRepoTest(t *testing.T) func() {
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
-	user := pt.MakeTestUser("John", "Smith", existingLocalUser, "some area", "local")
+	user := pt.MakeTestUser("John", "Smith", existingLocalUser, "some area", "local", "")
 	if err := userRepo.SaveUpdate(user); err != nil {
 		t.Log("failed to setUpUserRepoTest", err.Error())
 	}
@@ -164,7 +164,7 @@ func TestSaveUpdate(t *testing.T) {
 	}{
 		{
 			Name:        "test save new user",
-			User:        pt.MakeTestUser("John", "Smith", "save@test.com", "somewhere", "local"),
+			User:        pt.MakeTestUser("John", "Smith", "save@test.com", "somewhere", "local", ""),
 			ExpectError: false,
 			Assert: func(u1 *domain.User) error {
 				u2, err := userRepo.FindOneByFieldAndValue("Email", u1.Email)
@@ -197,7 +197,7 @@ func TestSaveUpdate(t *testing.T) {
 		},
 		{
 			Name:        "test fails creating a new existing user",
-			User:        pt.MakeTestUser("John", "smith", existingLocalUser, "somewhere", "local"),
+			User:        pt.MakeTestUser("John", "smith", existingLocalUser, "somewhere", "local", ""),
 			ExpectError: true,
 			Assert: func(u1 *domain.User) error {
 				return nil

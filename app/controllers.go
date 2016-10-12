@@ -144,7 +144,6 @@ func handleSwaggerOrigin(h goa.Handler) goa.Handler {
 // UserController is the controller interface for the User actions.
 type UserController interface {
 	goa.Muxer
-	Create(*CreateUserContext) error
 	Delete(*DeleteUserContext) error
 	List(*ListUserContext) error
 	Login(*LoginUserContext) error
@@ -157,33 +156,10 @@ type UserController interface {
 func MountUserController(service *goa.Service, ctrl UserController) {
 	initService(service)
 	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/user", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user/:id", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/user", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user/login", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user/signup", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
-
-	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-		// Check if there was an error loading the request
-		if err := goa.ContextError(ctx); err != nil {
-			return err
-		}
-		// Build the context
-		rctx, err := NewCreateUserContext(ctx, service)
-		if err != nil {
-			return err
-		}
-		// Build the payload
-		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*User)
-		} else {
-			return goa.MissingPayloadError()
-		}
-		return ctrl.Create(rctx)
-	}
-	h = handleUserOrigin(h)
-	h = handleSecurity("jwt", h, "admin:access")
-	service.Mux.Handle("POST", "/user", ctrl.MuxHandler("Create", h, unmarshalCreateUserPayload))
-	service.LogInfo("mount", "ctrl", "User", "action", "Create", "route", "POST /user", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -327,22 +303,6 @@ func handleUserOrigin(h goa.Handler) goa.Handler {
 
 		return h(ctx, rw, req)
 	}
-}
-
-// unmarshalCreateUserPayload unmarshals the request body into the context request data Payload field.
-func unmarshalCreateUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &user{}
-	if err := service.DecodeRequest(req, payload); err != nil {
-		return err
-	}
-	payload.Finalize()
-	if err := payload.Validate(); err != nil {
-		// Initialize payload with private data structure so it can be logged
-		goa.ContextRequest(ctx).Payload = payload
-		return err
-	}
-	goa.ContextRequest(ctx).Payload = payload.Publicize()
-	return nil
 }
 
 // unmarshalLoginUserPayload unmarshals the request body into the context request data Payload field.

@@ -31,8 +31,35 @@ func NewUserFinder(u *domain.User, us []*domain.User, err error) domain.UserFind
 	}
 }
 
-func MakeTestUser(fn, sn, email, area, uType string) *domain.User {
+// MockUserFinderSaver implements UserFinderSaver interface
+type MockUserFinderSaver struct {
+	MockUserFinder
+}
+
+// SaveUpdate mock implements UserSaver
+func (mfs MockUserFinderSaver) SaveUpdate(u *domain.User) error {
+	if mfs.err != nil {
+		return mfs.err
+	}
+	if "" == u.ID {
+		u.ID = "mockid"
+	}
+	return nil
+}
+
+// NewUserFinderSaver configures and creates a new UserFinderSaver
+func NewUserFinderSaver(u *domain.User, us []*domain.User, err error) domain.UserFinderSaver {
+	mf := MockUserFinder{
+		user:  u,
+		users: us,
+		err:   err,
+	}
+	return MockUserFinderSaver{MockUserFinder: mf}
+}
+
+func MakeTestUser(fn, sn, email, area, uType, id string) *domain.User {
 	appUser := &app.User{
+		ID:         id,
 		FirstName:  fn,
 		SecondName: sn,
 		Email:      email,
@@ -40,4 +67,14 @@ func MakeTestUser(fn, sn, email, area, uType string) *domain.User {
 		Type:       uType,
 	}
 	return domain.NewUser(appUser)
+}
+
+func MakeTestUpdateUser(id, area, email, fn, sn string) *app.UpdateUser {
+	return &app.UpdateUser{
+		Area:       area,
+		Email:      email,
+		FirstName:  fn,
+		ID:         id,
+		SecondName: sn,
+	}
 }

@@ -23,13 +23,6 @@ type (
 		PrettyPrint bool
 	}
 
-	// CreateUserCommand is the command line data structure for the create action of user
-	CreateUserCommand struct {
-		Payload     string
-		ContentType string
-		PrettyPrint bool
-	}
-
 	// DeleteUserCommand is the command line data structure for the delete action of user
 	DeleteUserCommand struct {
 		// user ID
@@ -83,45 +76,26 @@ type (
 func RegisterCommands(app *cobra.Command, c *client.Client) {
 	var command, sub *cobra.Command
 	command = &cobra.Command{
-		Use:   "create",
-		Short: `admin api to add a user`,
+		Use:   "createCouncillor",
+		Short: `admin api to add a councillor`,
 	}
-	tmp1 := new(CreateUserCommand)
+	tmp1 := new(CreateCouncillorAdminCommand)
 	sub = &cobra.Command{
-		Use:   `user ["/user"]`,
+		Use:   `admin ["/admin/councillor"]`,
 		Short: ``,
-		Long: `
-
-Payload example:
-
-{
-   "ID": "Cum ea quod accusamus aliquam.",
-   "area": "Voluptatem officia eum natus aut.",
-   "email": "Omnis facilis ratione odio.",
-   "firstName": "Culpa doloribus.",
-   "image": "Earum inventore optio alias rerum debitis ut.",
-   "location": {
-      "Lat": 0.19498104724300513,
-      "Lon": 0.62452386199952
-   },
-   "secondName": "Sapiente nihil quod architecto harum dolorum.",
-   "signupType": "Earum voluptas.",
-   "token": "Ipsa mollitia error impedit minima.",
-   "type": "Ea ex."
-}`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
 	tmp1.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp1.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "createCouncillor",
-		Short: `admin api to add a councillor`,
+		Use:   "delete",
+		Short: `delete a user`,
 	}
-	tmp2 := new(CreateCouncillorAdminCommand)
+	tmp2 := new(DeleteUserCommand)
 	sub = &cobra.Command{
-		Use:   `admin ["/admin/councillor"]`,
+		Use:   `user ["/user/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -130,12 +104,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "delete",
-		Short: `delete a user`,
+		Use:   "list",
+		Short: `get a list user`,
 	}
-	tmp3 := new(DeleteUserCommand)
+	tmp3 := new(ListUserCommand)
 	sub = &cobra.Command{
-		Use:   `user ["/user/ID"]`,
+		Use:   `user ["/user"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -144,24 +118,10 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "list",
-		Short: `get a list user`,
-	}
-	tmp4 := new(ListUserCommand)
-	sub = &cobra.Command{
-		Use:   `user ["/user"]`,
-		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
-	}
-	tmp4.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
-	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
 		Use:   "login",
 		Short: `login user`,
 	}
-	tmp5 := new(LoginUserCommand)
+	tmp4 := new(LoginUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/login"]`,
 		Short: ``,
@@ -170,35 +130,35 @@ Payload example:
 Payload example:
 
 {
-   "email": "Sed sapiente nemo rerum eum.",
-   "signupType": "Qui dolores dolores incidunt labore.",
-   "token": "Enim nesciunt minima ab."
+   "email": "Cum ea quod accusamus aliquam.",
+   "signupType": "Voluptatem officia eum natus aut.",
+   "token": "Omnis facilis ratione odio."
 }`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
-	tmp5.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp4.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "read",
 		Short: `get a user`,
 	}
-	tmp6 := new(ReadUserCommand)
+	tmp5 := new(ReadUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/ID"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
-	tmp6.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp5.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "signup",
 		Short: `Signup a user`,
 	}
-	tmp7 := new(SignupUserCommand)
+	tmp6 := new(SignupUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/signup"]`,
 		Short: ``,
@@ -207,31 +167,31 @@ Payload example:
 Payload example:
 
 {
-   "ID": "Cum ea quod accusamus aliquam.",
-   "area": "Voluptatem officia eum natus aut.",
-   "email": "Omnis facilis ratione odio.",
-   "firstName": "Culpa doloribus.",
-   "image": "Earum inventore optio alias rerum debitis ut.",
+   "ID": "Culpa doloribus.",
+   "area": "Earum inventore optio alias rerum debitis ut.",
+   "email": "Sapiente nihil quod architecto harum dolorum.",
+   "firstName": "Earum voluptas.",
+   "image": "Ipsa mollitia error impedit minima.",
    "location": {
       "Lat": 0.19498104724300513,
       "Lon": 0.62452386199952
    },
-   "secondName": "Sapiente nihil quod architecto harum dolorum.",
-   "signupType": "Earum voluptas.",
-   "token": "Ipsa mollitia error impedit minima.",
-   "type": "Ea ex."
+   "secondName": "Ea ex.",
+   "signupType": "Sed sapiente nemo rerum eum.",
+   "token": "Qui dolores dolores incidunt labore.",
+   "type": "Enim nesciunt minima ab."
 }`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
-	tmp7.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp6.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "update",
 		Short: `update a user`,
 	}
-	tmp8 := new(UpdateUserCommand)
+	tmp7 := new(UpdateUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/ID"]`,
 		Short: ``,
@@ -247,10 +207,10 @@ Payload example:
    "image": "Molestiae voluptatem quis voluptates.",
    "secondName": "Eaque quia ut ut."
 }`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
-	tmp8.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp8.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp7.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 
@@ -488,39 +448,6 @@ func (cmd *CreateCouncillorAdminCommand) Run(c *client.Client, args []string) er
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *CreateCouncillorAdminCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-}
-
-// Run makes the HTTP request corresponding to the CreateUserCommand command.
-func (cmd *CreateUserCommand) Run(c *client.Client, args []string) error {
-	var path string
-	if len(args) > 0 {
-		path = args[0]
-	} else {
-		path = "/user"
-	}
-	var payload client.User
-	if cmd.Payload != "" {
-		err := json.Unmarshal([]byte(cmd.Payload), &payload)
-		if err != nil {
-			return fmt.Errorf("failed to deserialize payload: %s", err)
-		}
-	}
-	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
-	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.CreateUser(ctx, path, &payload, cmd.ContentType)
-	if err != nil {
-		goa.LogError(ctx, "failed", "err", err)
-		return err
-	}
-
-	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
-	return nil
-}
-
-// RegisterFlags registers the command flags with the command line.
-func (cmd *CreateUserCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
-	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 }
 
 // Run makes the HTTP request corresponding to the DeleteUserCommand command.

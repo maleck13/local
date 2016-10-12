@@ -36,7 +36,7 @@ func councillorRepoTestSetup(t *testing.T) func() {
 	}
 	existingCouncillor = makeCouncillor("john", "smith", "exits@test.com", "21 somewhere", "some area", "right of center")
 	if err := councillorRepo.SaveUpdate(existingCouncillor); err != nil {
-		t.Fatal(err.Error())
+		t.Error(err.Error())
 	}
 	return tearDown
 }

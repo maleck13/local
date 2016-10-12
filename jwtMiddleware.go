@@ -14,7 +14,7 @@ import (
 )
 
 // NewJWTMiddleware creates a middleware that checks for the presence of a JWT Authorization header
-// and validates its content. A real app would probably use goa's JWT security middleware instead.
+// and validates its content.
 func NewJWTMiddleware(conf *config.Config) goa.Middleware {
 	key := conf.Jwt.Secret
 	securityContext := app.NewJWTSecurity()

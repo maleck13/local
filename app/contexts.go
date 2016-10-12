@@ -47,37 +47,6 @@ func (ctx *CreateCouncillorAdminContext) Unauthorized() error {
 	return nil
 }
 
-// CreateUserContext provides the user create action context.
-type CreateUserContext struct {
-	context.Context
-	*goa.ResponseData
-	*goa.RequestData
-	Payload *User
-}
-
-// NewCreateUserContext parses the incoming request URL and body, performs validations and creates the
-// context used by the user controller create action.
-func NewCreateUserContext(ctx context.Context, service *goa.Service) (*CreateUserContext, error) {
-	var err error
-	resp := goa.ContextResponse(ctx)
-	resp.Service = service
-	req := goa.ContextRequest(ctx)
-	rctx := CreateUserContext{Context: ctx, ResponseData: resp, RequestData: req}
-	return &rctx, err
-}
-
-// Created sends a HTTP response with status code 201.
-func (ctx *CreateUserContext) Created() error {
-	ctx.ResponseData.WriteHeader(201)
-	return nil
-}
-
-// NotFound sends a HTTP response with status code 404.
-func (ctx *CreateUserContext) NotFound() error {
-	ctx.ResponseData.WriteHeader(404)
-	return nil
-}
-
 // DeleteUserContext provides the user delete action context.
 type DeleteUserContext struct {
 	context.Context

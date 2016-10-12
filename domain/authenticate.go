@@ -1,14 +1,12 @@
 package domain
 
 import (
-	"fmt"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/goadesign/goa"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/external"
-	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -28,33 +26,20 @@ type AuthenticationService struct {
 }
 
 // Authenticate facade around the different authentication types
-func (as AuthenticationService) Authenticate(token, id string) (string, error) {
+func (as AuthenticationService) Authenticate(token, id string) error {
 	var err error
 	switch as.Provider {
 	case "google":
 		err = as.googleAuthenticate(token, id)
 	case "local":
 		err = as.localAuthenticate(token, id)
-	case "jwt":
-		err = as.jwtAuthenticate(token)
 	default:
-		return "", goa.ErrUnauthorized("unknown provider")
+		return goa.ErrUnauthorized("unknown provider")
 	}
 	if err != nil {
-		return "", err
+		return err
 	}
-	user, err := as.UserFinder.FindOneByFieldAndValue("Email", id)
-	if err != nil {
-		return "", err
-	}
-	if nil == user {
-		return "", goa.ErrUnauthorized("unknown user")
-	}
-	token, err = as.CreateToken(user.ID, user.Email, user.Type())
-	if err != nil {
-		return "", errors.Wrap(err, "failed to create token")
-	}
-	return token, nil
+	return nil
 }
 
 func (as AuthenticationService) googleAuthenticate(token, id string) error {
@@ -85,19 +70,6 @@ func (as AuthenticationService) localAuthenticate(token, email string) error {
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(u.Token), []byte(token)); err != nil {
 		return goa.ErrUnauthorized("not authorised")
-	}
-	return nil
-}
-
-func (as AuthenticationService) jwtAuthenticate(token string) error {
-	_, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return as.Config.Jwt.Secret, nil
-	})
-	if err != nil {
-		return errors.Wrap(err, "not authorised")
 	}
 	return nil
 }

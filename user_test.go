@@ -75,6 +75,10 @@ func setUp(t *testing.T) func(emails []string) {
 	mux := buildService(conf)
 	testServer = httptest.NewServer(mux.Mux)
 	userSetup := newUser(conf)
+	_, err = userSetup.Setup(existingEmail, "john", "smith")
+	if err != nil {
+		t.Error("setup failed", err.Error())
+	}
 	return func(emails []string) {
 		testServer.Close()
 		for _, e := range emails {
@@ -100,7 +104,7 @@ func badUserJSON() io.Reader {
     `)
 }
 
-func TestCreateUser(t *testing.T) {
+func TestHttpCreateUser(t *testing.T) {
 	if !*test.IntegrationEnabled {
 		t.Skipf("integration not enabled")
 	}

@@ -9,6 +9,7 @@ import (
 	pt "github.com/maleck13/local/domain/testing"
 	"github.com/maleck13/local/external"
 	"github.com/maleck13/local/test"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func init() {
@@ -53,7 +54,7 @@ func TestAuthenticateViaGoogle(t *testing.T) {
 			ExpectError:  true,
 		},
 		{
-			Name: "test authenticate fails for email different",
+			Name: "test authenticate fails for wrong email",
 			Response: `{
                 "email_verified":"true",
                 "aud":"` + config.Conf.Google.ClientID + `",
@@ -70,26 +71,63 @@ func TestAuthenticateViaGoogle(t *testing.T) {
 			Config:             config.Conf,
 			TokenInfoRetriever: MockGoogleInfoRetriever{requester: requester},
 		}
-		mUser := pt.MakeTestUser("John", "Smith", "test@test.com", "", "local")
+		mUser := pt.MakeTestUser("John", "Smith", "test@test.com", "", "local", "")
 		authService := domain.AuthenticationService{Config: config.Conf, UserFinder: pt.NewUserFinder(mUser, nil, nil), Provider: "google", GoogleAPI: gAPI}
-		token, err := authService.Authenticate("token", "test@test.com")
+		err := authService.Authenticate("token", "test@test.com")
 		if tv.ExpectError && err == nil {
 			t.Fatal("expected an error but gone none")
 		}
 		if !tv.ExpectError && err != nil {
 			t.Fatal("did not expect an error but gone one ", err.Error())
 		}
-		if !tv.ExpectError && token == "" {
-			t.Fatal("expected a token ")
-		}
 	}
 
 }
 
-func TestAuthenticateViaJWTToken(t *testing.T) {
+func TestAuthenticateLocal(t *testing.T) {
 
-}
-
-func TestAuthenticateViaLocalDB(t *testing.T) {
-
+	tests := []struct {
+		Name        string
+		Password    string
+		UserName    string
+		ExpectError bool
+	}{
+		{
+			Name:        "test local authenticate works",
+			Password:    "Password1",
+			UserName:    "test@test.com",
+			ExpectError: false,
+		},
+		{
+			Name:        "test local authenticate fails with bad pass",
+			Password:    "Password12",
+			UserName:    "test@test.com",
+			ExpectError: true,
+		},
+		{
+			Name:        "test local authenticate fails with bad username",
+			Password:    "Password12",
+			UserName:    "test2@test.com",
+			ExpectError: true,
+		},
+	}
+	for _, tv := range tests {
+		t.Run(tv.Name, func(t *testing.T) {
+			user := pt.MakeTestUser("John", "Smith", "test@test.com", "somewhere", "local", "")
+			encPass, err := bcrypt.GenerateFromPassword([]byte("Password1"), bcrypt.DefaultCost)
+			if err != nil {
+				t.Fatal("faled to generate hashed password", err.Error())
+			}
+			user.Token = string(encPass)
+			uf := pt.NewUserFinder(user, nil, nil)
+			authenticator := domain.AuthenticationService{Config: config.Conf, UserFinder: uf, Provider: "local"}
+			err = authenticator.Authenticate(tv.Password, tv.UserName)
+			if tv.ExpectError && nil == err {
+				t.Fatal("expected an error but got none")
+			}
+			if !tv.ExpectError && err != nil {
+				t.Fatal("did not expect an error but got one ", err.Error())
+			}
+		})
+	}
 }

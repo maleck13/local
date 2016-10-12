@@ -74,6 +74,12 @@ type UserFinderDeleterSaver interface {
 	UserFinder
 }
 
+// UserFinderSaver composite interface
+type UserFinderSaver interface {
+	UserSaver
+	UserFinder
+}
+
 // UserRepo access users in the data layer
 type UserRepo struct {
 	Config     *config.Config
@@ -170,6 +176,17 @@ func (ur UserRepo) DeleteByFieldAndValue(field string, value interface{}) error 
 	}
 	q := map[string]interface{}{field: value}
 	if _, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Delete().Run(sess); err != nil {
+		return errors.Wrap(err, "unexpected error DeleteByFieldAndValue")
+	}
+	return nil
+}
+
+func (ur UserRepo) DeleteAll() error {
+	sess, err := data.DbSession(ur.Config)
+	if err != nil {
+		return errors.Wrap(err, "unexpected error DeleteByFieldAndValue")
+	}
+	if _, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Delete().Run(sess); err != nil {
 		return errors.Wrap(err, "unexpected error DeleteByFieldAndValue")
 	}
 	return nil

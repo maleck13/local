@@ -80,16 +80,6 @@ var _ = Resource("user", func() {
 		Response(NotFound) // of HTTP responses.
 		NoSecurity()
 	})
-	Action("create", func() { // Actions define a single API endpoint together
-		Description("admin api to add a user") // with its path, parameters (both path
-		Routing(POST("/"))                     // parameters and querystring values) and payload
-		Payload(UserPayload)
-		Response(Created)      // Responses define the shape and status code
-		Response(NotFound)     // of HTTP responses.
-		Security(JWT, func() { // Use JWT to auth requests to this endpoint
-			Scope("admin:access") // Enforce presence of "api" scope in JWT claims.
-		})
-	})
 	Action("list", func() {
 		Description("get a list user")
 		Routing(GET("/"))

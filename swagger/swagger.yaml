@@ -104,18 +104,18 @@ definitions:
     type: object
   Login:
     example:
-      email: Sed sapiente nemo rerum eum.
-      signupType: Qui dolores dolores incidunt labore.
-      token: Enim nesciunt minima ab.
+      email: Cum ea quod accusamus aliquam.
+      signupType: Voluptatem officia eum natus aut.
+      token: Omnis facilis ratione odio.
     properties:
       email:
-        example: Sed sapiente nemo rerum eum.
+        example: Cum ea quod accusamus aliquam.
         type: string
       signupType:
-        example: Qui dolores dolores incidunt labore.
+        example: Voluptatem officia eum natus aut.
         type: string
       token:
-        example: Enim nesciunt minima ab.
+        example: Omnis facilis ratione odio.
         type: string
     required:
     - email
@@ -168,61 +168,61 @@ definitions:
     type: object
   User:
     example:
-      ID: Cum ea quod accusamus aliquam.
-      area: Voluptatem officia eum natus aut.
-      email: Omnis facilis ratione odio.
-      firstName: Culpa doloribus.
-      image: Earum inventore optio alias rerum debitis ut.
+      ID: Culpa doloribus.
+      area: Earum inventore optio alias rerum debitis ut.
+      email: Sapiente nihil quod architecto harum dolorum.
+      firstName: Earum voluptas.
+      image: Ipsa mollitia error impedit minima.
       location:
         Lat: 0.19498105
         Lon: 0.6245239
-      secondName: Sapiente nihil quod architecto harum dolorum.
-      signupType: Earum voluptas.
-      token: Ipsa mollitia error impedit minima.
-      type: Ea ex.
+      secondName: Ea ex.
+      signupType: Sed sapiente nemo rerum eum.
+      token: Qui dolores dolores incidunt labore.
+      type: Enim nesciunt minima ab.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Cum ea quod accusamus aliquam.
+        example: Culpa doloribus.
         type: string
       area:
         default: ""
         description: The area of the users local council
-        example: Voluptatem officia eum natus aut.
+        example: Earum inventore optio alias rerum debitis ut.
         type: string
       email:
         description: The email of the user
-        example: Omnis facilis ratione odio.
+        example: Sapiente nihil quod architecto harum dolorum.
         type: string
       firstName:
         description: Name of the user
-        example: Culpa doloribus.
+        example: Earum voluptas.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Earum inventore optio alias rerum debitis ut.
+        example: Ipsa mollitia error impedit minima.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Sapiente nihil quod architecto harum dolorum.
+        example: Ea ex.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Earum voluptas.
+        example: Sed sapiente nemo rerum eum.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Ipsa mollitia error impedit minima.
+        example: Qui dolores dolores incidunt labore.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Ea ex.
+        example: Enim nesciunt minima ab.
         type: string
     required:
     - firstName
@@ -350,32 +350,6 @@ paths:
       - jwt:
         - api:access
       summary: list user
-      tags:
-      - user
-    post:
-      description: |-
-        admin api to add a user
-
-        Required security scopes:
-          * `admin:access`
-      operationId: user#create
-      parameters:
-      - in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/User'
-      responses:
-        "201":
-          description: Created
-        "404":
-          description: Not Found
-      schemes:
-      - http
-      security:
-      - jwt:
-        - admin:access
-      summary: create user
       tags:
       - user
   /user/{id}:

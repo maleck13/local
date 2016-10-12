@@ -31,11 +31,6 @@ func NewUserController(service *goa.Service) *UserController {
 	return &UserController{Controller: service.NewController("UserController")}
 }
 
-// Create runs the create action.
-func (c *UserController) Create(ctx *app.CreateUserContext) error {
-	return nil
-}
-
 // Delete runs the delete action.
 func (c *UserController) Delete(ctx *app.DeleteUserContext) error {
 
@@ -77,13 +72,19 @@ func (c *UserController) List(ctx *app.ListUserContext) error {
 // Login runs the login action.
 func (c *UserController) Login(ctx *app.LoginUserContext) error {
 	//setup an admin user repo to allow write acces to anonymous user
-	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
-	authService := domain.NewAuthenticateService(ctx.Payload.SignupType, config.Conf, userRepo)
-	token, err := authService.Authenticate(ctx.Payload.Token, ctx.Payload.Email)
-	if err != nil {
+	var (
+		userRepo    = domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
+		authService = domain.NewAuthenticateService(ctx.Payload.SignupType, config.Conf, userRepo)
+	)
+
+	if err := authService.Authenticate(ctx.Payload.Token, ctx.Payload.Email); err != nil {
 		return err
 	}
 	user, err := userRepo.FindOneByFieldAndValue("Email", ctx.Payload.Email)
+	if err != nil {
+		return err
+	}
+	token, err := authService.CreateToken(user.ID, user.Email, user.Type())
 	if err != nil {
 		return err
 	}
@@ -144,6 +145,5 @@ func (c *UserController) Signup(ctx *app.SignupUserContext) error {
 	if _, err := localService.Register(user); err != nil {
 		return errors.LogAndReturnError(err)
 	}
-	ctx.Created()
-	return nil
+	return ctx.Created()
 }
