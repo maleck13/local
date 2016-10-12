@@ -24,7 +24,7 @@ type AuthenticationService struct {
 	Config     *config.Config
 	UserFinder UserFinder
 	Provider   string
-	googleAPI  *external.GoogleAPI
+	GoogleAPI  *external.GoogleAPI
 }
 
 // Authenticate facade around the different authentication types
@@ -59,18 +59,18 @@ func (as AuthenticationService) Authenticate(token, id string) (string, error) {
 
 func (as AuthenticationService) googleAuthenticate(token, id string) error {
 	clientID := as.Config.Google.ClientID
-	info, err := as.googleAPI.RetrieveUserInfo(token)
+	info, err := as.GoogleAPI.RetrieveUserInfo(token)
 	if err != nil {
 		return goa.ErrUnauthorized("failed to retrive token")
 	}
 	if info.EmailVerified != "true" {
-		return goa.ErrUnauthorized("failed to retrive token")
+		return goa.ErrUnauthorized("failed validate email from token")
 	}
 	if info.Aud != clientID {
-		return goa.ErrUnauthorized("failed to retrive token")
+		return goa.ErrUnauthorized("failed  validate aud from token")
 	}
 	if info.Email != id {
-		return goa.ErrUnauthorized("failed to retrive token")
+		return goa.ErrUnauthorized("failed to validate email matched")
 	}
 	return nil
 }
@@ -132,7 +132,7 @@ func NewAuthenticateService(provider string, conf *config.Config, userFinder Use
 		Config:     conf,
 		UserFinder: userFinder,
 		Provider:   provider,
-		googleAPI:  external.NewGoogleAPI(conf),
+		GoogleAPI:  external.NewGoogleAPI(conf),
 	}
 
 }

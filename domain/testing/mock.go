@@ -1,6 +1,9 @@
 package testing
 
-import "github.com/maleck13/local/domain"
+import (
+	"github.com/maleck13/local/app"
+	"github.com/maleck13/local/domain"
+)
 
 // MockUserFinder is a mock implemenation of a  domain.UserFinder
 type MockUserFinder struct {
@@ -26,4 +29,15 @@ func NewUserFinder(u *domain.User, us []*domain.User, err error) domain.UserFind
 		users: us,
 		err:   err,
 	}
+}
+
+func MakeTestUser(fn, sn, email, area, uType string) *domain.User {
+	appUser := &app.User{
+		FirstName:  fn,
+		SecondName: sn,
+		Email:      email,
+		Area:       area,
+		Type:       uType,
+	}
+	return domain.NewUser(appUser)
 }

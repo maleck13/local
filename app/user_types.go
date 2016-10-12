@@ -289,7 +289,7 @@ type updateUser struct {
 	// Name of the user
 	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
 	// Unique user ID
-	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID *string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// an image url for the user
 	Image *string `form:"image,omitempty" json:"image,omitempty" xml:"image,omitempty"`
 	// Name of the user
@@ -362,7 +362,7 @@ type UpdateUser struct {
 	// Name of the user
 	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
 	// Unique user ID
-	ID string `form:"id" json:"id" xml:"id"`
+	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// an image url for the user
 	Image string `form:"image" json:"image" xml:"image"`
 	// Name of the user
@@ -392,14 +392,14 @@ func (ut *UpdateUser) Validate() (err error) {
 
 // user user type.
 type user struct {
+	// Unique user ID
+	ID *string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
 	// The email of the user
 	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	// Name of the user
 	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
-	// Unique user ID
-	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// an image url for the user
 	Image *string `form:"image,omitempty" json:"image,omitempty" xml:"image,omitempty"`
 	// The area of the users local council
@@ -416,6 +416,10 @@ type user struct {
 
 // Finalize sets the default values for user type instance.
 func (ut *user) Finalize() {
+	var defaultID = ""
+	if ut.ID == nil {
+		ut.ID = &defaultID
+	}
 	var defaultArea = ""
 	if ut.Area == nil {
 		ut.Area = &defaultArea
@@ -455,6 +459,9 @@ func (ut *user) Validate() (err error) {
 // Publicize creates User from user
 func (ut *user) Publicize() *User {
 	var pub User
+	if ut.ID != nil {
+		pub.ID = *ut.ID
+	}
 	if ut.Area != nil {
 		pub.Area = *ut.Area
 	}
@@ -463,9 +470,6 @@ func (ut *user) Publicize() *User {
 	}
 	if ut.FirstName != nil {
 		pub.FirstName = *ut.FirstName
-	}
-	if ut.ID != nil {
-		pub.ID = ut.ID
 	}
 	if ut.Image != nil {
 		pub.Image = *ut.Image
@@ -490,14 +494,14 @@ func (ut *user) Publicize() *User {
 
 // User user type.
 type User struct {
+	// Unique user ID
+	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
 	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// Name of the user
 	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
-	// Unique user ID
-	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// an image url for the user
 	Image string `form:"image" json:"image" xml:"image"`
 	// The area of the users local council

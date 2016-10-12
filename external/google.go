@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/goadesign/goa"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	e "github.com/maleck13/local/errors"
@@ -51,26 +50,6 @@ func NewGoogleAPI(config *config.Config) *GoogleAPI {
 		Config:             config,
 		TokenInfoRetriever: http.DefaultClient,
 	}
-}
-
-//Authenticate takes a token retrieved from google and validates it with the google api
-func (ga *GoogleAPI) Authenticate(token, email string) error {
-	info, err := ga.RetrieveUserInfo(token)
-	if err != nil {
-		return goa.ErrInternal("failed to retrive token")
-	}
-	clientID := ga.Config.Google.ClientID
-
-	if info.EmailVerified != "true" {
-		return goa.ErrUnauthorized("failed to retrive token")
-	}
-	if info.Aud != clientID {
-		return e.NewServiceError("failed to authenticate with google. Client id mismatch", http.StatusUnauthorized)
-	}
-	if info.Email != email {
-		return e.NewServiceError("failed to authenticate with google. user mismatch", http.StatusUnauthorized)
-	}
-	return nil
 }
 
 func (ga *GoogleAPI) RetrieveUserInfo(token string) (*GoogleTokenInfo, error) {

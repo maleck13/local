@@ -11,6 +11,12 @@ var (
 )
 
 func init() {
+	flag.Parse()
+	SetUpConfig()
+}
+
+//SetUpConfig will load the locl config-local.json file
+func SetUpConfig() {
 	path := filepath.Join(os.Getenv("GOPATH"), "src/github.com/maleck13/local/config/config-local.json")
 	if _, err := config.LoadConfig(path); err != nil {
 		panic(err)

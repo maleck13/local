@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
+	pt "github.com/maleck13/local/domain/testing"
 	"github.com/maleck13/local/test"
 )
 
@@ -20,22 +20,11 @@ func init() {
 	}
 }
 
-func makeTestUser(fn, sn, email, area, uType string) *domain.User {
-	appUser := &app.User{
-		FirstName:  fn,
-		SecondName: sn,
-		Email:      email,
-		Area:       area,
-		Type:       uType,
-	}
-	return domain.NewUserFromRequest(appUser)
-}
-
 func setUpUserRepoTest(t *testing.T) func() {
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
-	user := makeTestUser("John", "Smith", existingLocalUser, "some area", "local")
+	user := pt.MakeTestUser("John", "Smith", existingLocalUser, "some area", "local")
 	if err := userRepo.SaveUpdate(user); err != nil {
-		t.Fatal("failed to setUpUserRepoTest", err.Error())
+		t.Log("failed to setUpUserRepoTest", err.Error())
 	}
 	return func() {
 		if err := userRepo.DeleteByFieldAndValue("FirstName", "John"); err != nil {
@@ -45,6 +34,9 @@ func setUpUserRepoTest(t *testing.T) func() {
 }
 
 func TestFindOneByFieldAndValue(t *testing.T) {
+	if !*test.IntegrationEnabled {
+		t.Skip("integration disabled")
+	}
 	tearDown := setUpUserRepoTest(t)
 	defer tearDown()
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
@@ -96,6 +88,9 @@ func TestFindOneByFieldAndValue(t *testing.T) {
 }
 
 func TestFindAllByTypeAndArea(t *testing.T) {
+	if !*test.IntegrationEnabled {
+		t.Skip("integration disabled")
+	}
 	tearDown := setUpUserRepoTest(t)
 	defer tearDown()
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
@@ -150,17 +145,148 @@ func TestFindAllByTypeAndArea(t *testing.T) {
 }
 
 func TestSaveUpdate(t *testing.T) {
+	if !*test.IntegrationEnabled {
+		t.Skip("integration disabled")
+	}
 	tearDown := setUpUserRepoTest(t)
 	defer tearDown()
 	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
+	exists, err := userRepo.FindOneByFieldAndValue("Email", existingLocalUser)
+	if err != nil {
+		t.Fatal("error fetching existing user", err.Error())
+	}
+	//prepare our table tests
 	var tests = []struct {
 		Name        string
-		Value       string
+		User        *domain.User
 		ExpectError bool
-		Assert      func(us []*domain.User) error
-	}{}
+		Assert      func(u1 *domain.User) error
+	}{
+		{
+			Name:        "test save new user",
+			User:        pt.MakeTestUser("John", "Smith", "save@test.com", "somewhere", "local"),
+			ExpectError: false,
+			Assert: func(u1 *domain.User) error {
+				u2, err := userRepo.FindOneByFieldAndValue("Email", u1.Email)
+				if err != nil {
+					return err
+				}
+				if u1.Email != u2.Email {
+					return fmt.Errorf("expected emails to match %s != %s", u1.Email, u2.Email)
+				}
+				return nil
+			},
+		},
+		{
+			Name:        "test save existing user",
+			User:        exists,
+			ExpectError: false,
+			Assert: func(u1 *domain.User) error {
+				u2, err := userRepo.FindOneByFieldAndValue("Email", u1.Email)
+				if err != nil {
+					return err
+				}
+				if u1.Email != u2.Email {
+					return fmt.Errorf("expected emails to match %s != %s", u1.Email, u2.Email)
+				}
+				if u1.ID != u2.ID {
+					return fmt.Errorf("expected ids to match %s != %s", u1.ID, u2.ID)
+				}
+				return nil
+			},
+		},
+		{
+			Name:        "test fails creating a new existing user",
+			User:        pt.MakeTestUser("John", "smith", existingLocalUser, "somewhere", "local"),
+			ExpectError: true,
+			Assert: func(u1 *domain.User) error {
+				return nil
+			},
+		},
+	}
+	//run tests
+	for _, tv := range tests {
+		t.Run(tv.Name, func(t *testing.T) {
+			err := userRepo.SaveUpdate(tv.User)
+			if tv.ExpectError && err == nil {
+				t.Fatal("expected an error but gone none")
+			}
+			if !tv.ExpectError && err != nil {
+				t.Fatal("did not expect an error but got one: ", err.Error())
+			}
+			if err := tv.Assert(tv.User); err != nil {
+				t.Fatal("asserts failed ", err.Error())
+			}
+		})
+	}
 }
 
 func TestDeleteByFieldAndValue(t *testing.T) {
+	if !*test.IntegrationEnabled {
+		t.Skip("integration disabled")
+	}
+	tearDown := setUpUserRepoTest(t)
+	defer tearDown()
+	userRepo := domain.NewUserRepo(config.Conf, domain.NewAdminActor(), domain.AuthorisationService{})
+	exists, err := userRepo.FindOneByFieldAndValue("Email", existingLocalUser)
+	if err != nil {
+		t.Fatal("error fetching existing user", err.Error())
+	}
+	tests := []struct {
+		Name        string
+		Field       string
+		Value       string
+		ExpectError bool
+		Assert      func(key, val string) error
+	}{
+		{
+			Name:        "test deletes existing user",
+			Field:       "Email",
+			Value:       exists.Email,
+			ExpectError: false,
+			Assert: func(key, val string) error {
+				exists, err := userRepo.FindOneByFieldAndValue(key, val)
+				if err != nil {
+					return err
+				}
+				if exists != nil {
+					return fmt.Errorf("did not expect to find a user just deleted")
+				}
+				return nil
+			},
+		},
+		{
+			Name:        "test deletes non existing user",
+			Field:       "Email",
+			Value:       "idont@test.com",
+			ExpectError: false,
+			Assert: func(key, val string) error {
+				exists, err := userRepo.FindOneByFieldAndValue(key, val)
+				if err != nil {
+					return err
+				}
+				if exists != nil {
+					return fmt.Errorf("did not expect to find a user that doesn't exist ")
+				}
+				return nil
+			},
+		},
+	}
+
+	//run tests
+	for _, tv := range tests {
+		t.Run(tv.Name, func(t *testing.T) {
+			err := userRepo.DeleteByFieldAndValue(tv.Field, tv.Value)
+			if tv.ExpectError && err == nil {
+				t.Fatal("expected an error but gone none")
+			}
+			if !tv.ExpectError && err != nil {
+				t.Fatal("did not expect an error but got one: ", err.Error())
+			}
+			if err := tv.Assert(tv.Field, tv.Value); err != nil {
+				t.Fatal("asserts failed", err.Error())
+			}
+		})
+	}
 
 }

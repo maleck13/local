@@ -168,10 +168,10 @@ definitions:
     type: object
   User:
     example:
-      area: Cum ea quod accusamus aliquam.
-      email: Voluptatem officia eum natus aut.
-      firstName: Omnis facilis ratione odio.
-      id: Culpa doloribus.
+      ID: Cum ea quod accusamus aliquam.
+      area: Voluptatem officia eum natus aut.
+      email: Omnis facilis ratione odio.
+      firstName: Culpa doloribus.
       image: Earum inventore optio alias rerum debitis ut.
       location:
         Lat: 0.19498105
@@ -181,21 +181,22 @@ definitions:
       token: Ipsa mollitia error impedit minima.
       type: Ea ex.
     properties:
+      ID:
+        default: ""
+        description: Unique user ID
+        example: Cum ea quod accusamus aliquam.
+        type: string
       area:
         default: ""
         description: The area of the users local council
-        example: Cum ea quod accusamus aliquam.
+        example: Voluptatem officia eum natus aut.
         type: string
       email:
         description: The email of the user
-        example: Voluptatem officia eum natus aut.
+        example: Omnis facilis ratione odio.
         type: string
       firstName:
         description: Name of the user
-        example: Omnis facilis ratione odio.
-        type: string
-      id:
-        description: Unique user ID
         example: Culpa doloribus.
         type: string
       image:

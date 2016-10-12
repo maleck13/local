@@ -39,7 +39,7 @@ func (ls Service) Register(user *app.User) (*domain.User, error) {
 	if exist != nil {
 		return nil, e.NewServiceError("user already exists ", http.StatusConflict)
 	}
-	u := domain.NewUserFromRequest(user)
+	u := domain.NewUser(user)
 	if err := ls.UserRepo.SaveUpdate(u); err != nil {
 		return nil, e.NewServiceError("failed to register user "+err.Error(), http.StatusInternalServerError)
 	}

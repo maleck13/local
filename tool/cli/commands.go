@@ -95,10 +95,10 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "area": "Cum ea quod accusamus aliquam.",
-   "email": "Voluptatem officia eum natus aut.",
-   "firstName": "Omnis facilis ratione odio.",
-   "id": "Culpa doloribus.",
+   "ID": "Cum ea quod accusamus aliquam.",
+   "area": "Voluptatem officia eum natus aut.",
+   "email": "Omnis facilis ratione odio.",
+   "firstName": "Culpa doloribus.",
    "image": "Earum inventore optio alias rerum debitis ut.",
    "location": {
       "Lat": 0.19498104724300513,
@@ -207,10 +207,10 @@ Payload example:
 Payload example:
 
 {
-   "area": "Cum ea quod accusamus aliquam.",
-   "email": "Voluptatem officia eum natus aut.",
-   "firstName": "Omnis facilis ratione odio.",
-   "id": "Culpa doloribus.",
+   "ID": "Cum ea quod accusamus aliquam.",
+   "area": "Voluptatem officia eum natus aut.",
+   "email": "Omnis facilis ratione odio.",
+   "firstName": "Culpa doloribus.",
    "image": "Earum inventore optio alias rerum debitis ut.",
    "location": {
       "Lat": 0.19498104724300513,

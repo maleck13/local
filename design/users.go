@@ -157,7 +157,12 @@ var Login = Type("Login", func() {
 })
 
 var UserPayload = Type("User", func() {
-	Attribute("id", String, "Unique user ID")
+	Attribute("ID", String, "Unique user ID", func() {
+		Metadata("struct:tag:gorethink", "id,omitempty")
+		Metadata("struct:tag:json", "id,omitempty")
+		Metadata("struct:tag:form", "id,omitempty")
+		Default("")
+	})
 	Attribute("firstName", String, "Name of the user")
 	Attribute("secondName", String, "Name of the user")
 	Attribute("token", String, "This can be an oauth token or a password")
@@ -180,7 +185,11 @@ var UserPayload = Type("User", func() {
 })
 
 var UpdateUserPayload = Type("UpdateUser", func() {
-	Attribute("id", String, "Unique user ID")
+	Attribute("id", String, "Unique user ID", func() {
+		Metadata("struct:tag:gorethink", "id,omitempty")
+		Metadata("struct:tag:json", "id,omitempty")
+		Metadata("struct:tag:form", "id,omitempty")
+	})
 	Attribute("firstName", String, "Name of the user")
 	Attribute("secondName", String, "Name of the user")
 	Attribute("email", String, "The email of the user")

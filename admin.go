@@ -5,7 +5,6 @@ import (
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
-	"github.com/maleck13/local/domain/local"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +29,7 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	if err != nil {
 		return errors.Wrap(err, "failed to parse file")
 	}
-	uploadService := local.UploadService{
+	uploadService := domain.UploadService{
 		Config: config.Conf,
 	}
 	imagePath, err := uploadService.Upload(f.Filename, uploaded)

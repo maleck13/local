@@ -1,6 +1,9 @@
 package domain
 
 import (
+	"crypto/md5"
+	"fmt"
+
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/data"
@@ -11,8 +14,12 @@ import (
 // User represents a user of locals in the database
 type User struct {
 	*app.User
-	ID           string `gorethink:"id,omitempty"`
-	LoginExpires int    `json:"-"`
+}
+
+// GenerateID returns a unique id based on the users email address
+func (u *User) GenerateID() string {
+	data := []byte(u.Email)
+	return fmt.Sprintf("%x", md5.Sum(data))
 }
 
 //AccessTypes implements AccessDefinor
@@ -39,8 +46,8 @@ func (u *User) Type() string {
 	return u.User.Type
 }
 
-// NewUserFromRequest conversts an app.User to domain.User
-func NewUserFromRequest(u *app.User) *User {
+// NewUser conversts an app.User to domain.User
+func NewUser(u *app.User) *User {
 	return &User{User: u}
 }
 
@@ -142,6 +149,7 @@ func (ur UserRepo) SaveUpdate(u *User) error {
 	}
 	var q = r.DB(data.DB_NAME).Table(data.USER_TABLE)
 	if u.ID == "" {
+		u.ID = u.GenerateID()
 		q = q.Insert(u)
 	} else {
 		q = q.Get(u.ID).Update(u)
