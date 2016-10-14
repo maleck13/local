@@ -130,9 +130,9 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "email": "Cum ea quod accusamus aliquam.",
-   "signupType": "Voluptatem officia eum natus aut.",
-   "token": "Omnis facilis ratione odio."
+   "email": "Eum natus aut sapiente.",
+   "signupType": "Facilis ratione odio et.",
+   "token": "Doloribus in."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
@@ -167,19 +167,20 @@ Payload example:
 Payload example:
 
 {
-   "ID": "Culpa doloribus.",
-   "area": "Earum inventore optio alias rerum debitis ut.",
-   "email": "Sapiente nihil quod architecto harum dolorum.",
-   "firstName": "Earum voluptas.",
-   "image": "Ipsa mollitia error impedit minima.",
+   "ID": "Inventore optio.",
+   "area": "Rerum debitis.",
+   "county": "Et sapiente nihil quod.",
+   "email": "Harum dolorum similique earum voluptas.",
+   "firstName": "Ipsa mollitia error impedit minima.",
+   "image": "Ea ex.",
    "location": {
-      "Lat": 0.19498104724300513,
-      "Lon": 0.62452386199952
+      "Lat": 0.3768631127119132,
+      "Lon": 0.47868877395569714
    },
-   "secondName": "Ea ex.",
-   "signupType": "Sed sapiente nemo rerum eum.",
-   "token": "Qui dolores dolores incidunt labore.",
-   "type": "Enim nesciunt minima ab."
+   "secondName": "Sed sapiente nemo rerum eum.",
+   "signupType": "Qui dolores dolores incidunt labore.",
+   "token": "Enim nesciunt minima ab.",
+   "type": "Qui velit natus officia reiciendis aut."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -200,12 +201,13 @@ Payload example:
 Payload example:
 
 {
-   "area": "Qui velit natus officia reiciendis aut.",
-   "email": "Recusandae perferendis et optio id expedita.",
-   "firstName": "Aliquam exercitationem earum provident qui.",
-   "id": "Pariatur ut.",
-   "image": "Molestiae voluptatem quis voluptates.",
-   "secondName": "Eaque quia ut ut."
+   "area": "Recusandae perferendis et optio id expedita.",
+   "county": "Aliquam exercitationem earum provident qui.",
+   "email": "Pariatur ut.",
+   "firstName": "Molestiae voluptatem quis voluptates.",
+   "id": "Eaque quia ut ut.",
+   "image": "Ad quia quo sequi minus dolores.",
+   "secondName": "Praesentium veniam soluta quia delectus dolor facere."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}

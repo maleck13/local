@@ -18,6 +18,7 @@ func domainUserToLocalUser(user *domain.User) *app.GoaLocalUser {
 		FirstName:  user.FirstName,
 		SecondName: user.SecondName,
 		Type:       user.Type(),
+		County:     &user.County,
 	}
 }
 
@@ -84,12 +85,15 @@ func (c *UserController) Login(ctx *app.LoginUserContext) error {
 	if err != nil {
 		return err
 	}
+	if user == nil {
+		return goa.ErrNotFound("no such user")
+	}
 	token, err := authService.CreateToken(user.ID, user.Email, user.Type())
 	if err != nil {
 		return err
 	}
 	ctx.ResponseWriter.Header().Add("Bearer", token)
-	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID, Type: user.Type()}
+	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID, Type: user.Type(), Status: true}
 	return ctx.OKLogin(userLogin)
 }
 

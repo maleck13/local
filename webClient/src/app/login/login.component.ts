@@ -9,7 +9,6 @@ declare var gapi:any;
   selector: 'app-login',
   templateUrl: 'login.component.html',
   styleUrls: ['login.component.css'],
-  providers:[LoginService]
 })
 export class LoginComponent implements OnInit {
 
@@ -17,6 +16,7 @@ export class LoginComponent implements OnInit {
   userAuthToken = null;
   userDisplayName = "empty";
   userEmail = "";
+  error:String 
 
 
   ngAfterViewInit() {
@@ -28,8 +28,7 @@ export class LoginComponent implements OnInit {
           "google-signin",
           {
             "onSuccess": self.onGoogleLoginSuccess,
-            "scope": "profile",
-            "theme": "dark"
+            "scope": "profile"
           });
     });
   }
@@ -52,7 +51,6 @@ export class LoginComponent implements OnInit {
 
   handleLoginSuccess(profileService, router){
     return function (res){
-        console.log("loginSuccess",res);
         let ud = new UserData(res.id,res.token,res.type);
         let pStore = profileService.storeUserData(ud)
         pStore.then(()=>{
@@ -63,16 +61,17 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    console.log("login called", this.userEmail, this.userAuthToken);
     let login = new Login(this.userAuthToken,this.userEmail,"local");
       this.loginService.login(login)
       .then(this.handleLoginSuccess(this.profileService, this.router))
       .catch((err)=>{
         console.log("error logging in ", err);
+        this.error = "Error logging in."
       });
   }
 
   ngOnInit() {
+    this.loginService.loggedIn$.subscribe((value)=>{console.log("observed value ", value)});
     
   }
 

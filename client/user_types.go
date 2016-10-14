@@ -284,6 +284,8 @@ func (ut *Login) Validate() (err error) {
 type updateUser struct {
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// The area of the users local council
+	County *string `form:"county,omitempty" json:"county,omitempty" xml:"county,omitempty"`
 	// The email of the user
 	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	// Name of the user
@@ -301,6 +303,10 @@ func (ut *updateUser) Finalize() {
 	var defaultArea = ""
 	if ut.Area == nil {
 		ut.Area = &defaultArea
+	}
+	var defaultCounty = ""
+	if ut.County == nil {
+		ut.County = &defaultCounty
 	}
 	var defaultImage = ""
 	if ut.Image == nil {
@@ -335,6 +341,9 @@ func (ut *updateUser) Publicize() *UpdateUser {
 	if ut.Area != nil {
 		pub.Area = *ut.Area
 	}
+	if ut.County != nil {
+		pub.County = *ut.County
+	}
 	if ut.Email != nil {
 		pub.Email = *ut.Email
 	}
@@ -357,6 +366,8 @@ func (ut *updateUser) Publicize() *UpdateUser {
 type UpdateUser struct {
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
+	// The area of the users local council
+	County string `form:"county" json:"county" xml:"county"`
 	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// Name of the user
@@ -396,6 +407,8 @@ type user struct {
 	ID *string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// The area of the users local council
+	County *string `form:"county,omitempty" json:"county,omitempty" xml:"county,omitempty"`
 	// The email of the user
 	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	// Name of the user
@@ -423,6 +436,10 @@ func (ut *user) Finalize() {
 	var defaultArea = ""
 	if ut.Area == nil {
 		ut.Area = &defaultArea
+	}
+	var defaultCounty = ""
+	if ut.County == nil {
+		ut.County = &defaultCounty
 	}
 	var defaultImage = ""
 	if ut.Image == nil {
@@ -465,6 +482,9 @@ func (ut *user) Publicize() *User {
 	if ut.Area != nil {
 		pub.Area = *ut.Area
 	}
+	if ut.County != nil {
+		pub.County = *ut.County
+	}
 	if ut.Email != nil {
 		pub.Email = *ut.Email
 	}
@@ -498,6 +518,8 @@ type User struct {
 	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
+	// The area of the users local council
+	County string `form:"county" json:"county" xml:"county"`
 	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// Name of the user

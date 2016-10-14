@@ -8,46 +8,51 @@ definitions:
     description: A User of locals (default view)
     example:
       area: Velit quia commodi dolorem.
-      email: In harum dolores consequatur et.
-      firstName: Ipsum optio magnam eos.
-      href: Et non similique.
-      id: Eos earum vitae magnam sunt.
-      secondName: Recusandae aut.
-      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
-      type: Aut corporis et.
+      county: In harum dolores consequatur et.
+      email: Ipsum optio magnam eos.
+      firstName: Et non similique.
+      href: Eos earum vitae magnam sunt.
+      id: Quod sunt quibusdam suscipit eos sequi dolores.
+      secondName: Id recusandae qui mollitia blanditiis corrupti eum.
+      signupType: Aspernatur dignissimos eligendi facere.
+      type: Aliquam qui.
     properties:
       area:
         description: The area of the users local council
         example: Velit quia commodi dolorem.
         type: string
+      county:
+        description: The county the user lives in
+        example: In harum dolores consequatur et.
+        type: string
       email:
         description: The email of the user
-        example: In harum dolores consequatur et.
+        example: Ipsum optio magnam eos.
         type: string
       firstName:
         description: Name of the user
-        example: Ipsum optio magnam eos.
+        example: Et non similique.
         type: string
       href:
         description: API href for making requests on the bottle
-        example: Et non similique.
+        example: Eos earum vitae magnam sunt.
         type: string
       id:
         description: Unique bottle ID
-        example: Eos earum vitae magnam sunt.
+        example: Quod sunt quibusdam suscipit eos sequi dolores.
         type: string
       secondName:
         description: Name of the user
-        example: Recusandae aut.
+        example: Id recusandae qui mollitia blanditiis corrupti eum.
         type: string
       signupType:
         description: the signupType of user google local
-        example: Id recusandae qui mollitia blanditiis corrupti eum.
+        example: Aspernatur dignissimos eligendi facere.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Aut corporis et.
+        example: Aliquam qui.
         type: string
     required:
     - firstName
@@ -60,62 +65,65 @@ definitions:
       (default view)
     example:
     - area: Velit quia commodi dolorem.
-      email: In harum dolores consequatur et.
-      firstName: Ipsum optio magnam eos.
-      href: Et non similique.
-      id: Eos earum vitae magnam sunt.
-      secondName: Recusandae aut.
-      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
-      type: Aut corporis et.
+      county: In harum dolores consequatur et.
+      email: Ipsum optio magnam eos.
+      firstName: Et non similique.
+      href: Eos earum vitae magnam sunt.
+      id: Quod sunt quibusdam suscipit eos sequi dolores.
+      secondName: Id recusandae qui mollitia blanditiis corrupti eum.
+      signupType: Aspernatur dignissimos eligendi facere.
+      type: Aliquam qui.
     - area: Velit quia commodi dolorem.
-      email: In harum dolores consequatur et.
-      firstName: Ipsum optio magnam eos.
-      href: Et non similique.
-      id: Eos earum vitae magnam sunt.
-      secondName: Recusandae aut.
-      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
-      type: Aut corporis et.
+      county: In harum dolores consequatur et.
+      email: Ipsum optio magnam eos.
+      firstName: Et non similique.
+      href: Eos earum vitae magnam sunt.
+      id: Quod sunt quibusdam suscipit eos sequi dolores.
+      secondName: Id recusandae qui mollitia blanditiis corrupti eum.
+      signupType: Aspernatur dignissimos eligendi facere.
+      type: Aliquam qui.
     - area: Velit quia commodi dolorem.
-      email: In harum dolores consequatur et.
-      firstName: Ipsum optio magnam eos.
-      href: Et non similique.
-      id: Eos earum vitae magnam sunt.
-      secondName: Recusandae aut.
-      signupType: Id recusandae qui mollitia blanditiis corrupti eum.
-      type: Aut corporis et.
+      county: In harum dolores consequatur et.
+      email: Ipsum optio magnam eos.
+      firstName: Et non similique.
+      href: Eos earum vitae magnam sunt.
+      id: Quod sunt quibusdam suscipit eos sequi dolores.
+      secondName: Id recusandae qui mollitia blanditiis corrupti eum.
+      signupType: Aspernatur dignissimos eligendi facere.
+      type: Aliquam qui.
     items:
       $ref: '#/definitions/GoaLocalUser'
     title: 'Mediatype identifier: application/vnd.goa.local.user+json; type=collection'
     type: array
   Location:
     example:
-      Lat: 0.19498105
-      Lon: 0.6245239
+      Lat: 0.37686312
+      Lon: 0.47868878
     properties:
       Lat:
-        example: 0.19498105
+        example: 0.37686312
         format: double
         type: number
       Lon:
-        example: 0.6245239
+        example: 0.47868878
         format: double
         type: number
     title: Location
     type: object
   Login:
     example:
-      email: Cum ea quod accusamus aliquam.
-      signupType: Voluptatem officia eum natus aut.
-      token: Omnis facilis ratione odio.
+      email: Eum natus aut sapiente.
+      signupType: Facilis ratione odio et.
+      token: Doloribus in.
     properties:
       email:
-        example: Cum ea quod accusamus aliquam.
+        example: Eum natus aut sapiente.
         type: string
       signupType:
-        example: Voluptatem officia eum natus aut.
+        example: Facilis ratione odio et.
         type: string
       token:
-        example: Omnis facilis ratione odio.
+        example: Doloribus in.
         type: string
     required:
     - email
@@ -125,38 +133,44 @@ definitions:
     type: object
   UpdateUser:
     example:
-      area: Qui velit natus officia reiciendis aut.
-      email: Recusandae perferendis et optio id expedita.
-      firstName: Aliquam exercitationem earum provident qui.
-      id: Pariatur ut.
-      image: Molestiae voluptatem quis voluptates.
-      secondName: Eaque quia ut ut.
+      area: Recusandae perferendis et optio id expedita.
+      county: Aliquam exercitationem earum provident qui.
+      email: Pariatur ut.
+      firstName: Molestiae voluptatem quis voluptates.
+      id: Eaque quia ut ut.
+      image: Ad quia quo sequi minus dolores.
+      secondName: Praesentium veniam soluta quia delectus dolor facere.
     properties:
       area:
         default: ""
         description: The area of the users local council
-        example: Qui velit natus officia reiciendis aut.
+        example: Recusandae perferendis et optio id expedita.
+        type: string
+      county:
+        default: ""
+        description: The area of the users local council
+        example: Aliquam exercitationem earum provident qui.
         type: string
       email:
         description: The email of the user
-        example: Recusandae perferendis et optio id expedita.
+        example: Pariatur ut.
         type: string
       firstName:
         description: Name of the user
-        example: Aliquam exercitationem earum provident qui.
+        example: Molestiae voluptatem quis voluptates.
         type: string
       id:
         description: Unique user ID
-        example: Pariatur ut.
+        example: Eaque quia ut ut.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Molestiae voluptatem quis voluptates.
+        example: Ad quia quo sequi minus dolores.
         type: string
       secondName:
         description: Name of the user
-        example: Eaque quia ut ut.
+        example: Praesentium veniam soluta quia delectus dolor facere.
         type: string
     required:
     - firstName
@@ -168,61 +182,67 @@ definitions:
     type: object
   User:
     example:
-      ID: Culpa doloribus.
-      area: Earum inventore optio alias rerum debitis ut.
-      email: Sapiente nihil quod architecto harum dolorum.
-      firstName: Earum voluptas.
-      image: Ipsa mollitia error impedit minima.
+      ID: Inventore optio.
+      area: Rerum debitis.
+      county: Et sapiente nihil quod.
+      email: Harum dolorum similique earum voluptas.
+      firstName: Ipsa mollitia error impedit minima.
+      image: Ea ex.
       location:
-        Lat: 0.19498105
-        Lon: 0.6245239
-      secondName: Ea ex.
-      signupType: Sed sapiente nemo rerum eum.
-      token: Qui dolores dolores incidunt labore.
-      type: Enim nesciunt minima ab.
+        Lat: 0.37686312
+        Lon: 0.47868878
+      secondName: Sed sapiente nemo rerum eum.
+      signupType: Qui dolores dolores incidunt labore.
+      token: Enim nesciunt minima ab.
+      type: Qui velit natus officia reiciendis aut.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Culpa doloribus.
+        example: Inventore optio.
         type: string
       area:
         default: ""
         description: The area of the users local council
-        example: Earum inventore optio alias rerum debitis ut.
+        example: Rerum debitis.
+        type: string
+      county:
+        default: ""
+        description: The area of the users local council
+        example: Et sapiente nihil quod.
         type: string
       email:
         description: The email of the user
-        example: Sapiente nihil quod architecto harum dolorum.
+        example: Harum dolorum similique earum voluptas.
         type: string
       firstName:
         description: Name of the user
-        example: Earum voluptas.
+        example: Ipsa mollitia error impedit minima.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Ipsa mollitia error impedit minima.
+        example: Ea ex.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Ea ex.
+        example: Sed sapiente nemo rerum eum.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Sed sapiente nemo rerum eum.
+        example: Qui dolores dolores incidunt labore.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Qui dolores dolores incidunt labore.
+        example: Enim nesciunt minima ab.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Enim nesciunt minima ab.
+        example: Qui velit natus officia reiciendis aut.
         type: string
     required:
     - firstName

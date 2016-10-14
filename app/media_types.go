@@ -20,6 +20,8 @@ import "github.com/goadesign/goa"
 type GoaLocalUser struct {
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// The county the user lives in
+	County *string `form:"county,omitempty" json:"county,omitempty" xml:"county,omitempty"`
 	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// Name of the user
@@ -105,6 +107,8 @@ type GoaLocalUserLogin struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// The area of the users local council
 	LoginExpires *int `form:"loginExpires,omitempty" json:"loginExpires,omitempty" xml:"loginExpires,omitempty"`
+	// user action status
+	Status bool `form:"status" json:"status" xml:"status"`
 	// This can be an oauth token or a password
 	Token string `form:"token" json:"token" xml:"token"`
 	// the type of user admin local councillor

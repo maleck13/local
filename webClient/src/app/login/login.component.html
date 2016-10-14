@@ -1,5 +1,8 @@
 <div class="container-fluid">
     <div class="row">
+        <div *ngIf="error" class="alert alert-warning">
+            <strong>Error</strong> Incorrect Details.
+        </div>
         <div class="col-md-4"></div>
         <div class="col-md-4" style="padding-bottom:10px;">
             <p> {{message}} </p>

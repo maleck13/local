@@ -15,15 +15,16 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li isguest><a routerLink="" routerLinkActive="active">Home</a></li>
+        <li *ngIf="isLoggedIn && userData" ><a routerLink="/profile/{{userData.id}}" routerLinkActive="active">Profile</a></li>
+        <li *ngIf="isLoggedIn" ><a routerLink="/councillors" routerLinkActive="active" >Councillors</a></li>
         <!-- id is replaced when a user is logged in --> 
         
         </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li isLoggedIn><a routerLink="/signup" routerLinkActive="active" class="pull-right">Sign Up</a></li>
-        <li isLoggedIn><a routerLink="/login" routerLinkActive="active" class="pull-right">Login</a></li>
-        <li isguest><a href="#" (click)="signOut()"  class="pull-right">Sign Out</a></li>
-        <li *ngIf="userData" ><a routerLink="/profile/{{userData.id}}" routerLinkActive="active" class="pull-right">Profile</a></li>
-        <li isadmin role="presentation" class="dropdown">
+        <li *ngIf="isLoggedIn == false"><a routerLink="/signup" routerLinkActive="active" class="pull-right">Sign Up</a></li>
+        <li *ngIf="isLoggedIn == false"><a routerLink="/login" routerLinkActive="active" class="pull-right">Login</a></li>
+        <li *ngIf="isLoggedIn"><a href="#" (click)="signOut()"  class="pull-right">Sign Out</a></li>
+        <li *ngIf="isLoggedIn" isadmin role="presentation" class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <li> <a routerLink="/admin/councillor"> Add councillor </a></li>
@@ -33,5 +34,4 @@
      </div>
     </div>
 </nav>
-<nav>
-  <router-outlet></router-outlet>
+<router-outlet></router-outlet>

@@ -8,9 +8,12 @@ export interface AuthenticatedService{
 @Injectable()
 export class ProfileService implements AuthenticatedService{
 
-  constructor(private http:Http) { }
+  constructor(private http:Http) {
+  }
 
   profileUrl: string = "/user";
+
+  
 
   public storeUserData(userData : UserData):Promise{
       let prom = new Promise((res,rej)=>{
@@ -124,6 +127,7 @@ export class UserData{
 export class Profile {
   constructor(
   public id:string,  
+  public county:string,
   public area:string,
   public email:string,
   public firstName:string,

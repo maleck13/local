@@ -8,6 +8,9 @@ import (
 var User = MediaType("application/vnd.goa.local.user+json", func() {
 	Description("A User of locals")
 	Attributes(func() { // Attributes define the media type shape.
+		Attribute("status", Boolean, "user action status", func() {
+			Default(false)
+		})
 		Attribute("id", String, "Unique bottle ID")
 		Attribute("href", String, "API href for making requests on the bottle")
 		Attribute("firstName", String, "Name of the user")
@@ -16,6 +19,7 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("token", String, "This can be an oauth token or a password")
 		Attribute("email", String, "The email of the user")
 		Attribute("area", String, "The area of the users local council")
+		Attribute("county", String, "The county the user lives in")
 		Attribute("loginExpires", Integer, "The area of the users local council")
 		Attribute("location", Location, "The area of the users local council")
 		Attribute("type", String, func() {
@@ -40,6 +44,7 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 	})
 
 	View("login", func() {
+		Attribute("status")
 		Attribute("token")
 		Attribute("id") //users id
 		Attribute("type")
@@ -54,6 +59,7 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("signupType")
 		Attribute("email")
 		Attribute("area")
+		Attribute("county")
 		Attribute("type")
 	})
 	//visible to everyone
@@ -163,6 +169,9 @@ var UserPayload = Type("User", func() {
 	Attribute("area", String, "The area of the users local council", func() {
 		Default("")
 	})
+	Attribute("county", String, "The area of the users local council", func() {
+		Default("")
+	})
 	Attribute("location", Location, "The area of the users local council")
 	Attribute("type", String, func() {
 		Description("the type of user admin local councillor")
@@ -184,6 +193,9 @@ var UpdateUserPayload = Type("UpdateUser", func() {
 	Attribute("secondName", String, "Name of the user")
 	Attribute("email", String, "The email of the user")
 	Attribute("area", String, "The area of the users local council", func() {
+		Default("")
+	})
+	Attribute("county", String, "The area of the users local council", func() {
 		Default("")
 	})
 	Attribute("image", String, "an image url for the user", func() {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute }       from '@angular/router';
+import { Router, ActivatedRoute, RouterStateSnapshot }       from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import {ProfileService,Profile} from '../profile.service'
 
@@ -13,8 +13,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private paramSub: Subscription
   private profile: Profile
-  private profileAreas = ["Tramore Waterford City West","Waterford City East","Waterford City South"]
+  private counties = ["Waterford"]
+  private profileAreas = {"Waterford":["Tramore Waterford City West","Waterford City East","Waterford City South"]}
   private updated = false
+  private newSignUp = false
 
   constructor(
     private route: ActivatedRoute,
@@ -22,15 +24,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private service: ProfileService){}
 
   ngOnInit() {
+     console.log(this.router.routerState.queryParams);
+     this.router.routerState.queryParams.subscribe(params => {
+       this.newSignUp = params["newSignUp"] === "true";
+     });
      this.paramSub = this.route.params.subscribe(params => {
-       let id = params['id']; 
+       let id = params['id'];
+       
        this.service.getProfile(id).then((u)=>{
          if(! u){
-           console.log("user not defined", u);
+           console.error("user not defined", u);
            return;
          }
-         console.log("user ", u);
-         this.profile = new Profile(u.id,u.area,u.email,u.firstName,u.secondName);
+         this.profile = new Profile(u.id,u.county,u.area,u.email,u.firstName,u.secondName);
        }).catch((e)=>console.error);
      });
   }
@@ -45,7 +51,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.updated = true; 
       setTimeout(()=>{
         this.updated = false;
-        
       },750)
     })
     .catch((e)=>console.error)

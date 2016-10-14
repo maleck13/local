@@ -85,7 +85,7 @@ func (ls Service) Update(update *app.UpdateUser) (*domain.User, error) {
 	existing.Email = update.Email
 	existing.FirstName = update.FirstName
 	existing.SecondName = update.SecondName
-	fmt.Println(existing.User)
+	existing.County = update.County
 	if err := ls.UserRepo.SaveUpdate(existing); err != nil {
 		return nil, err
 	}

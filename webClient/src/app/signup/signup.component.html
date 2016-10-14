@@ -1,5 +1,8 @@
 <div class="col-md-4"></div>
 <div class="col-md-4">
+    <div *ngIf="signUpError" class="alert alert-warning">
+            <strong>Error</strong> There was a problem during signup: {{signUpError}}
+    </div>
     <p> {{message}} </p>
     <div id="google-signin"></div>
 
