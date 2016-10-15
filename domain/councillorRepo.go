@@ -20,7 +20,7 @@ type Councillor struct {
 // AccessTypes defines the non owner access
 func (c *Councillor) AccessTypes() map[string][]string {
 	access := map[string][]string{
-		"read":  []string{"admin"},
+		"read":  []string{"admin", "local"},
 		"write": []string{"admin"},
 	}
 	return access
@@ -122,6 +122,9 @@ func (cr CouncillorRepo) FindOneByKeyValue(key string, value interface{}) (*Coun
 	if err := c.One(councillor); err != nil {
 		return nil, errors.Wrap(err, "failed to marshal result into a councillor")
 	}
+	if err := cr.Authorisor.Authorise(councillor, "read", cr.Actor); err != nil {
+		return nil, errors.Wrap(err, err.Error())
+	}
 	return councillor, nil
 }
 
@@ -143,6 +146,11 @@ func (cr CouncillorRepo) FindByCountyAndArea(county string, area *string) ([]*Co
 	}
 	if err := c.All(&res); err != nil {
 		return nil, errors.Wrap(err, "failed to encode db response")
+	}
+	for _, cllr := range res {
+		if err := cr.Authorisor.Authorise(cllr, "read", cr.Actor); err != nil {
+			return nil, errors.Wrap(err, err.Error())
+		}
 	}
 	return res, nil
 }
