@@ -15,8 +15,9 @@ export class AdminCoucillorComponent implements OnInit {
 
   constructor(private service: AdminCouncillorService, private profile: ProfileService) { }
 
-  private councillor: Councillor = new Councillor("", "", "","","","","","","");
+  private councillor: Councillor = new Councillor("", "", "","","","","","","","","");
   private areas = ["Tramore Waterford City West", "Waterford City East", "Waterford City South"];
+  private counties = ["Waterford"];
   private zone: NgZone;
   private basicOptions: Object;
   private progress: number = 0;
@@ -26,7 +27,6 @@ export class AdminCoucillorComponent implements OnInit {
 
 
   handleUpload(data: any): void {
-    console.log(data);
     this.zone.runGuarded(() => {
       this.response = data;
       this.progress = Math.floor(data.progress.percent / 100);

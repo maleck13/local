@@ -41,6 +41,8 @@ func buildService(conf *config.Config) *goa.Service {
 	app.MountAdminController(service, ac)
 	sc := NewSwaggerController(service)
 	app.MountSwaggerController(service, sc)
+	cc := NewCouncillorsController(service)
+	app.MountCouncillorsController(service, cc)
 	return service
 }
 

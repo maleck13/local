@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
+import {Observer,Observable} from 'rxjs/RX'
 
 export interface AuthenticatedService{
   getTokenHeader: any
@@ -9,9 +10,13 @@ export interface AuthenticatedService{
 export class ProfileService implements AuthenticatedService{
 
   constructor(private http:Http) {
+    this.userDataObservable = new Observable<UserData>((s)=> this.userDataObserver = s)
   }
 
   profileUrl: string = "/user";
+
+  userDataObserver:Observer<UserData>
+  userDataObservable:Observable<UserData>
 
   
 
@@ -19,6 +24,9 @@ export class ProfileService implements AuthenticatedService{
       let prom = new Promise((res,rej)=>{
         if(localStorage){
         localStorage.setItem("profile", JSON.stringify(userData))
+        if (this.userDataObserver && this.userDataObserver.next){
+          this.userDataObserver.next(userData);
+        }
         res();
       }else{
         //todo store in a cookie

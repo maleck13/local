@@ -5,6 +5,10 @@ import (
 	"github.com/maleck13/local/domain"
 )
 
+const (
+	TESTCOUNTY = "TESTCOUNTY"
+)
+
 // MockUserFinder is a mock implemenation of a  domain.UserFinder
 type MockUserFinder struct {
 	user  *domain.User
@@ -77,4 +81,17 @@ func MakeTestUpdateUser(id, area, email, fn, sn string) *app.UpdateUser {
 		ID:         id,
 		SecondName: sn,
 	}
+}
+
+func MakeTestCouncillor(fn, sn, email, address, area, party string) *domain.Councillor {
+	appCouncillor := &app.GoaLocalCouncillor{
+		FirstName:  fn,
+		SecondName: sn,
+		Email:      email,
+		Address:    address,
+		Area:       area,
+		Party:      party,
+		County:     TESTCOUNTY,
+	}
+	return domain.NewCouncillor(appCouncillor)
 }

@@ -14,6 +14,111 @@ package app
 
 import "github.com/goadesign/goa"
 
+// A Councillor (default view)
+//
+// Identifier: application/vnd.goa.local.councillor+json; view=default
+type GoaLocalCouncillor struct {
+	// a phone contact for the user
+	Address string `form:"address" json:"address" xml:"address"`
+	// The area of the users local council
+	Area string `form:"area" json:"area" xml:"area"`
+	// The area of the users local council
+	County string `form:"county" json:"county" xml:"county"`
+	// email for the councillor
+	Email string `form:"email" json:"email" xml:"email"`
+	// facebook handle for the user
+	Facebook *string `form:"facebook,omitempty" json:"facebook,omitempty" xml:"facebook,omitempty"`
+	// Name of the user
+	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
+	// db id
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// an image url for the user
+	Image string `form:"image" json:"image" xml:"image"`
+	// the councillors party
+	Party string `form:"party" json:"party" xml:"party"`
+	// a phone contact for the user
+	Phone string `form:"phone" json:"phone" xml:"phone"`
+	// Name of the user
+	SecondName string `form:"secondName" json:"secondName" xml:"secondName"`
+	// twitter handle for the user
+	Twitter *string `form:"twitter,omitempty" json:"twitter,omitempty" xml:"twitter,omitempty"`
+	// a web link for the user
+	Web string `form:"web" json:"web" xml:"web"`
+}
+
+// Validate validates the GoaLocalCouncillor media type instance.
+func (mt *GoaLocalCouncillor) Validate() (err error) {
+	if mt.FirstName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+	if mt.SecondName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
+	}
+	if mt.Area == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "area"))
+	}
+	if mt.Image == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "image"))
+	}
+	if mt.Phone == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "phone"))
+	}
+	if mt.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	if mt.Party == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "party"))
+	}
+	if mt.Address == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "address"))
+	}
+	if mt.County == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "county"))
+	}
+
+	return
+}
+
+// GoaLocalCouncillorCollection is the media type for an array of GoaLocalCouncillor (default view)
+//
+// Identifier: application/vnd.goa.local.councillor+json; type=collection; view=default
+type GoaLocalCouncillorCollection []*GoaLocalCouncillor
+
+// Validate validates the GoaLocalCouncillorCollection media type instance.
+func (mt GoaLocalCouncillorCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.FirstName == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "firstName"))
+		}
+		if e.SecondName == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "secondName"))
+		}
+		if e.Area == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "area"))
+		}
+		if e.Image == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "image"))
+		}
+		if e.Phone == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "phone"))
+		}
+		if e.Email == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "email"))
+		}
+		if e.Party == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "party"))
+		}
+		if e.Address == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "address"))
+		}
+		if e.County == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "county"))
+		}
+
+	}
+	return
+}
+
 // A User of locals (default view)
 //
 // Identifier: application/vnd.goa.local.user+json; view=default

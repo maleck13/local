@@ -1,5 +1,7 @@
 package main
 
+//TODO refactor this test to be more like the councillors test
+
 import (
 	"github.com/goadesign/goa"
 	"github.com/maleck13/local/app"

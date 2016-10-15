@@ -23,7 +23,7 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	var (
 		actor      = ctx.Value("actor").(domain.Actor)
 		cRepo      = domain.NewCouncillorRepo(config.Conf, actor, domain.AuthorisationService{})
-		councillor = &app.Councillor{}
+		councillor = &app.GoaLocalCouncillor{}
 	)
 	uploaded, f, err := ctx.FormFile("file")
 	if err != nil {
@@ -48,6 +48,8 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	councillor.Twitter = &twitterHandler
 	facebookName := ctx.FormValue("facebook")
 	councillor.Facebook = &facebookName
+	councillor.Address = ctx.FormValue("address")
+	councillor.County = ctx.FormValue("county")
 	if err := councillor.Validate(); err != nil {
 		return err
 	}

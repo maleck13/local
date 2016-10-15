@@ -13,9 +13,10 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/goadesign/goa"
 	"golang.org/x/net/context"
-	"net/http"
 )
 
 type (

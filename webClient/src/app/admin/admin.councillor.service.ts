@@ -20,6 +20,8 @@ export class Councillor{
         public facebook:string,
         public phone:string,
         public party:string,
-        public web:string)
+        public web:string,
+        public county:string,
+        public address:string)
         {}
 }

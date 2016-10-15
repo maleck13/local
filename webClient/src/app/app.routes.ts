@@ -11,7 +11,7 @@ const routes: RouterConfig = [
     { path: 'signup', component: SignupComponent },
     {path: 'profile/:id', component: ProfileComponent},
     {path: 'admin/councillor', component:AdminCoucillorComponent},
-    {path: 'councillors',component:CouncillorsComponent}
+    {path: 'councillors/:uid',component:CouncillorsComponent}
 ];
 
 export const appRouterProviders = [

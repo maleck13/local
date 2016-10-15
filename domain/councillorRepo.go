@@ -13,7 +13,7 @@ import (
 
 // Councillor is data representation of a local council member
 type Councillor struct {
-	*app.Councillor
+	*app.GoaLocalCouncillor
 	ID string `gorethink:"id,omitempty"`
 }
 
@@ -38,9 +38,9 @@ func (c *Councillor) GenerateID() string {
 }
 
 // NewCouncillor returns a new councillor model
-func NewCouncillor(c *app.Councillor) *Councillor {
+func NewCouncillor(c *app.GoaLocalCouncillor) *Councillor {
 	return &Councillor{
-		Councillor: c,
+		GoaLocalCouncillor: c,
 	}
 }
 
@@ -54,6 +54,15 @@ type CouncillorRepo struct {
 	Config     *config.Config
 	Actor      Actor
 	Authorisor Authorisor
+}
+
+// NewCouncillorRepo returns a configured CouncillorRepo
+func NewCouncillorRepo(conf *config.Config, actor Actor, authorisor Authorisor) CouncillorRepo {
+	return CouncillorRepo{
+		Config:     conf,
+		Actor:      actor,
+		Authorisor: authorisor,
+	}
 }
 
 // SaveUpdate will save or update a councillor
@@ -72,8 +81,7 @@ func (cr CouncillorRepo) SaveUpdate(councillor *Councillor) error {
 	} else {
 		q = q.Get(councillor.ID).Update(councillor)
 	}
-	_, err = q.RunWrite(sess)
-	if err != nil {
+	if _, err = q.RunWrite(sess); err != nil {
 		return errors.Wrap(err, "unexpected error writing data to db")
 	}
 	return nil
@@ -117,11 +125,24 @@ func (cr CouncillorRepo) FindOneByKeyValue(key string, value interface{}) (*Coun
 	return councillor, nil
 }
 
-// NewCouncillorRepo returns a configured CouncillorRepo
-func NewCouncillorRepo(conf *config.Config, actor Actor, authorisor Authorisor) CouncillorRepo {
-	return CouncillorRepo{
-		Config:     conf,
-		Actor:      actor,
-		Authorisor: authorisor,
+// FindByCountyAndArea lists councillors based on a county and an area
+func (cr CouncillorRepo) FindByCountyAndArea(county string, area *string) ([]*Councillor, error) {
+	sess, err := data.DbSession(cr.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error getting database session")
 	}
+	var res = []*Councillor{}
+	q := map[string]string{}
+	q["County"] = county
+	if nil != area {
+		q["Area"] = *area
+	}
+	c, err := r.DB(data.DB_NAME).Table(data.COUNCILLORS_TABLE).Filter(q).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to execute db query")
+	}
+	if err := c.All(&res); err != nil {
+		return nil, errors.Wrap(err, "failed to encode db response")
+	}
+	return res, nil
 }

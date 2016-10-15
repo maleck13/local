@@ -16,7 +16,7 @@
       <ul class="nav navbar-nav">
         <li isguest><a routerLink="" routerLinkActive="active">Home</a></li>
         <li *ngIf="isLoggedIn && userData" ><a routerLink="/profile/{{userData.id}}" routerLinkActive="active">Profile</a></li>
-        <li *ngIf="isLoggedIn" ><a routerLink="/councillors" routerLinkActive="active" >Councillors</a></li>
+        <li *ngIf="isLoggedIn && userData" ><a routerLink="/councillors/{{userData.id}}" routerLinkActive="active" >Your Councillors</a></li>
         <!-- id is replaced when a user is logged in --> 
         
         </ul>

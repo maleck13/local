@@ -47,6 +47,48 @@ func (ctx *CreateCouncillorAdminContext) Unauthorized() error {
 	return nil
 }
 
+// ListForCountyAndAreaCouncillorsContext provides the councillors listForCountyAndArea action context.
+type ListForCountyAndAreaCouncillorsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Area   *string
+	County string
+}
+
+// NewListForCountyAndAreaCouncillorsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the councillors controller listForCountyAndArea action.
+func NewListForCountyAndAreaCouncillorsContext(ctx context.Context, service *goa.Service) (*ListForCountyAndAreaCouncillorsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := ListForCountyAndAreaCouncillorsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramArea := req.Params["area"]
+	if len(paramArea) > 0 {
+		rawArea := paramArea[0]
+		rctx.Area = &rawArea
+	}
+	paramCounty := req.Params["county"]
+	if len(paramCounty) > 0 {
+		rawCounty := paramCounty[0]
+		rctx.County = rawCounty
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListForCountyAndAreaCouncillorsContext) OK(r GoaLocalCouncillorCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.councillor+json; type=collection")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListForCountyAndAreaCouncillorsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
 // DeleteUserContext provides the user delete action context.
 type DeleteUserContext struct {
 	context.Context

@@ -87,6 +87,61 @@ func handleAdminOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// CouncillorsController is the controller interface for the Councillors actions.
+type CouncillorsController interface {
+	goa.Muxer
+	ListForCountyAndArea(*ListForCountyAndAreaCouncillorsContext) error
+}
+
+// MountCouncillorsController "mounts" a Councillors resource controller on the given service.
+func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/councillors/:county", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListForCountyAndAreaCouncillorsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.ListForCountyAndArea(rctx)
+	}
+	h = handleCouncillorsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("GET", "/councillors/:county", ctrl.MuxHandler("ListForCountyAndArea", h, nil))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "ListForCountyAndArea", "route", "GET /councillors/:county", "security", "jwt")
+}
+
+// handleCouncillorsOrigin applies the CORS response headers corresponding to the origin.
+func handleCouncillorsOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				rw.Header().Set("Access-Control-Allow-Headers", "x-auth")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // SwaggerController is the controller interface for the Swagger actions.
 type SwaggerController interface {
 	goa.Muxer
