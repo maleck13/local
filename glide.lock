@@ -1,5 +1,5 @@
-hash: 6d6fc64c2a2fd3a88c290f7bff730bed4a4e11fa46c9e82083e0c65882036dc8
-updated: 2016-10-02T21:28:51.965799976+01:00
+hash: c3e899f93c79145fdf4e3ac786e02a22933154190a9aff94a87db4397693e5f3
+updated: 2016-10-18T18:17:07.555609953+01:00
 imports:
 - name: github.com/armon/go-metrics
   version: 3df31a1ada83e310c2e24b267c8e8b68836547b4
@@ -12,7 +12,7 @@ imports:
 - name: github.com/dimfeld/httptreemux
   version: 96acf0909c0b45ebf4a25a816cedc6d317e63679
 - name: github.com/goadesign/goa
-  version: 2ca3cc085ab12afbc1679f00dd04b7ea29716a0e
+  version: eba00e91ae6b05cf1c98fe2db2abd86007d66248
   subpackages:
   - client
   - cors
@@ -38,6 +38,12 @@ imports:
   version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
+- name: github.com/sendgrid/rest
+  version: d37acbf70185e33da36a233f4df95848b052427c
+- name: github.com/sendgrid/sendgrid-go
+  version: ca6ecc07783a951106449c92d908195ae886b2ca
+  subpackages:
+  - helpers/mail
 - name: github.com/Sirupsen/logrus
   version: 3ec0642a7fb6488f65b06f9040adc67e3990296a
 - name: github.com/spf13/cobra

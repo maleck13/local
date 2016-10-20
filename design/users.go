@@ -19,7 +19,9 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("token", String, "This can be an oauth token or a password")
 		Attribute("email", String, "The email of the user")
 		Attribute("area", String, "The area of the users local council")
-		Attribute("county", String, "The county the user lives in")
+		Attribute("county", String, "The county the user lives in", func() {
+			Default("")
+		})
 		Attribute("loginExpires", Integer, "The area of the users local council")
 		Attribute("location", Location, "The area of the users local council")
 		Attribute("type", String, func() {
@@ -29,26 +31,14 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("image", String, "an image url for the user")
 		Required("firstName", "secondName", "email", "token")
 	})
-	View("full", func() { // View defines a rendering of the media type.
-		Attribute("id")   // Media types may have multiple views and must
-		Attribute("href") // have a "default" view.
-		Attribute("firstName")
-		Attribute("secondName")
-		Attribute("signupType")
-		Attribute("email")
-		Attribute("area")
-		Attribute("location", Location)
-		Attribute("loginExpires")
-		Attribute("type")
-		Attribute("token")
-	})
-
 	View("login", func() {
 		Attribute("status")
 		Attribute("token")
 		Attribute("id") //users id
 		Attribute("type")
 		Attribute("loginExpires")
+		Attribute("county")
+		Attribute("area")
 	})
 
 	View("default", func() { // View defines a rendering of the media type. this is used to return to the client
@@ -60,6 +50,7 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("email")
 		Attribute("area")
 		Attribute("county")
+		Attribute("area")
 		Attribute("type")
 	})
 	//visible to everyone
@@ -180,7 +171,7 @@ var UserPayload = Type("User", func() {
 	Attribute("image", String, "an image url for the user", func() {
 		Default("")
 	})
-	Required("firstName", "secondName", "email", "token")
+	Required("firstName", "secondName", "email", "token", "type")
 })
 
 var UpdateUserPayload = Type("UpdateUser", func() {

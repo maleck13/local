@@ -7,19 +7,30 @@ import (
 
 var _ = Resource("councillors", func() {
 	BasePath("/councillors") // together. They map to REST resources for REST
-	DefaultMedia(User, "default")
+	DefaultMedia(Councillor, "default")
 	Security(JWT, func() { // Use JWT to auth requests to this endpoint
 		Scope("api:access") // Enforce presence of "api" scope in JWT claims.
 	})
 	Action("listForCountyAndArea", func() {
 		Description("list councillors based on a users details") // with its path, parameters (both path
-		Routing(GET("/:county"))
+		Routing(GET("/"))
 		Params(func() { // (shape of the request body).
 			Param("area", String)
 			Param("county", String)
 		})
 		Response(OK, func() {
 			Media(CollectionOf(Councillor))
+		})
+		Response(Unauthorized) // of HTTP responses.
+	})
+	Action("readById", func() {
+		Description("read a councillor based on an id")
+		Routing(GET("/:id"))
+		Params(func() { // (shape of the request body).
+			Param("id", String)
+		})
+		Response(OK, func() {
+			Media(Councillor)
 		})
 		Response(Unauthorized) // of HTTP responses.
 	})
@@ -31,7 +42,12 @@ var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
 		Attribute("inOffice", Boolean, "whether the councillor is still in office", func() {
 			Default(false)
 		})
-		Attribute("id", String, "db id")
+		Attribute("id", String, "db id", func() {
+			Metadata("struct:tag:gorethink", "id,omitempty")
+			Metadata("struct:tag:json", "id,omitempty")
+			Metadata("struct:tag:form", "id,omitempty")
+			Default("")
+		})
 		Attribute("firstName", String, "Name of the user")
 		Attribute("secondName", String, "Name of the user")
 		Attribute("area", String, "The area of the users local council", func() {

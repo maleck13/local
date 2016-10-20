@@ -31,5 +31,8 @@ type Config struct {
 		Secret string `json:"secret"`
 	} `json:"jwt"`
 	PprofEnabled bool `json:"pprof_enabled"`
+	Sendgrid     struct {
+		APIKey string `json:"apiKey"`
+	} `json:"sendgrid"`
 }
 //THIS IS A GENERATED FILE. USE scripts/generate_config to regen

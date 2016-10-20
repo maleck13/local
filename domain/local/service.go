@@ -1,7 +1,6 @@
 package local
 
 import (
-	"fmt"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -41,7 +40,6 @@ func (ls Service) Register(user *app.User) (*domain.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("register", exist)
 	if exist != nil {
 		return nil, e.NewServiceError("user already exists ", http.StatusConflict)
 	}

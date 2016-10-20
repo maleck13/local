@@ -73,6 +73,7 @@ func setUp(t *testing.T) func(emails []string) {
 		t.Fail()
 	}
 	mux := buildService(conf)
+	buildUserController(mux)
 	testServer = httptest.NewServer(mux.Mux)
 	userSetup := newUser(conf)
 	_, err = userSetup.Setup(existingEmail, "john", "smith")
@@ -118,7 +119,7 @@ func TestHttpCreateUser(t *testing.T) {
 		}
 		defer res.Body.Close()
 		if res.StatusCode != 400 {
-			t.Fatal("expected a 400 error code")
+			t.Fatalf("expected a 400 error code but got %d ", res.StatusCode)
 		}
 	})
 	t.Run("should not add user that exists", func(t *testing.T) {
@@ -128,7 +129,7 @@ func TestHttpCreateUser(t *testing.T) {
 		}
 		defer res.Body.Close()
 		if res.StatusCode != 409 {
-			t.Fatal("expected a conflict")
+			t.Fatalf("expected a conflict but got %d", res.StatusCode)
 		}
 	})
 	t.Run("should add user that doesnt exist", func(t *testing.T) {
@@ -141,4 +142,8 @@ func TestHttpCreateUser(t *testing.T) {
 			t.Fatal("expected a created response but got ", res.StatusCode)
 		}
 	})
+}
+
+func TestLoginUser(t *testing.T) {
+
 }

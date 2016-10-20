@@ -18,6 +18,9 @@
     "clientId": "550624010352-95rn5pn9g58hqvqk7077j37v80r3v5nj.apps.googleusercontent.com",
     "validatorUrl":"https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s"
   },
+  "sendgrid":{
+    "apiKey":"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"
+  },
   "jwt":{
     "secret":"supersecret",
     "expire":"100"

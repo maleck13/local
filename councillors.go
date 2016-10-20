@@ -39,3 +39,19 @@ func (c *CouncillorsController) ListForCountyAndArea(ctx *app.ListForCountyAndAr
 	}
 	return ctx.OK(res)
 }
+
+// ReadByID returns the councillor for the corrosponding ID
+func (c *CouncillorsController) ReadByID(ctx *app.ReadByIDCouncillorsContext) error {
+	var (
+		actor          = ctx.Value("actor").(domain.Actor)
+		authorisor     = domain.AuthorisationService{}
+		councillorRepo = domain.NewCouncillorRepo(config.Conf, actor, authorisor)
+		ID             = ctx.ID
+	)
+	counciller, err := councillorRepo.FindOneByKeyValue("id", ID)
+	if err != nil {
+		return err
+	}
+	return ctx.OK(counciller.GoaLocalCouncillor)
+
+}

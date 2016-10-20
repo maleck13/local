@@ -46,6 +46,11 @@ func (u *User) Type() string {
 	return u.User.Type
 }
 
+// FullName concats first and SecondName
+func (u *User) FullName() string {
+	return u.FirstName + " " + u.SecondName
+}
+
 // NewUser conversts an app.User to domain.User
 func NewUser(u *app.User) *User {
 	return &User{User: u}

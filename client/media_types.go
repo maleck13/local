@@ -15,7 +15,76 @@ package client
 import (
 	"github.com/goadesign/goa"
 	"net/http"
+	"time"
 )
+
+// An communication (default view)
+//
+// Identifier: application/vnd.goa.local.communication+json; view=default
+type GoaLocalCommunication struct {
+	Body         string  `form:"body" json:"body" xml:"body"`
+	CouncillorID string  `form:"councillorID" json:"councillorID" xml:"councillorID"`
+	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	// db id
+	ID        string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
+	Open      bool       `form:"open" json:"open" xml:"open"`
+	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject   string     `form:"subject" json:"subject" xml:"subject"`
+	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	UserID    *string    `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+}
+
+// Validate validates the GoaLocalCommunication media type instance.
+func (mt *GoaLocalCommunication) Validate() (err error) {
+	if mt.CouncillorID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	}
+	if mt.Subject == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
+	}
+	if mt.Body == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "body"))
+	}
+
+	return
+}
+
+// DecodeGoaLocalCommunication decodes the GoaLocalCommunication instance encoded in resp body.
+func (c *Client) DecodeGoaLocalCommunication(resp *http.Response) (*GoaLocalCommunication, error) {
+	var decoded GoaLocalCommunication
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// GoaLocalCommunicationCollection is the media type for an array of GoaLocalCommunication (default view)
+//
+// Identifier: application/vnd.goa.local.communication+json; type=collection; view=default
+type GoaLocalCommunicationCollection []*GoaLocalCommunication
+
+// Validate validates the GoaLocalCommunicationCollection media type instance.
+func (mt GoaLocalCommunicationCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e.CouncillorID == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "councillorID"))
+		}
+		if e.Subject == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "subject"))
+		}
+		if e.Body == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "body"))
+		}
+
+	}
+	return
+}
+
+// DecodeGoaLocalCommunicationCollection decodes the GoaLocalCommunicationCollection instance encoded in resp body.
+func (c *Client) DecodeGoaLocalCommunicationCollection(resp *http.Response) (GoaLocalCommunicationCollection, error) {
+	var decoded GoaLocalCommunicationCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
 
 // A Councillor (default view)
 //
@@ -34,7 +103,7 @@ type GoaLocalCouncillor struct {
 	// Name of the user
 	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
 	// db id
-	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// an image url for the user
 	Image string `form:"image" json:"image" xml:"image"`
 	// the councillors party
@@ -143,7 +212,7 @@ type GoaLocalUser struct {
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
 	// The county the user lives in
-	County *string `form:"county,omitempty" json:"county,omitempty" xml:"county,omitempty"`
+	County string `form:"county" json:"county" xml:"county"`
 	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// Name of the user
@@ -175,56 +244,14 @@ func (mt *GoaLocalUser) Validate() (err error) {
 	return
 }
 
-// A User of locals (full view)
-//
-// Identifier: application/vnd.goa.local.user+json; view=full
-type GoaLocalUserFull struct {
-	// The area of the users local council
-	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
-	// The email of the user
-	Email string `form:"email" json:"email" xml:"email"`
-	// Name of the user
-	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
-	// API href for making requests on the bottle
-	Href *string `form:"href,omitempty" json:"href,omitempty" xml:"href,omitempty"`
-	// Unique bottle ID
-	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	// The area of the users local council
-	Location *Location `form:"location,omitempty" json:"location,omitempty" xml:"location,omitempty"`
-	// The area of the users local council
-	LoginExpires *int `form:"loginExpires,omitempty" json:"loginExpires,omitempty" xml:"loginExpires,omitempty"`
-	// Name of the user
-	SecondName string `form:"secondName" json:"secondName" xml:"secondName"`
-	// the signupType of user google local
-	SignupType *string `form:"signupType,omitempty" json:"signupType,omitempty" xml:"signupType,omitempty"`
-	// This can be an oauth token or a password
-	Token string `form:"token" json:"token" xml:"token"`
-	// the type of user admin local councillor
-	Type string `form:"type" json:"type" xml:"type"`
-}
-
-// Validate validates the GoaLocalUserFull media type instance.
-func (mt *GoaLocalUserFull) Validate() (err error) {
-	if mt.FirstName == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
-	}
-	if mt.SecondName == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
-	}
-	if mt.Email == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
-	}
-	if mt.Token == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "token"))
-	}
-
-	return
-}
-
 // A User of locals (login view)
 //
 // Identifier: application/vnd.goa.local.user+json; view=login
 type GoaLocalUserLogin struct {
+	// The area of the users local council
+	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	// The county the user lives in
+	County string `form:"county" json:"county" xml:"county"`
 	// Unique bottle ID
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// The area of the users local council
@@ -274,13 +301,6 @@ func (c *Client) DecodeGoaLocalUser(resp *http.Response) (*GoaLocalUser, error) 
 	return &decoded, err
 }
 
-// DecodeGoaLocalUserFull decodes the GoaLocalUserFull instance encoded in resp body.
-func (c *Client) DecodeGoaLocalUserFull(resp *http.Response) (*GoaLocalUserFull, error) {
-	var decoded GoaLocalUserFull
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return &decoded, err
-}
-
 // DecodeGoaLocalUserLogin decodes the GoaLocalUserLogin instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUserLogin(resp *http.Response) (*GoaLocalUserLogin, error) {
 	var decoded GoaLocalUserLogin
@@ -311,31 +331,6 @@ func (mt GoaLocalUserCollection) Validate() (err error) {
 		}
 		if e.Email == "" {
 			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "email"))
-		}
-
-	}
-	return
-}
-
-// GoaLocalUserCollection is the media type for an array of GoaLocalUser (full view)
-//
-// Identifier: application/vnd.goa.local.user+json; type=collection; view=full
-type GoaLocalUserFullCollection []*GoaLocalUserFull
-
-// Validate validates the GoaLocalUserFullCollection media type instance.
-func (mt GoaLocalUserFullCollection) Validate() (err error) {
-	for _, e := range mt {
-		if e.FirstName == "" {
-			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "firstName"))
-		}
-		if e.SecondName == "" {
-			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "secondName"))
-		}
-		if e.Email == "" {
-			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "email"))
-		}
-		if e.Token == "" {
-			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "token"))
 		}
 
 	}
@@ -377,13 +372,6 @@ func (mt GoaLocalUserPublicCollection) Validate() (err error) {
 // DecodeGoaLocalUserCollection decodes the GoaLocalUserCollection instance encoded in resp body.
 func (c *Client) DecodeGoaLocalUserCollection(resp *http.Response) (GoaLocalUserCollection, error) {
 	var decoded GoaLocalUserCollection
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return decoded, err
-}
-
-// DecodeGoaLocalUserFullCollection decodes the GoaLocalUserFullCollection instance encoded in resp body.
-func (c *Client) DecodeGoaLocalUserFullCollection(resp *http.Response) (GoaLocalUserFullCollection, error) {
-	var decoded GoaLocalUserFullCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

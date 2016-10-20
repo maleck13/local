@@ -20,7 +20,7 @@ func domainUserToLocalUser(user *domain.User) *app.GoaLocalUser {
 		FirstName:  user.FirstName,
 		SecondName: user.SecondName,
 		Type:       user.Type(),
-		County:     &user.County,
+		County:     user.County,
 	}
 }
 
@@ -95,7 +95,7 @@ func (c *UserController) Login(ctx *app.LoginUserContext) error {
 		return err
 	}
 	ctx.ResponseWriter.Header().Add("Bearer", token)
-	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID, Type: user.Type(), Status: true}
+	userLogin := &app.GoaLocalUserLogin{Token: token, ID: &user.ID, Type: user.Type(), Status: true, County: user.County, Area: &user.Area}
 	return ctx.OKLogin(userLogin)
 }
 

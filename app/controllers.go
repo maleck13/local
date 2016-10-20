@@ -87,17 +87,151 @@ func handleAdminOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// CommunicationsController is the controller interface for the Communications actions.
+type CommunicationsController interface {
+	goa.Muxer
+	Close(*CloseCommunicationsContext) error
+	List(*ListCommunicationsContext) error
+	RecieveEmail(*RecieveEmailCommunicationsContext) error
+	Send(*SendCommunicationsContext) error
+}
+
+// MountCommunicationsController "mounts" a Communications resource controller on the given service.
+func MountCommunicationsController(service *goa.Service, ctrl CommunicationsController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/communications/close/:id", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/communications/councillor/:cid", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/communications/email/recieve", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/communications/send", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewCloseCommunicationsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Close(rctx)
+	}
+	h = handleCommunicationsOrigin(h)
+	service.Mux.Handle("DELETE", "/communications/close/:id", ctrl.MuxHandler("Close", h, nil))
+	service.LogInfo("mount", "ctrl", "Communications", "action", "Close", "route", "DELETE /communications/close/:id")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListCommunicationsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.List(rctx)
+	}
+	h = handleCommunicationsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("GET", "/communications/councillor/:cid", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Communications", "action", "List", "route", "GET /communications/councillor/:cid", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewRecieveEmailCommunicationsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.RecieveEmail(rctx)
+	}
+	h = handleCommunicationsOrigin(h)
+	service.Mux.Handle("POST", "/communications/email/recieve", ctrl.MuxHandler("RecieveEmail", h, nil))
+	service.LogInfo("mount", "ctrl", "Communications", "action", "RecieveEmail", "route", "POST /communications/email/recieve")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewSendCommunicationsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*Communication)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Send(rctx)
+	}
+	h = handleCommunicationsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("POST", "/communications/send", ctrl.MuxHandler("Send", h, unmarshalSendCommunicationsPayload))
+	service.LogInfo("mount", "ctrl", "Communications", "action", "Send", "route", "POST /communications/send", "security", "jwt")
+}
+
+// handleCommunicationsOrigin applies the CORS response headers corresponding to the origin.
+func handleCommunicationsOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				rw.Header().Set("Access-Control-Allow-Headers", "x-auth")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
+// unmarshalSendCommunicationsPayload unmarshals the request body into the context request data Payload field.
+func unmarshalSendCommunicationsPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &communication{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	payload.Finalize()
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
 // CouncillorsController is the controller interface for the Councillors actions.
 type CouncillorsController interface {
 	goa.Muxer
 	ListForCountyAndArea(*ListForCountyAndAreaCouncillorsContext) error
+	ReadByID(*ReadByIDCouncillorsContext) error
 }
 
 // MountCouncillorsController "mounts" a Councillors resource controller on the given service.
 func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController) {
 	initService(service)
 	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/councillors/:county", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/councillors", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/councillors/:id", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -113,8 +247,25 @@ func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController
 	}
 	h = handleCouncillorsOrigin(h)
 	h = handleSecurity("jwt", h, "api:access")
-	service.Mux.Handle("GET", "/councillors/:county", ctrl.MuxHandler("ListForCountyAndArea", h, nil))
-	service.LogInfo("mount", "ctrl", "Councillors", "action", "ListForCountyAndArea", "route", "GET /councillors/:county", "security", "jwt")
+	service.Mux.Handle("GET", "/councillors", ctrl.MuxHandler("ListForCountyAndArea", h, nil))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "ListForCountyAndArea", "route", "GET /councillors", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewReadByIDCouncillorsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.ReadByID(rctx)
+	}
+	h = handleCouncillorsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("GET", "/councillors/:id", ctrl.MuxHandler("ReadByID", h, nil))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "ReadByID", "route", "GET /councillors/:id", "security", "jwt")
 }
 
 // handleCouncillorsOrigin applies the CORS response headers corresponding to the origin.

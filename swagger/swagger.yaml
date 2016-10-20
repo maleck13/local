@@ -4,82 +4,218 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
+  Communication:
+    example:
+      body: Delectus rem.
+      councillorID: Sed iure.
+      error: Fugit commodi voluptas consectetur at a sapiente.
+      from: Iure ex aperiam.
+      id: Minus alias cumque error consequatur ducimus asperiores.
+      isPrivate: false
+      open: false
+      sent: 1976-06-01T04:59:53+01:00
+      subject: Voluptatem ea.
+      to: Explicabo aut distinctio similique eum.
+      type: Molestiae laudantium voluptatum magni tempora aut.
+    properties:
+      body:
+        example: Delectus rem.
+        type: string
+      councillorID:
+        example: Sed iure.
+        type: string
+      error:
+        default: ""
+        example: Fugit commodi voluptas consectetur at a sapiente.
+        type: string
+      from:
+        example: Iure ex aperiam.
+        type: string
+      id:
+        default: ""
+        description: db id
+        example: Minus alias cumque error consequatur ducimus asperiores.
+        type: string
+      isPrivate:
+        default: true
+        example: false
+        type: boolean
+      open:
+        default: true
+        example: false
+        type: boolean
+      sent:
+        example: 1976-06-01T04:59:53+01:00
+        format: date-time
+        type: string
+      subject:
+        example: Voluptatem ea.
+        type: string
+      to:
+        example: Explicabo aut distinctio similique eum.
+        type: string
+      type:
+        example: Molestiae laudantium voluptatum magni tempora aut.
+        type: string
+    required:
+    - councillorID
+    - subject
+    - body
+    - isPrivate
+    - type
+    title: Communication
+    type: object
+  GoaLocalCommunication:
+    description: An communication (default view)
+    example:
+      body: Velit quia commodi dolorem.
+      councillorID: In harum dolores consequatur et.
+      from: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      isPrivate: false
+      open: true
+      sent: 1988-04-10T15:14:27+01:00
+      subject: Suscipit eos sequi dolores nulla.
+      to: Mollitia velit recusandae aut vitae id recusandae.
+      userID: Aspernatur dignissimos eligendi facere.
+    properties:
+      body:
+        example: Velit quia commodi dolorem.
+        type: string
+      councillorID:
+        example: In harum dolores consequatur et.
+        type: string
+      from:
+        example: Et non similique.
+        type: string
+      id:
+        default: ""
+        description: db id
+        example: Eos earum vitae magnam sunt.
+        type: string
+      isPrivate:
+        default: true
+        example: false
+        type: boolean
+      open:
+        default: true
+        example: true
+        type: boolean
+      sent:
+        example: 1988-04-10T15:14:27+01:00
+        format: date-time
+        type: string
+      subject:
+        example: Suscipit eos sequi dolores nulla.
+        type: string
+      to:
+        example: Mollitia velit recusandae aut vitae id recusandae.
+        type: string
+      userID:
+        example: Aspernatur dignissimos eligendi facere.
+        type: string
+    required:
+    - councillorID
+    - subject
+    - body
+    - isPrivate
+    title: 'Mediatype identifier: application/vnd.goa.local.communication+json; view=default'
+    type: object
+  GoaLocalCommunicationCollection:
+    description: GoaLocalCommunicationCollection is the media type for an array of
+      GoaLocalCommunication (default view)
+    example:
+    - body: Velit quia commodi dolorem.
+      councillorID: In harum dolores consequatur et.
+      from: Et non similique.
+      id: Eos earum vitae magnam sunt.
+      isPrivate: false
+      open: true
+      sent: 1988-04-10T15:14:27+01:00
+      subject: Suscipit eos sequi dolores nulla.
+      to: Mollitia velit recusandae aut vitae id recusandae.
+      userID: Aspernatur dignissimos eligendi facere.
+    items:
+      $ref: '#/definitions/GoaLocalCommunication'
+    title: 'Mediatype identifier: application/vnd.goa.local.communication+json; type=collection'
+    type: array
   GoaLocalCouncillor:
     description: A Councillor (default view)
     example:
-      address: Velit quia commodi dolorem.
-      area: In harum dolores consequatur et.
-      county: Ipsum optio magnam eos.
-      email: Et non similique.
-      facebook: Eos earum vitae magnam sunt.
-      firstName: Quod sunt quibusdam suscipit eos sequi dolores.
-      id: Dolor mollitia.
-      image: Recusandae aut.
-      party: Recusandae qui mollitia blanditiis corrupti.
-      phone: Omnis aspernatur dignissimos eligendi.
-      secondName: Eligendi aut corporis.
-      twitter: Iste cumque cum ea quod.
-      web: Aliquam qui.
+      address: Corporis et iste cumque cum ea quod.
+      area: Aliquam qui.
+      county: Officia eum natus aut sapiente omnis.
+      email: Ratione odio et culpa doloribus in.
+      facebook: Inventore optio.
+      firstName: Rerum debitis.
+      id: Et sapiente nihil quod.
+      image: Harum dolorum similique earum voluptas.
+      party: Mollitia error impedit.
+      phone: Voluptas ea ex aut sed.
+      secondName: Nemo rerum eum rem qui dolores dolores.
+      twitter: Labore nobis enim nesciunt minima.
+      web: Veniam qui.
     properties:
       address:
         default: ""
         description: a phone contact for the user
-        example: Velit quia commodi dolorem.
+        example: Corporis et iste cumque cum ea quod.
         type: string
       area:
         default: ""
         description: The area of the users local council
-        example: In harum dolores consequatur et.
+        example: Aliquam qui.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Ipsum optio magnam eos.
+        example: Officia eum natus aut sapiente omnis.
         type: string
       email:
         default: ""
         description: email for the councillor
-        example: Et non similique.
+        example: Ratione odio et culpa doloribus in.
         type: string
       facebook:
         description: facebook handle for the user
-        example: Eos earum vitae magnam sunt.
+        example: Inventore optio.
         type: string
       firstName:
         description: Name of the user
-        example: Quod sunt quibusdam suscipit eos sequi dolores.
+        example: Rerum debitis.
         type: string
       id:
+        default: ""
         description: db id
-        example: Dolor mollitia.
+        example: Et sapiente nihil quod.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Recusandae aut.
+        example: Harum dolorum similique earum voluptas.
         type: string
       party:
         default: ""
         description: the councillors party
-        example: Recusandae qui mollitia blanditiis corrupti.
+        example: Mollitia error impedit.
         type: string
       phone:
         default: ""
         description: a phone contact for the user
-        example: Omnis aspernatur dignissimos eligendi.
+        example: Voluptas ea ex aut sed.
         type: string
       secondName:
         description: Name of the user
-        example: Eligendi aut corporis.
+        example: Nemo rerum eum rem qui dolores dolores.
         type: string
       twitter:
         description: twitter handle for the user
-        example: Iste cumque cum ea quod.
+        example: Labore nobis enim nesciunt minima.
         type: string
       web:
         default: ""
         description: a web link for the user
-        example: Aliquam qui.
+        example: Veniam qui.
         type: string
     required:
     - firstName
@@ -97,45 +233,32 @@ definitions:
     description: GoaLocalCouncillorCollection is the media type for an array of GoaLocalCouncillor
       (default view)
     example:
-    - address: Velit quia commodi dolorem.
-      area: In harum dolores consequatur et.
-      county: Ipsum optio magnam eos.
-      email: Et non similique.
-      facebook: Eos earum vitae magnam sunt.
-      firstName: Quod sunt quibusdam suscipit eos sequi dolores.
-      id: Dolor mollitia.
-      image: Recusandae aut.
-      party: Recusandae qui mollitia blanditiis corrupti.
-      phone: Omnis aspernatur dignissimos eligendi.
-      secondName: Eligendi aut corporis.
-      twitter: Iste cumque cum ea quod.
-      web: Aliquam qui.
-    - address: Velit quia commodi dolorem.
-      area: In harum dolores consequatur et.
-      county: Ipsum optio magnam eos.
-      email: Et non similique.
-      facebook: Eos earum vitae magnam sunt.
-      firstName: Quod sunt quibusdam suscipit eos sequi dolores.
-      id: Dolor mollitia.
-      image: Recusandae aut.
-      party: Recusandae qui mollitia blanditiis corrupti.
-      phone: Omnis aspernatur dignissimos eligendi.
-      secondName: Eligendi aut corporis.
-      twitter: Iste cumque cum ea quod.
-      web: Aliquam qui.
-    - address: Velit quia commodi dolorem.
-      area: In harum dolores consequatur et.
-      county: Ipsum optio magnam eos.
-      email: Et non similique.
-      facebook: Eos earum vitae magnam sunt.
-      firstName: Quod sunt quibusdam suscipit eos sequi dolores.
-      id: Dolor mollitia.
-      image: Recusandae aut.
-      party: Recusandae qui mollitia blanditiis corrupti.
-      phone: Omnis aspernatur dignissimos eligendi.
-      secondName: Eligendi aut corporis.
-      twitter: Iste cumque cum ea quod.
-      web: Aliquam qui.
+    - address: Corporis et iste cumque cum ea quod.
+      area: Aliquam qui.
+      county: Officia eum natus aut sapiente omnis.
+      email: Ratione odio et culpa doloribus in.
+      facebook: Inventore optio.
+      firstName: Rerum debitis.
+      id: Et sapiente nihil quod.
+      image: Harum dolorum similique earum voluptas.
+      party: Mollitia error impedit.
+      phone: Voluptas ea ex aut sed.
+      secondName: Nemo rerum eum rem qui dolores dolores.
+      twitter: Labore nobis enim nesciunt minima.
+      web: Veniam qui.
+    - address: Corporis et iste cumque cum ea quod.
+      area: Aliquam qui.
+      county: Officia eum natus aut sapiente omnis.
+      email: Ratione odio et culpa doloribus in.
+      facebook: Inventore optio.
+      firstName: Rerum debitis.
+      id: Et sapiente nihil quod.
+      image: Harum dolorum similique earum voluptas.
+      party: Mollitia error impedit.
+      phone: Voluptas ea ex aut sed.
+      secondName: Nemo rerum eum rem qui dolores dolores.
+      twitter: Labore nobis enim nesciunt minima.
+      web: Veniam qui.
     items:
       $ref: '#/definitions/GoaLocalCouncillor'
     title: 'Mediatype identifier: application/vnd.goa.local.councillor+json; type=collection'
@@ -143,52 +266,53 @@ definitions:
   GoaLocalUser:
     description: A User of locals (default view)
     example:
-      area: Eum natus aut sapiente.
-      county: Facilis ratione odio et.
-      email: Doloribus in.
-      firstName: Inventore optio.
-      href: Rerum debitis.
-      id: Et sapiente nihil quod.
-      secondName: Impedit minima voluptas ea.
-      signupType: Aut sed sapiente nemo rerum eum.
-      type: Nobis enim nesciunt minima.
+      area: Officia reiciendis aut.
+      county: Recusandae perferendis et optio id expedita.
+      email: Aliquam exercitationem earum provident qui.
+      firstName: Pariatur ut.
+      href: Molestiae voluptatem quis voluptates.
+      id: Eaque quia ut ut.
+      secondName: Quia delectus dolor.
+      signupType: Ex qui aliquid.
+      type: Qui repudiandae dicta.
     properties:
       area:
         description: The area of the users local council
-        example: Eum natus aut sapiente.
+        example: Officia reiciendis aut.
         type: string
       county:
+        default: ""
         description: The county the user lives in
-        example: Facilis ratione odio et.
+        example: Recusandae perferendis et optio id expedita.
         type: string
       email:
         description: The email of the user
-        example: Doloribus in.
+        example: Aliquam exercitationem earum provident qui.
         type: string
       firstName:
         description: Name of the user
-        example: Inventore optio.
+        example: Pariatur ut.
         type: string
       href:
         description: API href for making requests on the bottle
-        example: Rerum debitis.
+        example: Molestiae voluptatem quis voluptates.
         type: string
       id:
         description: Unique bottle ID
-        example: Et sapiente nihil quod.
+        example: Eaque quia ut ut.
         type: string
       secondName:
         description: Name of the user
-        example: Impedit minima voluptas ea.
+        example: Quia delectus dolor.
         type: string
       signupType:
         description: the signupType of user google local
-        example: Aut sed sapiente nemo rerum eum.
+        example: Ex qui aliquid.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Nobis enim nesciunt minima.
+        example: Qui repudiandae dicta.
         type: string
     required:
     - firstName
@@ -200,66 +324,48 @@ definitions:
     description: GoaLocalUserCollection is the media type for an array of GoaLocalUser
       (default view)
     example:
-    - area: Eum natus aut sapiente.
-      county: Facilis ratione odio et.
-      email: Doloribus in.
-      firstName: Inventore optio.
-      href: Rerum debitis.
-      id: Et sapiente nihil quod.
-      secondName: Impedit minima voluptas ea.
-      signupType: Aut sed sapiente nemo rerum eum.
-      type: Nobis enim nesciunt minima.
-    - area: Eum natus aut sapiente.
-      county: Facilis ratione odio et.
-      email: Doloribus in.
-      firstName: Inventore optio.
-      href: Rerum debitis.
-      id: Et sapiente nihil quod.
-      secondName: Impedit minima voluptas ea.
-      signupType: Aut sed sapiente nemo rerum eum.
-      type: Nobis enim nesciunt minima.
-    - area: Eum natus aut sapiente.
-      county: Facilis ratione odio et.
-      email: Doloribus in.
-      firstName: Inventore optio.
-      href: Rerum debitis.
-      id: Et sapiente nihil quod.
-      secondName: Impedit minima voluptas ea.
-      signupType: Aut sed sapiente nemo rerum eum.
-      type: Nobis enim nesciunt minima.
+    - area: Officia reiciendis aut.
+      county: Recusandae perferendis et optio id expedita.
+      email: Aliquam exercitationem earum provident qui.
+      firstName: Pariatur ut.
+      href: Molestiae voluptatem quis voluptates.
+      id: Eaque quia ut ut.
+      secondName: Quia delectus dolor.
+      signupType: Ex qui aliquid.
+      type: Qui repudiandae dicta.
     items:
       $ref: '#/definitions/GoaLocalUser'
     title: 'Mediatype identifier: application/vnd.goa.local.user+json; type=collection'
     type: array
   Location:
     example:
-      Lat: 0.4236992
-      Lon: 0.18768041
+      Lat: 0.18920833
+      Lon: 0.35403088
     properties:
       Lat:
-        example: 0.4236992
+        example: 0.18920833
         format: double
         type: number
       Lon:
-        example: 0.18768041
+        example: 0.35403088
         format: double
         type: number
     title: Location
     type: object
   Login:
     example:
-      email: Qui velit natus officia reiciendis aut.
-      signupType: Recusandae perferendis et optio id expedita.
-      token: Aliquam exercitationem earum provident qui.
+      email: Nesciunt ut accusantium sit velit dolore et.
+      signupType: Explicabo aut laudantium quia.
+      token: Et nemo similique voluptate quae.
     properties:
       email:
-        example: Qui velit natus officia reiciendis aut.
+        example: Nesciunt ut accusantium sit velit dolore et.
         type: string
       signupType:
-        example: Recusandae perferendis et optio id expedita.
+        example: Explicabo aut laudantium quia.
         type: string
       token:
-        example: Aliquam exercitationem earum provident qui.
+        example: Et nemo similique voluptate quae.
         type: string
     required:
     - email
@@ -269,44 +375,44 @@ definitions:
     type: object
   UpdateUser:
     example:
-      area: Voluptas consectetur.
-      county: A sapiente ut iure ex aperiam et.
-      email: Alias cumque error consequatur ducimus asperiores iste.
-      firstName: Praesentium rerum voluptatem ea iusto explicabo.
-      id: Distinctio similique eum et molestiae laudantium voluptatum.
-      image: Tempora aut aut nesciunt.
-      secondName: Accusantium sit.
+      area: Molestias reprehenderit molestias impedit sint.
+      county: Exercitationem nihil illum dolores voluptate.
+      email: Nemo itaque.
+      firstName: Asperiores sint deserunt magnam ut.
+      id: Voluptatibus molestiae accusantium error molestias est.
+      image: Quod modi eos incidunt.
+      secondName: Asperiores et voluptas consequuntur ullam.
     properties:
       area:
         default: ""
         description: The area of the users local council
-        example: Voluptas consectetur.
+        example: Molestias reprehenderit molestias impedit sint.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: A sapiente ut iure ex aperiam et.
+        example: Exercitationem nihil illum dolores voluptate.
         type: string
       email:
         description: The email of the user
-        example: Alias cumque error consequatur ducimus asperiores iste.
+        example: Nemo itaque.
         type: string
       firstName:
         description: Name of the user
-        example: Praesentium rerum voluptatem ea iusto explicabo.
+        example: Asperiores sint deserunt magnam ut.
         type: string
       id:
         description: Unique user ID
-        example: Distinctio similique eum et molestiae laudantium voluptatum.
+        example: Voluptatibus molestiae accusantium error molestias est.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Tempora aut aut nesciunt.
+        example: Quod modi eos incidunt.
         type: string
       secondName:
         description: Name of the user
-        example: Accusantium sit.
+        example: Asperiores et voluptas consequuntur ullam.
         type: string
     required:
     - firstName
@@ -318,67 +424,67 @@ definitions:
     type: object
   User:
     example:
-      ID: Pariatur ut.
-      area: Molestiae voluptatem quis voluptates.
-      county: Eaque quia ut ut.
-      email: Ad quia quo sequi minus dolores.
-      firstName: Praesentium veniam soluta quia delectus dolor facere.
-      image: Qui aliquid fugit.
+      ID: Voluptatem facere.
+      area: Ab iusto totam quod cupiditate eum consequatur.
+      county: Cum quis modi voluptas nostrum eum doloribus.
+      email: Expedita itaque molestiae totam et dolores consectetur.
+      firstName: Itaque accusamus dolorem distinctio molestiae quae.
+      image: Provident voluptatem soluta et et est.
       location:
-        Lat: 0.4236992
-        Lon: 0.18768041
-      secondName: Nulla explicabo eum et non eveniet earum.
-      signupType: Qui repudiandae dicta.
-      token: Praesentium delectus rem aliquam sed.
-      type: Quam fugit.
+        Lat: 0.18920833
+        Lon: 0.35403088
+      secondName: Aut aut.
+      signupType: Tenetur nisi impedit.
+      token: Voluptate doloremque consequatur amet.
+      type: Nulla id.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Pariatur ut.
+        example: Voluptatem facere.
         type: string
       area:
         default: ""
         description: The area of the users local council
-        example: Molestiae voluptatem quis voluptates.
+        example: Ab iusto totam quod cupiditate eum consequatur.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Eaque quia ut ut.
+        example: Cum quis modi voluptas nostrum eum doloribus.
         type: string
       email:
         description: The email of the user
-        example: Ad quia quo sequi minus dolores.
+        example: Expedita itaque molestiae totam et dolores consectetur.
         type: string
       firstName:
         description: Name of the user
-        example: Praesentium veniam soluta quia delectus dolor facere.
+        example: Itaque accusamus dolorem distinctio molestiae quae.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Qui aliquid fugit.
+        example: Provident voluptatem soluta et et est.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Nulla explicabo eum et non eveniet earum.
+        example: Aut aut.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Qui repudiandae dicta.
+        example: Tenetur nisi impedit.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Praesentium delectus rem aliquam sed.
+        example: Voluptate doloremque consequatur amet.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Quam fugit.
+        example: Nulla id.
         type: string
     required:
     - firstName
@@ -451,7 +557,98 @@ paths:
       summary: createCouncillor admin
       tags:
       - admin
-  /councillors/{county}:
+  /communications/close/{id}:
+    delete:
+      description: recieve an email
+      operationId: communications#close
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      schemes:
+      - http
+      summary: close communications
+      tags:
+      - communications
+  /communications/councillor/{cid}:
+    get:
+      description: "read communications \n\nRequired security scopes:\n  * `api:access`"
+      operationId: communications#list
+      parameters:
+      - description: councillorID
+        in: path
+        name: cid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalCommunicationCollection'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: list communications
+      tags:
+      - communications
+  /communications/email/recieve:
+    post:
+      description: recieve an email
+      operationId: communications#recieveEmail
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      schemes:
+      - http
+      summary: recieveEmail communications
+      tags:
+      - communications
+  /communications/send:
+    post:
+      description: "send and email \n\nRequired security scopes:\n  * `api:access`"
+      operationId: communications#send
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/Communication'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalCommunication'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: send communications
+      tags:
+      - communications
+  /councillors:
     get:
       description: |-
         list councillors based on a users details
@@ -460,15 +657,17 @@ paths:
           * `api:access`
       operationId: councillors#listForCountyAndArea
       parameters:
-      - description: The area of the users local council
+      - default: ""
+        description: The area of the users local council
         in: query
         name: area
         required: false
         type: string
-      - description: The county the user lives in
-        in: path
+      - default: ""
+        description: The area of the users local council
+        in: query
         name: county
-        required: true
+        required: false
         type: string
       responses:
         "200":
@@ -483,6 +682,36 @@ paths:
       - jwt:
         - api:access
       summary: listForCountyAndArea councillors
+      tags:
+      - councillors
+  /councillors/{id}:
+    get:
+      description: |-
+        read a councillor based on an id
+
+        Required security scopes:
+          * `api:access`
+      operationId: councillors#readById
+      parameters:
+      - default: ""
+        description: db id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalCouncillor'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: readById councillors
       tags:
       - councillors
   /swagger-ui/{filepath}:
@@ -683,12 +912,12 @@ responses:
     description: Accepted
   Created:
     description: Created
+  InternalServerError:
+    description: Internal Server Error
   NotFound:
     description: Not Found
   OK:
     description: OK
-    schema:
-      $ref: '#/definitions/GoaLocalUser'
   Unauthorized:
     description: Unauthorized
 schemes:

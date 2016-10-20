@@ -12,7 +12,140 @@
 
 package app
 
-import "github.com/goadesign/goa"
+import (
+	"github.com/goadesign/goa"
+	"time"
+)
+
+// communication user type.
+type communication struct {
+	Body         *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
+	CouncillorID *string `form:"councillorID,omitempty" json:"councillorID,omitempty" xml:"councillorID,omitempty"`
+	Error        *string `form:"error,omitempty" json:"error,omitempty" xml:"error,omitempty"`
+	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	// db id
+	ID        *string    `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate *bool      `form:"isPrivate,omitempty" json:"isPrivate,omitempty" xml:"isPrivate,omitempty"`
+	Open      *bool      `form:"open,omitempty" json:"open,omitempty" xml:"open,omitempty"`
+	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject   *string    `form:"subject,omitempty" json:"subject,omitempty" xml:"subject,omitempty"`
+	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	Type      *string    `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
+}
+
+// Finalize sets the default values for communication type instance.
+func (ut *communication) Finalize() {
+	var defaultError = ""
+	if ut.Error == nil {
+		ut.Error = &defaultError
+	}
+	var defaultID = ""
+	if ut.ID == nil {
+		ut.ID = &defaultID
+	}
+	var defaultIsPrivate = true
+	if ut.IsPrivate == nil {
+		ut.IsPrivate = &defaultIsPrivate
+	}
+	var defaultOpen = true
+	if ut.Open == nil {
+		ut.Open = &defaultOpen
+	}
+}
+
+// Validate validates the communication type instance.
+func (ut *communication) Validate() (err error) {
+	if ut.CouncillorID == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	}
+	if ut.Subject == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
+	}
+	if ut.Body == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "body"))
+	}
+	if ut.IsPrivate == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "isPrivate"))
+	}
+	if ut.Type == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
+	}
+
+	return
+}
+
+// Publicize creates Communication from communication
+func (ut *communication) Publicize() *Communication {
+	var pub Communication
+	if ut.Body != nil {
+		pub.Body = *ut.Body
+	}
+	if ut.CouncillorID != nil {
+		pub.CouncillorID = *ut.CouncillorID
+	}
+	if ut.Error != nil {
+		pub.Error = *ut.Error
+	}
+	if ut.From != nil {
+		pub.From = ut.From
+	}
+	if ut.ID != nil {
+		pub.ID = *ut.ID
+	}
+	if ut.IsPrivate != nil {
+		pub.IsPrivate = *ut.IsPrivate
+	}
+	if ut.Open != nil {
+		pub.Open = *ut.Open
+	}
+	if ut.Sent != nil {
+		pub.Sent = ut.Sent
+	}
+	if ut.Subject != nil {
+		pub.Subject = *ut.Subject
+	}
+	if ut.To != nil {
+		pub.To = ut.To
+	}
+	if ut.Type != nil {
+		pub.Type = *ut.Type
+	}
+	return &pub
+}
+
+// Communication user type.
+type Communication struct {
+	Body         string  `form:"body" json:"body" xml:"body"`
+	CouncillorID string  `form:"councillorID" json:"councillorID" xml:"councillorID"`
+	Error        string  `form:"error" json:"error" xml:"error"`
+	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	// db id
+	ID        string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
+	Open      bool       `form:"open" json:"open" xml:"open"`
+	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject   string     `form:"subject" json:"subject" xml:"subject"`
+	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	Type      string     `form:"type" json:"type" xml:"type"`
+}
+
+// Validate validates the Communication type instance.
+func (ut *Communication) Validate() (err error) {
+	if ut.CouncillorID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	}
+	if ut.Subject == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
+	}
+	if ut.Body == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "body"))
+	}
+	if ut.Type == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
+	}
+
+	return
+}
 
 // location user type.
 type location struct {

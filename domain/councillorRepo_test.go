@@ -255,7 +255,7 @@ func TestFindByCountyAndArea(t *testing.T) {
 
 	for _, v := range tests {
 		t.Run(v.Name, func(t *testing.T) {
-			fc, err := councillorRepo.FindByCountyAndArea(v.County, &v.Area)
+			fc, err := councillorRepo.FindByCountyAndArea(v.County, v.Area)
 			if v.ExpectError && err == nil {
 				t.Fatal("expected an error but gone none")
 			} else if !v.ExpectError && err != nil {

@@ -10,7 +10,7 @@ import (
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-var tables = []string{data.COUNCILLORS_TABLE, data.USER_TABLE}
+var tables = []string{data.COUNCILLORS_TABLE, data.USER_TABLE, data.COMMUNICATIONS_TABLE}
 
 func CreateDb(session *r.Session) error {
 	lDbs, err := r.DBList().Run(session)

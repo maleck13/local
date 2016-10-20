@@ -47,12 +47,176 @@ func (ctx *CreateCouncillorAdminContext) Unauthorized() error {
 	return nil
 }
 
+// CloseCommunicationsContext provides the communications close action context.
+type CloseCommunicationsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewCloseCommunicationsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the communications controller close action.
+func NewCloseCommunicationsContext(ctx context.Context, service *goa.Service) (*CloseCommunicationsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := CloseCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *CloseCommunicationsContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *CloseCommunicationsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *CloseCommunicationsContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
+	return nil
+}
+
+// ListCommunicationsContext provides the communications list action context.
+type ListCommunicationsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Cid string
+}
+
+// NewListCommunicationsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the communications controller list action.
+func NewListCommunicationsContext(ctx context.Context, service *goa.Service) (*ListCommunicationsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := ListCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramCid := req.Params["cid"]
+	if len(paramCid) > 0 {
+		rawCid := paramCid[0]
+		rctx.Cid = rawCid
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListCommunicationsContext) OK(r GoaLocalCommunicationCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.communication+json; type=collection")
+	if r == nil {
+		r = GoaLocalCommunicationCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListCommunicationsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *ListCommunicationsContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
+	return nil
+}
+
+// RecieveEmailCommunicationsContext provides the communications recieveEmail action context.
+type RecieveEmailCommunicationsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewRecieveEmailCommunicationsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the communications controller recieveEmail action.
+func NewRecieveEmailCommunicationsContext(ctx context.Context, service *goa.Service) (*RecieveEmailCommunicationsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := RecieveEmailCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *RecieveEmailCommunicationsContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *RecieveEmailCommunicationsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *RecieveEmailCommunicationsContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
+	return nil
+}
+
+// SendCommunicationsContext provides the communications send action context.
+type SendCommunicationsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *Communication
+}
+
+// NewSendCommunicationsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the communications controller send action.
+func NewSendCommunicationsContext(ctx context.Context, service *goa.Service) (*SendCommunicationsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := SendCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *SendCommunicationsContext) OK(r *GoaLocalCommunication) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.communication+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *SendCommunicationsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *SendCommunicationsContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
+	return nil
+}
+
 // ListForCountyAndAreaCouncillorsContext provides the councillors listForCountyAndArea action context.
 type ListForCountyAndAreaCouncillorsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Area   *string
+	Area   string
 	County string
 }
 
@@ -67,7 +231,7 @@ func NewListForCountyAndAreaCouncillorsContext(ctx context.Context, service *goa
 	paramArea := req.Params["area"]
 	if len(paramArea) > 0 {
 		rawArea := paramArea[0]
-		rctx.Area = &rawArea
+		rctx.Area = rawArea
 	}
 	paramCounty := req.Params["county"]
 	if len(paramCounty) > 0 {
@@ -80,11 +244,50 @@ func NewListForCountyAndAreaCouncillorsContext(ctx context.Context, service *goa
 // OK sends a HTTP response with status code 200.
 func (ctx *ListForCountyAndAreaCouncillorsContext) OK(r GoaLocalCouncillorCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.councillor+json; type=collection")
+	if r == nil {
+		r = GoaLocalCouncillorCollection{}
+	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // Unauthorized sends a HTTP response with status code 401.
 func (ctx *ListForCountyAndAreaCouncillorsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// ReadByIDCouncillorsContext provides the councillors readById action context.
+type ReadByIDCouncillorsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewReadByIDCouncillorsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the councillors controller readById action.
+func NewReadByIDCouncillorsContext(ctx context.Context, service *goa.Service) (*ReadByIDCouncillorsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := ReadByIDCouncillorsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ReadByIDCouncillorsContext) OK(r *GoaLocalCouncillor) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.councillor+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ReadByIDCouncillorsContext) Unauthorized() error {
 	ctx.ResponseData.WriteHeader(401)
 	return nil
 }
@@ -152,24 +355,27 @@ func NewListUserContext(ctx context.Context, service *goa.Service) (*ListUserCon
 // OK sends a HTTP response with status code 200.
 func (ctx *ListUserContext) OK(r GoaLocalUserCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// OKFull sends a HTTP response with status code 200.
-func (ctx *ListUserContext) OKFull(r GoaLocalUserFullCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
+	if r == nil {
+		r = GoaLocalUserCollection{}
+	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // OKLogin sends a HTTP response with status code 200.
 func (ctx *ListUserContext) OKLogin(r GoaLocalUserLoginCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
+	if r == nil {
+		r = GoaLocalUserLoginCollection{}
+	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // OKPublic sends a HTTP response with status code 200.
 func (ctx *ListUserContext) OKPublic(r GoaLocalUserPublicCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json; type=collection")
+	if r == nil {
+		r = GoaLocalUserPublicCollection{}
+	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 

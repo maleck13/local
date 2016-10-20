@@ -42,6 +42,7 @@ func TestListCouncillorsByCountyAndArea(t *testing.T) {
 	}
 	//setup a server
 	mux := buildService(config.Conf)
+	buildCouncillorController(mux)
 	testServer := httptest.NewServer(mux.Mux)
 	defer testServer.Close()
 	testURL := testServer.URL
@@ -58,7 +59,7 @@ func TestListCouncillorsByCountyAndArea(t *testing.T) {
 	}{
 		{
 			Name:       "test get councillors by county",
-			Endpoint:   "/councillors/TESTCOUNTY",
+			Endpoint:   "/councillors?county=TESTCOUNTY",
 			StatusCode: 200,
 			Assert: func(cs app.GoaLocalCouncillorCollection) error {
 				if len(cs) != 2 {
@@ -74,7 +75,7 @@ func TestListCouncillorsByCountyAndArea(t *testing.T) {
 		},
 		{
 			Name:       "test get councillors by county and area",
-			Endpoint:   `/councillors/TESTCOUNTY?area=anarea`,
+			Endpoint:   `/councillors?county=TESTCOUNTY&area=anarea`,
 			StatusCode: 200,
 			Assert: func(cs app.GoaLocalCouncillorCollection) error {
 				if len(cs) != 2 {
@@ -93,7 +94,7 @@ func TestListCouncillorsByCountyAndArea(t *testing.T) {
 		},
 		{
 			Name:       "test get councillors by county and area non found",
-			Endpoint:   `/councillors/TESTCOUNTY?area="notthere"`,
+			Endpoint:   `/councillors?county=TESTCOUNTY&area="notthere"`,
 			StatusCode: 200,
 			Assert: func(cs app.GoaLocalCouncillorCollection) error {
 				return nil

@@ -14,7 +14,6 @@ import (
 // Councillor is data representation of a local council member
 type Councillor struct {
 	*app.GoaLocalCouncillor
-	ID string `gorethink:"id,omitempty"`
 }
 
 // AccessTypes defines the non owner access
@@ -35,6 +34,11 @@ func (c *Councillor) Owner() string {
 func (c *Councillor) GenerateID() string {
 	data := []byte(c.Email)
 	return fmt.Sprintf("%x", md5.Sum(data))
+}
+
+// FullName concats first and SecondName
+func (c *Councillor) FullName() string {
+	return c.FirstName + " " + c.SecondName
 }
 
 // NewCouncillor returns a new councillor model
@@ -129,7 +133,7 @@ func (cr CouncillorRepo) FindOneByKeyValue(key string, value interface{}) (*Coun
 }
 
 // FindByCountyAndArea lists councillors based on a county and an area
-func (cr CouncillorRepo) FindByCountyAndArea(county string, area *string) ([]*Councillor, error) {
+func (cr CouncillorRepo) FindByCountyAndArea(county string, area string) ([]*Councillor, error) {
 	sess, err := data.DbSession(cr.Config)
 	if err != nil {
 		return nil, errors.Wrap(err, "unexpected error getting database session")
@@ -137,8 +141,8 @@ func (cr CouncillorRepo) FindByCountyAndArea(county string, area *string) ([]*Co
 	var res = []*Councillor{}
 	q := map[string]string{}
 	q["County"] = county
-	if nil != area {
-		q["Area"] = *area
+	if "" != area {
+		q["Area"] = area
 	}
 	c, err := r.DB(data.DB_NAME).Table(data.COUNCILLORS_TABLE).Filter(q).Run(sess)
 	if err != nil {

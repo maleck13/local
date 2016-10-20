@@ -9,7 +9,7 @@ type Authorisor interface {
 	Authorise(entity AccessDefinor, action string, actor Actor) error
 }
 
-//Actor is who is looking to act on an entity
+//Actor represents what / who is looking to act on an entity
 type Actor interface {
 	Id() string
 	Type() string

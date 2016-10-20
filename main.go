@@ -34,16 +34,27 @@ func buildService(conf *config.Config) *goa.Service {
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 	app.UseJWTMiddleware(service, NewJWTMiddleware(conf))
-
-	uc := NewUserController(service)
-	app.MountUserController(service, uc)
-	ac := NewAdminController(service)
-	app.MountAdminController(service, ac)
-	sc := NewSwaggerController(service)
-	app.MountSwaggerController(service, sc)
-	cc := NewCouncillorsController(service)
-	app.MountCouncillorsController(service, cc)
 	return service
+}
+
+func buildCommunicationsController(service *goa.Service) {
+	app.MountCommunicationsController(service, NewCommunicationsController(service))
+}
+
+func buildCouncillorController(service *goa.Service) {
+	app.MountCouncillorsController(service, NewCouncillorsController(service))
+}
+
+func buildSwaggerController(service *goa.Service) {
+	app.MountSwaggerController(service, NewSwaggerController(service))
+}
+
+func buildAdminController(service *goa.Service) {
+	app.MountAdminController(service, NewAdminController(service))
+}
+
+func buildUserController(service *goa.Service) {
+	app.MountUserController(service, NewUserController(service))
 }
 
 func main() {
@@ -51,6 +62,11 @@ func main() {
 	conf := initConfig()
 	setupDb(conf)
 	service := buildService(conf)
+	buildCommunicationsController(service)
+	buildCouncillorController(service)
+	buildSwaggerController(service)
+	buildAdminController(service)
+	buildUserController(service)
 	// Start service
 	if err := service.ListenAndServe(*port); err != nil {
 		service.LogError("startup", "err", err)
@@ -58,7 +74,7 @@ func main() {
 }
 
 func assetHandler() goa.MuxHandler {
-	base := "./webClient/dist/"
+	base := "./web/dist/"
 	h := http.FileServer(http.Dir(base))
 	return func(rw http.ResponseWriter, req *http.Request, v url.Values) {
 		h.ServeHTTP(rw, req)

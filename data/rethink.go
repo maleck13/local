@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	DB_NAME           = "locals"
-	COUNCILLORS_TABLE = "local_councillors"
-	USER_TABLE        = "users"
+	DB_NAME              = "locals"
+	COUNCILLORS_TABLE    = "local_councillors"
+	USER_TABLE           = "users"
+	COMMUNICATIONS_TABLE = "local_communications"
 )
 
 var (
