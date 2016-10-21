@@ -59,7 +59,6 @@ type (
 
 	// ReadByIDCouncillorsCommand is the command line data structure for the readById action of councillors
 	ReadByIDCouncillorsCommand struct {
-		// db id
 		ID          string
 		PrettyPrint bool
 	}
@@ -208,9 +207,9 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "email": "Nesciunt ut accusantium sit velit dolore et.",
-   "signupType": "Explicabo aut laudantium quia.",
-   "token": "Et nemo similique voluptate quae."
+   "email": "Quia reiciendis et.",
+   "signupType": "Similique voluptate quae.",
+   "token": "Voluptatem facere."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -273,17 +272,17 @@ Payload example:
 Payload example:
 
 {
-   "body": "Delectus rem.",
-   "councillorID": "Sed iure.",
-   "error": "Fugit commodi voluptas consectetur at a sapiente.",
-   "from": "Iure ex aperiam.",
-   "id": "Minus alias cumque error consequatur ducimus asperiores.",
+   "body": "Commodi voluptas consectetur.",
+   "error": "A sapiente ut iure ex aperiam et.",
+   "from": "Alias cumque error consequatur ducimus asperiores iste.",
+   "id": "Praesentium rerum voluptatem ea iusto explicabo.",
    "isPrivate": false,
    "open": false,
-   "sent": "1976-06-01T04:59:53+01:00",
-   "subject": "Voluptatem ea.",
-   "to": "Explicabo aut distinctio similique eum.",
-   "type": "Molestiae laudantium voluptatum magni tempora aut."
+   "recepientID": "Eum et.",
+   "sent": "1997-07-31T15:47:54+01:00",
+   "subject": "Voluptatum magni tempora.",
+   "to": "Aut nesciunt ut accusantium sit velit dolore.",
+   "type": "Voluptate explicabo aut."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
@@ -304,19 +303,20 @@ Payload example:
 Payload example:
 
 {
-   "ID": "Voluptatem facere.",
-   "area": "Ab iusto totam quod cupiditate eum consequatur.",
-   "county": "Cum quis modi voluptas nostrum eum doloribus.",
-   "email": "Expedita itaque molestiae totam et dolores consectetur.",
-   "firstName": "Itaque accusamus dolorem distinctio molestiae quae.",
-   "image": "Provident voluptatem soluta et et est.",
+   "ID": "Ab iusto totam quod cupiditate eum consequatur.",
+   "active": false,
+   "area": "Quis modi voluptas nostrum eum.",
+   "county": "Molestiae expedita.",
+   "email": "Molestiae totam et dolores.",
+   "firstName": "Molestiae itaque accusamus dolorem.",
+   "image": "Molestiae quae non provident.",
    "location": {
-      "Lat": 0.18920833199533155,
-      "Lon": 0.35403089127127696
+      "Lat": 0.9669738640370986,
+      "Lon": 0.10044983987987859
    },
-   "secondName": "Aut aut.",
-   "signupType": "Tenetur nisi impedit.",
-   "token": "Voluptate doloremque consequatur amet.",
+   "secondName": "Soluta et et est consequatur aut.",
+   "signupType": "Exercitationem tenetur.",
+   "token": "Impedit voluptate voluptate doloremque consequatur amet.",
    "type": "Nulla id."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
@@ -749,7 +749,7 @@ func (cmd *ReadByIDCouncillorsCommand) Run(c *client.Client, args []string) erro
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ReadByIDCouncillorsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
-	cc.Flags().StringVar(&cmd.ID, "id", id, `db id`)
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
 }
 
 // Run makes the HTTP request corresponding to the DeleteUserCommand command.

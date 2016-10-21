@@ -90,30 +90,42 @@ func TestAuthenticateLocal(t *testing.T) {
 		Name        string
 		Password    string
 		UserName    string
+		IsActivated bool
 		ExpectError bool
 	}{
 		{
 			Name:        "test local authenticate works",
 			Password:    "Password1",
 			UserName:    "test@test.com",
+			IsActivated: true,
 			ExpectError: false,
 		},
 		{
 			Name:        "test local authenticate fails with bad pass",
 			Password:    "Password12",
 			UserName:    "test@test.com",
+			IsActivated: true,
 			ExpectError: true,
 		},
 		{
 			Name:        "test local authenticate fails with bad username",
 			Password:    "Password12",
 			UserName:    "test2@test.com",
+			IsActivated: true,
+			ExpectError: true,
+		},
+		{
+			Name:        "test local authenticate fails when user not activated",
+			Password:    "Password1",
+			UserName:    "test@test.com",
+			IsActivated: false,
 			ExpectError: true,
 		},
 	}
 	for _, tv := range tests {
 		t.Run(tv.Name, func(t *testing.T) {
 			user := pt.MakeTestUser("John", "Smith", "test@test.com", "somewhere", "local", "")
+			user.Active = tv.IsActivated
 			encPass, err := bcrypt.GenerateFromPassword([]byte("Password1"), bcrypt.DefaultCost)
 			if err != nil {
 				t.Fatal("faled to generate hashed password", err.Error())

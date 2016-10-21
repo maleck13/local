@@ -37,31 +37,23 @@ var _ = Resource("councillors", func() {
 })
 
 var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
-	Description("A Councillor")
+	Reference(UserPayload)
 	Attributes(func() { // Attributes define the media type shape.
+
+		Attribute("ID")
+		Attribute("firstName")
+		Attribute("secondName")
+		Attribute("area")
+		Attribute("county")
+		Attribute("email")
 		Attribute("inOffice", Boolean, "whether the councillor is still in office", func() {
 			Default(false)
 		})
-		Attribute("id", String, "db id", func() {
-			Metadata("struct:tag:gorethink", "id,omitempty")
-			Metadata("struct:tag:json", "id,omitempty")
-			Metadata("struct:tag:form", "id,omitempty")
-			Default("")
-		})
-		Attribute("firstName", String, "Name of the user")
-		Attribute("secondName", String, "Name of the user")
-		Attribute("area", String, "The area of the users local council", func() {
-			Default("")
-		})
-		Attribute("county", String, "The area of the users local council", func() {
-			Default("")
-		})
+		Attribute("userID", String, "reference to the user associated with this councillor")
 		Attribute("image", String, "an image url for the user", func() {
 			Default("")
 		})
-		Attribute("email", String, "email for the councillor", func() {
-			Default("")
-		})
+
 		Attribute("phone", String, "a phone contact for the user", func() {
 			Default("")
 		})
@@ -76,10 +68,11 @@ var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
 		})
 		Attribute("twitter", String, "twitter handle for the user")
 		Attribute("facebook", String, "facebook handle for the user")
-		Required("firstName", "secondName", "area", "image", "phone", "email", "party", "address", "county")
+		Required("firstName", "secondName", "area", "image", "phone", "email", "party", "address", "county", "userID")
 	})
 	View("default", func() {
 		Attribute("firstName", String, "Name of the user")
+		Attribute("userID", String, "reference to the user associated with this councillor")
 		Attribute("secondName", String, "Name of the user")
 		Attribute("area", String, "The area of the users local council", func() {
 			Default("")
@@ -107,6 +100,6 @@ var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
 		})
 		Attribute("twitter", String, "twitter handle for the user")
 		Attribute("facebook", String, "facebook handle for the user")
-		Attribute("id", String, "db id")
+		Attribute("ID", String, "db id")
 	})
 })

@@ -22,23 +22,23 @@ import (
 //
 // Identifier: application/vnd.goa.local.communication+json; view=default
 type GoaLocalCommunication struct {
-	Body         string  `form:"body" json:"body" xml:"body"`
-	CouncillorID string  `form:"councillorID" json:"councillorID" xml:"councillorID"`
-	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body string  `form:"body" json:"body" xml:"body"`
+	From *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
-	ID        string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
-	IsPrivate bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
-	Open      bool       `form:"open" json:"open" xml:"open"`
-	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
-	Subject   string     `form:"subject" json:"subject" xml:"subject"`
-	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
-	UserID    *string    `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+	ID          string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate   bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
+	Open        bool       `form:"open" json:"open" xml:"open"`
+	RecepientID string     `form:"recepientID" json:"recepientID" xml:"recepientID"`
+	Sent        *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject     string     `form:"subject" json:"subject" xml:"subject"`
+	To          *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	UserID      *string    `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
 }
 
 // Validate validates the GoaLocalCommunication media type instance.
 func (mt *GoaLocalCommunication) Validate() (err error) {
-	if mt.CouncillorID == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	if mt.RecepientID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "recepientID"))
 	}
 	if mt.Subject == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
@@ -65,8 +65,8 @@ type GoaLocalCommunicationCollection []*GoaLocalCommunication
 // Validate validates the GoaLocalCommunicationCollection media type instance.
 func (mt GoaLocalCommunicationCollection) Validate() (err error) {
 	for _, e := range mt {
-		if e.CouncillorID == "" {
-			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "councillorID"))
+		if e.RecepientID == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "recepientID"))
 		}
 		if e.Subject == "" {
 			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "subject"))
@@ -86,24 +86,24 @@ func (c *Client) DecodeGoaLocalCommunicationCollection(resp *http.Response) (Goa
 	return decoded, err
 }
 
-// A Councillor (default view)
+// GoaLocalCouncillor media type (default view)
 //
 // Identifier: application/vnd.goa.local.councillor+json; view=default
 type GoaLocalCouncillor struct {
+	// Unique user ID
+	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// a phone contact for the user
 	Address string `form:"address" json:"address" xml:"address"`
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
 	// The area of the users local council
 	County string `form:"county" json:"county" xml:"county"`
-	// email for the councillor
+	// The email of the user
 	Email string `form:"email" json:"email" xml:"email"`
 	// facebook handle for the user
 	Facebook *string `form:"facebook,omitempty" json:"facebook,omitempty" xml:"facebook,omitempty"`
 	// Name of the user
 	FirstName string `form:"firstName" json:"firstName" xml:"firstName"`
-	// db id
-	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	// an image url for the user
 	Image string `form:"image" json:"image" xml:"image"`
 	// the councillors party
@@ -114,6 +114,8 @@ type GoaLocalCouncillor struct {
 	SecondName string `form:"secondName" json:"secondName" xml:"secondName"`
 	// twitter handle for the user
 	Twitter *string `form:"twitter,omitempty" json:"twitter,omitempty" xml:"twitter,omitempty"`
+	// reference to the user associated with this councillor
+	UserID string `form:"userID" json:"userID" xml:"userID"`
 	// a web link for the user
 	Web string `form:"web" json:"web" xml:"web"`
 }
@@ -146,6 +148,9 @@ func (mt *GoaLocalCouncillor) Validate() (err error) {
 	}
 	if mt.County == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "county"))
+	}
+	if mt.UserID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "userID"))
 	}
 
 	return
@@ -193,6 +198,9 @@ func (mt GoaLocalCouncillorCollection) Validate() (err error) {
 		if e.County == "" {
 			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "county"))
 		}
+		if e.UserID == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*]`, "userID"))
+		}
 
 	}
 	return
@@ -209,6 +217,8 @@ func (c *Client) DecodeGoaLocalCouncillorCollection(resp *http.Response) (GoaLoc
 //
 // Identifier: application/vnd.goa.local.user+json; view=default
 type GoaLocalUser struct {
+	// whether the user is activated or not
+	Active bool `form:"active" json:"active" xml:"active"`
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
 	// The county the user lives in

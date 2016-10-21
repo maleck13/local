@@ -23,7 +23,9 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	var (
 		actor      = ctx.Value("actor").(domain.Actor)
 		cRepo      = domain.NewCouncillorRepo(config.Conf, actor, domain.AuthorisationService{})
+		uRepo      = domain.NewUserRepo(config.Conf, actor, domain.AuthorisationService{})
 		councillor = &app.GoaLocalCouncillor{}
+		user       = &app.User{}
 	)
 	uploaded, f, err := ctx.FormFile("file")
 	if err != nil {
@@ -36,20 +38,43 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	if err != nil {
 		return err
 	}
-	councillor.Area = ctx.FormValue("area")
-	councillor.FirstName = ctx.FormValue("firstName")
-	councillor.SecondName = ctx.FormValue("secondName")
-	councillor.Image = imagePath
-	councillor.Email = ctx.FormValue("email")
-	councillor.Party = ctx.FormValue("party")
-	councillor.Phone = ctx.FormValue("phone")
-	councillor.Web = ctx.FormValue("web")
+	area := ctx.FormValue("area")
+	firstName := ctx.FormValue("firstName")
+	secondName := ctx.FormValue("seconName")
+	email := ctx.FormValue("email")
+	party := ctx.FormValue("party")
+	phone := ctx.FormValue("phone")
+	web := ctx.FormValue("party")
+	address := ctx.FormValue("address")
+	county := ctx.FormValue("county")
 	twitterHandler := ctx.FormValue("twitter")
-	councillor.Twitter = &twitterHandler
 	facebookName := ctx.FormValue("facebook")
+	user.Area = area
+	user.County = county
+	user.Type = "councillor"
+	user.Email = email
+	user.Active = false
+	user.FirstName = firstName
+	user.SecondName = secondName
+	user.SignupType = "local"
+	du := domain.NewUser(user)
+	if err := uRepo.SaveUpdate(du); err != nil {
+		return err
+	}
+
+	councillor.Area = area
+	councillor.FirstName = firstName
+	councillor.SecondName = secondName
+	councillor.Image = imagePath
+	councillor.Email = email
+	councillor.Address = address
+	councillor.Party = party
+	councillor.Phone = phone
+	councillor.Web = web
+	councillor.Twitter = &twitterHandler
 	councillor.Facebook = &facebookName
-	councillor.Address = ctx.FormValue("address")
-	councillor.County = ctx.FormValue("county")
+	councillor.UserID = du.ID
+
 	if err := councillor.Validate(); err != nil {
 		return err
 	}

@@ -68,6 +68,9 @@ func (as AuthenticationService) localAuthenticate(token, email string) error {
 	if u == nil {
 		return goa.ErrNotFound("no such user")
 	}
+	if !u.Active {
+		return goa.ErrUnauthorized("account not activated.")
+	}
 	if err := bcrypt.CompareHashAndPassword([]byte(u.Token), []byte(token)); err != nil {
 		return goa.ErrUnauthorized("not authorised")
 	}

@@ -29,6 +29,9 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 			Default("local")
 		})
 		Attribute("image", String, "an image url for the user")
+		Attribute("active", Boolean, "whether the user is activated or not ", func() {
+			Default(true)
+		})
 		Required("firstName", "secondName", "email", "token")
 	})
 	View("login", func() {
@@ -52,6 +55,7 @@ var User = MediaType("application/vnd.goa.local.user+json", func() {
 		Attribute("county")
 		Attribute("area")
 		Attribute("type")
+		Attribute("active")
 	})
 	//visible to everyone
 	View("public", func() {
@@ -170,6 +174,9 @@ var UserPayload = Type("User", func() {
 	})
 	Attribute("image", String, "an image url for the user", func() {
 		Default("")
+	})
+	Attribute("active", Boolean, "whether the user is active or not", func() {
+		Default(true)
 	})
 	Required("firstName", "secondName", "email", "token", "type")
 })

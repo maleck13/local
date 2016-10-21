@@ -19,18 +19,18 @@ import (
 
 // communication user type.
 type communication struct {
-	Body         *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
-	CouncillorID *string `form:"councillorID,omitempty" json:"councillorID,omitempty" xml:"councillorID,omitempty"`
-	Error        *string `form:"error,omitempty" json:"error,omitempty" xml:"error,omitempty"`
-	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body  *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
+	Error *string `form:"error,omitempty" json:"error,omitempty" xml:"error,omitempty"`
+	From  *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
-	ID        *string    `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
-	IsPrivate *bool      `form:"isPrivate,omitempty" json:"isPrivate,omitempty" xml:"isPrivate,omitempty"`
-	Open      *bool      `form:"open,omitempty" json:"open,omitempty" xml:"open,omitempty"`
-	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
-	Subject   *string    `form:"subject,omitempty" json:"subject,omitempty" xml:"subject,omitempty"`
-	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
-	Type      *string    `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
+	ID          *string    `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate   *bool      `form:"isPrivate,omitempty" json:"isPrivate,omitempty" xml:"isPrivate,omitempty"`
+	Open        *bool      `form:"open,omitempty" json:"open,omitempty" xml:"open,omitempty"`
+	RecepientID *string    `form:"recepientID,omitempty" json:"recepientID,omitempty" xml:"recepientID,omitempty"`
+	Sent        *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject     *string    `form:"subject,omitempty" json:"subject,omitempty" xml:"subject,omitempty"`
+	To          *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	Type        *string    `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
 }
 
 // Finalize sets the default values for communication type instance.
@@ -55,8 +55,8 @@ func (ut *communication) Finalize() {
 
 // Validate validates the communication type instance.
 func (ut *communication) Validate() (err error) {
-	if ut.CouncillorID == nil {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	if ut.RecepientID == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "recepientID"))
 	}
 	if ut.Subject == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
@@ -80,9 +80,6 @@ func (ut *communication) Publicize() *Communication {
 	if ut.Body != nil {
 		pub.Body = *ut.Body
 	}
-	if ut.CouncillorID != nil {
-		pub.CouncillorID = *ut.CouncillorID
-	}
 	if ut.Error != nil {
 		pub.Error = *ut.Error
 	}
@@ -97,6 +94,9 @@ func (ut *communication) Publicize() *Communication {
 	}
 	if ut.Open != nil {
 		pub.Open = *ut.Open
+	}
+	if ut.RecepientID != nil {
+		pub.RecepientID = *ut.RecepientID
 	}
 	if ut.Sent != nil {
 		pub.Sent = ut.Sent
@@ -115,24 +115,24 @@ func (ut *communication) Publicize() *Communication {
 
 // Communication user type.
 type Communication struct {
-	Body         string  `form:"body" json:"body" xml:"body"`
-	CouncillorID string  `form:"councillorID" json:"councillorID" xml:"councillorID"`
-	Error        string  `form:"error" json:"error" xml:"error"`
-	From         *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body  string  `form:"body" json:"body" xml:"body"`
+	Error string  `form:"error" json:"error" xml:"error"`
+	From  *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
-	ID        string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
-	IsPrivate bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
-	Open      bool       `form:"open" json:"open" xml:"open"`
-	Sent      *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
-	Subject   string     `form:"subject" json:"subject" xml:"subject"`
-	To        *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
-	Type      string     `form:"type" json:"type" xml:"type"`
+	ID          string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	IsPrivate   bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
+	Open        bool       `form:"open" json:"open" xml:"open"`
+	RecepientID string     `form:"recepientID" json:"recepientID" xml:"recepientID"`
+	Sent        *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
+	Subject     string     `form:"subject" json:"subject" xml:"subject"`
+	To          *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	Type        string     `form:"type" json:"type" xml:"type"`
 }
 
 // Validate validates the Communication type instance.
 func (ut *Communication) Validate() (err error) {
-	if ut.CouncillorID == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "councillorID"))
+	if ut.RecepientID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "recepientID"))
 	}
 	if ut.Subject == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "subject"))
@@ -355,6 +355,8 @@ func (ut *UpdateUser) Validate() (err error) {
 type user struct {
 	// Unique user ID
 	ID *string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	// whether the user is active or not
+	Active *bool `form:"active,omitempty" json:"active,omitempty" xml:"active,omitempty"`
 	// The area of the users local council
 	Area *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
 	// The area of the users local council
@@ -382,6 +384,10 @@ func (ut *user) Finalize() {
 	var defaultID = ""
 	if ut.ID == nil {
 		ut.ID = &defaultID
+	}
+	var defaultActive = true
+	if ut.Active == nil {
+		ut.Active = &defaultActive
 	}
 	var defaultArea = ""
 	if ut.Area == nil {
@@ -419,6 +425,9 @@ func (ut *user) Validate() (err error) {
 	if ut.Token == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "token"))
 	}
+	if ut.Type == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
+	}
 
 	return
 }
@@ -428,6 +437,9 @@ func (ut *user) Publicize() *User {
 	var pub User
 	if ut.ID != nil {
 		pub.ID = *ut.ID
+	}
+	if ut.Active != nil {
+		pub.Active = *ut.Active
 	}
 	if ut.Area != nil {
 		pub.Area = *ut.Area
@@ -466,6 +478,8 @@ func (ut *user) Publicize() *User {
 type User struct {
 	// Unique user ID
 	ID string `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
+	// whether the user is active or not
+	Active bool `form:"active" json:"active" xml:"active"`
 	// The area of the users local council
 	Area string `form:"area" json:"area" xml:"area"`
 	// The area of the users local council
@@ -501,6 +515,9 @@ func (ut *User) Validate() (err error) {
 	}
 	if ut.Token == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "token"))
+	}
+	if ut.Type == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
 	}
 
 	return
