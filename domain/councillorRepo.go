@@ -19,7 +19,7 @@ type Councillor struct {
 // AccessTypes defines the non owner access
 func (c *Councillor) AccessTypes() map[string][]string {
 	access := map[string][]string{
-		"read":  []string{"admin", "local"},
+		"read":  []string{"admin", "local", "councillor"},
 		"write": []string{"admin"},
 	}
 	return access

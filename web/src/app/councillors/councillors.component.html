@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="row">
+    <div *ngIf="error" class="alert alert-danger">
+            <strong>Error</strong> {{error}}
+        </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div *ngIf="councillors && ! councillor" class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Councillors for your area</div>
+        <!-- Table -->
+        <table class="table table-striped table-hover">
+          <tr  *ngFor="let c of councillors" (click)="selectCouncillor(c.county,c.id)" > <td>{{c.firstName}}</td> <td>{{c.secondName}}</td> <td>{{c.party}}</td> </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>

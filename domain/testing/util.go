@@ -11,7 +11,7 @@ func AddJwtToken(conf *config.Config, tokenType string, req *http.Request) error
 	authenticate := domain.AuthenticationService{
 		Config: conf,
 	}
-	token, err := authenticate.CreateToken("", "test@test.com", tokenType)
+	token, err := authenticate.CreateToken("", "test@test.com", tokenType, nil)
 	if err != nil {
 		return err
 	}

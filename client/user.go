@@ -141,6 +141,100 @@ func (c *Client) NewReadUserRequest(ctx context.Context, path string) (*http.Req
 	return req, nil
 }
 
+// ResetpasswordUserPayload is the user resetpassword action payload.
+type ResetpasswordUserPayload struct {
+	Newpassword string `form:"newpassword" json:"newpassword" xml:"newpassword"`
+}
+
+// ResetpasswordUserPath computes a request path to the resetpassword action of user.
+func ResetpasswordUserPath() string {
+	return fmt.Sprintf("/user/resetpassword")
+}
+
+// resets the users password
+func (c *Client) ResetpasswordUser(ctx context.Context, path string, payload *ResetpasswordUserPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewResetpasswordUserRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewResetpasswordUserRequest create the request corresponding to the resetpassword action endpoint of the user resource.
+func (c *Client) NewResetpasswordUserRequest(ctx context.Context, path string, payload *ResetpasswordUserPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("POST", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType != "*/*" {
+		header.Set("Content-Type", contentType)
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
+	}
+	return req, nil
+}
+
+// SignUpCouncillorUserPayload is the user signUpCouncillor action payload.
+type SignUpCouncillorUserPayload struct {
+	// The email of the user
+	Email string `form:"email" json:"email" xml:"email"`
+}
+
+// SignUpCouncillorUserPath computes a request path to the signUpCouncillor action of user.
+func SignUpCouncillorUserPath() string {
+	return fmt.Sprintf("/user/councillor/signup")
+}
+
+// handles a councillor signup. By verify the email address is a councillors email and sending out a verification email
+func (c *Client) SignUpCouncillorUser(ctx context.Context, path string, payload *SignUpCouncillorUserPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewSignUpCouncillorUserRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewSignUpCouncillorUserRequest create the request corresponding to the signUpCouncillor action endpoint of the user resource.
+func (c *Client) NewSignUpCouncillorUserRequest(ctx context.Context, path string, payload *SignUpCouncillorUserPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("POST", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType != "*/*" {
+		header.Set("Content-Type", contentType)
+	}
+	return req, nil
+}
+
 // SignupUserPath computes a request path to the signup action of user.
 func SignupUserPath() string {
 	return fmt.Sprintf("/user/signup")
@@ -220,6 +314,42 @@ func (c *Client) NewUpdateUserRequest(ctx context.Context, path string, payload 
 	}
 	if c.JWTSigner != nil {
 		c.JWTSigner.Sign(req)
+	}
+	return req, nil
+}
+
+// VerifySignupUserPath computes a request path to the verifySignup action of user.
+func VerifySignupUserPath() string {
+	return fmt.Sprintf("/user/signup/verify")
+}
+
+// verifies a signup using a token in the  url
+func (c *Client) VerifySignupUser(ctx context.Context, path string, key *string, uid *string) (*http.Response, error) {
+	req, err := c.NewVerifySignupUserRequest(ctx, path, key, uid)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewVerifySignupUserRequest create the request corresponding to the verifySignup action endpoint of the user resource.
+func (c *Client) NewVerifySignupUserRequest(ctx context.Context, path string, key *string, uid *string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	values := u.Query()
+	if key != nil {
+		values.Set("key", *key)
+	}
+	if uid != nil {
+		values.Set("uid", *uid)
+	}
+	u.RawQuery = values.Encode()
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
 	}
 	return req, nil
 }

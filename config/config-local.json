@@ -1,6 +1,7 @@
 {
   "pprof_enabled": false,
   "clientDir": "./client/dist",
+  "site_host":"http://localhost:3000/",
   "files":{
       "aws":{
         "enabled":false
@@ -19,6 +20,7 @@
     "validatorUrl":"https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s"
   },
   "sendgrid":{
+    "enabled":true,
     "apiKey":"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"
   },
   "jwt":{

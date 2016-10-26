@@ -4,3 +4,6 @@ node_modules
 dist
 tmp
 config.json
+.send-grid
+.vscode
+./local

@@ -32,7 +32,9 @@ type Config struct {
 	} `json:"jwt"`
 	PprofEnabled bool `json:"pprof_enabled"`
 	Sendgrid     struct {
-		APIKey string `json:"apiKey"`
+		APIKey  string `json:"apiKey"`
+		Enabled bool   `json:"enabled"`
 	} `json:"sendgrid"`
+	SiteHost string `json:"site_host"`
 }
 //THIS IS A GENERATED FILE. USE scripts/generate_config to regen

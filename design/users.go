@@ -72,7 +72,17 @@ var _ = Resource("user", func() {
 	Security(JWT, func() { // Use JWT to auth requests to this endpoint
 		Scope("api:access") // Enforce presence of "api" scope in JWT claims.
 	})
-
+	Action("signUpCouncillor", func() {
+		Description("handles a councillor signup. By verify the email address is a councillors email and sending out a verification email ")
+		Routing(POST("/councillor/signup"))
+		Payload(func() {
+			Attribute("email")
+			Required("email")
+		})
+		Response(OK)
+		Response(NotFound)
+		NoSecurity()
+	})
 	Action("signup", func() { // Actions define a single API endpoint together
 		Description("Signup a user") // with its path, parameters (both path
 		Routing(POST("/signup"))     // parameters and querystring values) and payload
@@ -80,6 +90,32 @@ var _ = Resource("user", func() {
 		Response(Created)  // Responses define the shape and status code
 		Response(NotFound) // of HTTP responses.
 		NoSecurity()
+	})
+	Action("verifySignup", func() {
+		Description("verifies a signup using a token in the  url ")
+		Routing(GET("/signup/verify"))
+		Params(func() {
+			Param("key", String)
+			Param("uid", String)
+		})
+		Response(OK)
+		Response(Unauthorized)
+		NoSecurity()
+	})
+	Action("resetpassword", func() {
+		Description("resets the users password ")
+		Routing(POST("/resetpassword"))
+		Payload(func() {
+
+			Attribute("newpassword", String)
+			Required("newpassword")
+
+		})
+		Response(OK)
+		Response(Unauthorized)
+		Security(JWT, func() {
+			Scope("password:reset")
+		})
 	})
 	Action("list", func() {
 		Description("get a list user")

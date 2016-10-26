@@ -95,9 +95,10 @@ func CreateAdminUser(config *config.Config, session *r.Session) error {
 	session.Use(data.DB_NAME)
 	adminUserModel := &User{
 		User: &app.User{
-			Email: adminUser,
-			Type:  "admin",
-			Token: string(enc),
+			Email:  adminUser,
+			Type:   "admin",
+			Token:  string(enc),
+			Active: true,
 		},
 	}
 	if err := userRepo.SaveUpdate(adminUserModel); err != nil {

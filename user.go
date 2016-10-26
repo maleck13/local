@@ -3,10 +3,15 @@ package main
 //TODO refactor this test to be more like the councillors test
 
 import (
+	"net/http"
+	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/goadesign/goa"
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
+	"github.com/maleck13/local/domain/communication"
 	"github.com/maleck13/local/domain/local"
 	"github.com/maleck13/local/errors"
 )
@@ -90,7 +95,7 @@ func (c *UserController) Login(ctx *app.LoginUserContext) error {
 	if user == nil {
 		return goa.ErrNotFound("no such user")
 	}
-	token, err := authService.CreateToken(user.ID, user.Email, user.Type())
+	token, err := authService.CreateToken(user.ID, user.Email, user.Type(), nil)
 	if err != nil {
 		return err
 	}
@@ -152,4 +157,84 @@ func (c *UserController) Signup(ctx *app.SignupUserContext) error {
 		return errors.LogAndReturnError(err)
 	}
 	return ctx.Created()
+}
+
+// SignUpCouncillor checks if a councillor exists with the given email and then sends out a verification email to that address
+func (c *UserController) SignUpCouncillor(ctx *app.SignUpCouncillorUserContext) error {
+	var (
+		actor        = domain.NewAdminActor()
+		authorisor   = domain.AuthorisationService{}
+		userRepo     = domain.NewUserRepo(config.Conf, actor, authorisor)
+		commsRepo    = domain.NewCommunicationRepo(config.Conf, actor, authorisor)
+		localService = local.NewService(config.Conf, userRepo)
+		commsService = communication.NewService(config.Conf, commsRepo)
+		authService  = domain.NewAuthenticateService("local", config.Conf, userRepo)
+	)
+
+	exists, err := localService.CheckCouncillorExists(ctx.Payload.Email)
+	if err != nil {
+		return err
+	}
+	if nil == exists {
+		return ctx.NotFound()
+	}
+
+	//create temp token
+	token, err := authService.CreateToken(exists.ID, exists.Email, "councillor", func(c jwt.MapClaims) jwt.Claims {
+		c["exp"] = time.Now().Add(time.Minute * 15).Unix()
+		c["scopes"] = "password:reset"
+		return c
+	})
+	if err != nil {
+		return err
+	}
+	sender := communication.NewEmailer("locals", "noreply@locals.ie")
+	reciever := communication.NewEmailer("Councillor", ctx.Payload.Email)
+	message := communication.NewEmailMessage("Locals.ie verification", config.Conf.SiteHost+"user/signup/verify?key="+token+"&uid="+exists.ID+"", "", "verification")
+	if err := commsService.Send(communication.Email, sender, reciever, message); err != nil {
+		return err
+	}
+	return ctx.OK(nil)
+
+}
+
+// VerifySignup uses a link with a key in it sent from a mail to verify the signup is valid and actives the associated user.
+func (c *UserController) VerifySignup(ctx *app.VerifySignupUserContext) error {
+	var (
+		actor        = domain.NewAdminActor()
+		authorisor   = domain.AuthorisationService{}
+		userRepo     = domain.NewUserRepo(config.Conf, actor, authorisor)
+		authService  = domain.NewAuthenticateService("local", config.Conf, userRepo)
+		localService = local.NewService(config.Conf, userRepo)
+	)
+	key := *ctx.Key
+	uid := *ctx.UID
+	if "" == key || "" == uid {
+		return goa.ErrUnauthorized("missing key")
+	}
+
+	if err := authService.VerifyVerificationToken(key, uid, "password:reset"); err != nil {
+		return err
+	}
+
+	if err := localService.ActivateUser(uid); err != nil {
+		return err
+	}
+
+	http.Redirect(ctx.ResponseWriter, ctx.Request, config.Conf.SiteHost+"passwordreset?key="+key+"&uid="+uid, http.StatusSeeOther)
+	return nil
+}
+
+// Resetpassword resets a users password. If we get here the user has a valid JWT token with the reset:password scope. So we can proceed using the actor and reset the password
+func (c *UserController) Resetpassword(ctx *app.ResetpasswordUserContext) error {
+	var (
+		actor       = ctx.Value("actor").(domain.Actor)
+		authorisor  = domain.AuthorisationService{}
+		userRepo    = domain.NewUserRepo(config.Conf, actor, authorisor)
+		authService = domain.NewAuthenticateService("local", config.Conf, userRepo)
+	)
+	if err := authService.ResetPassword(actor.Id(), ctx.Payload.Newpassword); err != nil {
+		return err
+	}
+	return nil
 }

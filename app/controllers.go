@@ -101,7 +101,7 @@ func MountCommunicationsController(service *goa.Service, ctrl CommunicationsCont
 	initService(service)
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/communications/close/:id", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/communications/councillor/:cid", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/communications/councillor/:rid", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/communications/email/recieve", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/communications/send", ctrl.MuxHandler("preflight", handleCommunicationsOrigin(cors.HandlePreflight()), nil))
 
@@ -135,8 +135,8 @@ func MountCommunicationsController(service *goa.Service, ctrl CommunicationsCont
 	}
 	h = handleCommunicationsOrigin(h)
 	h = handleSecurity("jwt", h, "api:access")
-	service.Mux.Handle("GET", "/communications/councillor/:cid", ctrl.MuxHandler("List", h, nil))
-	service.LogInfo("mount", "ctrl", "Communications", "action", "List", "route", "GET /communications/councillor/:cid", "security", "jwt")
+	service.Mux.Handle("GET", "/communications/councillor/:rid", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Communications", "action", "List", "route", "GET /communications/councillor/:rid", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -354,8 +354,11 @@ type UserController interface {
 	List(*ListUserContext) error
 	Login(*LoginUserContext) error
 	Read(*ReadUserContext) error
+	Resetpassword(*ResetpasswordUserContext) error
+	SignUpCouncillor(*SignUpCouncillorUserContext) error
 	Signup(*SignupUserContext) error
 	Update(*UpdateUserContext) error
+	VerifySignup(*VerifySignupUserContext) error
 }
 
 // MountUserController "mounts" a User resource controller on the given service.
@@ -365,7 +368,10 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 	service.Mux.Handle("OPTIONS", "/user/:id", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user/login", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/user/resetpassword", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/user/councillor/signup", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/user/signup", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/user/signup/verify", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -446,6 +452,51 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 			return err
 		}
 		// Build the context
+		rctx, err := NewResetpasswordUserContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*ResetpasswordUserPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Resetpassword(rctx)
+	}
+	h = handleUserOrigin(h)
+	h = handleSecurity("jwt", h, "password:reset")
+	service.Mux.Handle("POST", "/user/resetpassword", ctrl.MuxHandler("Resetpassword", h, unmarshalResetpasswordUserPayload))
+	service.LogInfo("mount", "ctrl", "User", "action", "Resetpassword", "route", "POST /user/resetpassword", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewSignUpCouncillorUserContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*SignUpCouncillorUserPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.SignUpCouncillor(rctx)
+	}
+	h = handleUserOrigin(h)
+	service.Mux.Handle("POST", "/user/councillor/signup", ctrl.MuxHandler("SignUpCouncillor", h, unmarshalSignUpCouncillorUserPayload))
+	service.LogInfo("mount", "ctrl", "User", "action", "SignUpCouncillor", "route", "POST /user/councillor/signup")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
 		rctx, err := NewSignupUserContext(ctx, service)
 		if err != nil {
 			return err
@@ -484,6 +535,22 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("POST", "/user/:id", ctrl.MuxHandler("Update", h, unmarshalUpdateUserPayload))
 	service.LogInfo("mount", "ctrl", "User", "action", "Update", "route", "POST /user/:id", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewVerifySignupUserContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.VerifySignup(rctx)
+	}
+	h = handleUserOrigin(h)
+	service.Mux.Handle("GET", "/user/signup/verify", ctrl.MuxHandler("VerifySignup", h, nil))
+	service.LogInfo("mount", "ctrl", "User", "action", "VerifySignup", "route", "GET /user/signup/verify")
 }
 
 // handleUserOrigin applies the CORS response headers corresponding to the origin.
@@ -514,6 +581,36 @@ func handleUserOrigin(h goa.Handler) goa.Handler {
 // unmarshalLoginUserPayload unmarshals the request body into the context request data Payload field.
 func unmarshalLoginUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
 	payload := &login{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// unmarshalResetpasswordUserPayload unmarshals the request body into the context request data Payload field.
+func unmarshalResetpasswordUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &resetpasswordUserPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// unmarshalSignUpCouncillorUserPayload unmarshals the request body into the context request data Payload field.
+func unmarshalSignUpCouncillorUserPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &signUpCouncillorUserPayload{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}

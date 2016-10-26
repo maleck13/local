@@ -1,6 +1,7 @@
 package domain_test
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -72,7 +73,7 @@ func TestAuthenticateViaGoogle(t *testing.T) {
 			TokenInfoRetriever: MockGoogleInfoRetriever{requester: requester},
 		}
 		mUser := pt.MakeTestUser("John", "Smith", "test@test.com", "", "local", "")
-		authService := domain.AuthenticationService{Config: config.Conf, UserFinder: pt.NewUserFinder(mUser, nil, nil), Provider: "google", GoogleAPI: gAPI}
+		authService := domain.AuthenticationService{Config: config.Conf, UserFinder: pt.NewUserFinderSaver(mUser, nil, nil), Provider: "google", GoogleAPI: gAPI}
 		err := authService.Authenticate("token", "test@test.com")
 		if tv.ExpectError && err == nil {
 			t.Fatal("expected an error but gone none")
@@ -131,7 +132,7 @@ func TestAuthenticateLocal(t *testing.T) {
 				t.Fatal("faled to generate hashed password", err.Error())
 			}
 			user.Token = string(encPass)
-			uf := pt.NewUserFinder(user, nil, nil)
+			uf := pt.NewUserFinderSaver(user, nil, nil)
 			authenticator := domain.AuthenticationService{Config: config.Conf, UserFinder: uf, Provider: "local"}
 			err = authenticator.Authenticate(tv.Password, tv.UserName)
 			if tv.ExpectError && nil == err {
@@ -142,4 +143,78 @@ func TestAuthenticateLocal(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestResetPassword(t *testing.T) {
+	tests := []struct {
+		Name        string
+		UserID      string
+		NewPass     string
+		SignUpType  string
+		ExpectError bool
+		Error       error
+		Assert      func(t *testing.T) func(u *domain.User)
+	}{
+		{
+			Name:        "test reset password resets the users password",
+			UserID:      "testid",
+			NewPass:     "mypassword",
+			SignUpType:  "local",
+			ExpectError: false,
+			Error:       nil,
+			Assert: func(t *testing.T) func(u *domain.User) {
+				return func(u *domain.User) {
+					if err := bcrypt.CompareHashAndPassword([]byte(u.Token), []byte("mypassword")); err != nil {
+						t.Fatalf("did not expect an error %s ", err.Error())
+					}
+				}
+			},
+		},
+		{
+			Name:        "test reset password fails on error",
+			UserID:      "testid",
+			NewPass:     "mypassword",
+			SignUpType:  "local",
+			ExpectError: true,
+			Error:       fmt.Errorf("an error "),
+			Assert: func(t *testing.T) func(*domain.User) {
+				return func(u *domain.User) {
+					t.Fatal("should not have got here")
+				}
+			},
+		},
+		{
+			Name:        "test reset password fails on google signup",
+			UserID:      "testid",
+			NewPass:     "mypassword",
+			SignUpType:  "google",
+			ExpectError: true,
+			Error:       nil,
+			Assert: func(t *testing.T) func(*domain.User) {
+				return func(u *domain.User) {
+					t.Fatal("should not have got here")
+				}
+			},
+		},
+	}
+
+	for _, tv := range tests {
+		t.Run(tv.Name, func(t *testing.T) {
+			user := pt.MakeTestUser("John", "Smith", "test@test.com", "somewhere", tv.SignUpType, tv.UserID)
+			uf := pt.NewUserFinderSaver(user, nil, tv.Error)
+			uf.SaveUpdateAssert = tv.Assert(t)
+			authenticator := domain.AuthenticationService{Config: config.Conf, UserFinder: uf, Provider: "local"}
+			err := authenticator.ResetPassword(tv.UserID, tv.NewPass)
+			if err != nil && !tv.ExpectError {
+				t.Fatal("did not expect an error changing password but got " + err.Error())
+			}
+			if err == nil && tv.ExpectError {
+				t.Fatal("expected an error bug got nil")
+			}
+		})
+	}
+}
+
+func TestVerifyVerificationToken(t *testing.T) {
+
 }

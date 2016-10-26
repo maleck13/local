@@ -40,7 +40,7 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	}
 	area := ctx.FormValue("area")
 	firstName := ctx.FormValue("firstName")
-	secondName := ctx.FormValue("seconName")
+	secondName := ctx.FormValue("secondName")
 	email := ctx.FormValue("email")
 	party := ctx.FormValue("party")
 	phone := ctx.FormValue("phone")
@@ -57,6 +57,9 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	user.FirstName = firstName
 	user.SecondName = secondName
 	user.SignupType = "local"
+	if err := user.Validate(); err != nil {
+		errors.Wrap(err, " user invalid ")
+	}
 	du := domain.NewUser(user)
 	if err := uRepo.SaveUpdate(du); err != nil {
 		return err
@@ -74,9 +77,10 @@ func (c *AdminController) CreateCouncillor(ctx *app.CreateCouncillorAdminContext
 	councillor.Twitter = &twitterHandler
 	councillor.Facebook = &facebookName
 	councillor.UserID = du.ID
+	councillor.County = county
 
 	if err := councillor.Validate(); err != nil {
-		return err
+		return errors.Wrap(err, " councillor invalid ")
 	}
 	if err := cRepo.SaveUpdate(domain.NewCouncillor(councillor)); err != nil {
 		return err

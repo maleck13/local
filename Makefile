@@ -33,7 +33,7 @@ test-unit:
 
 .PHONY: test-all
 test-all:
-	go test -cpu=2 -cover -v `go list ./... | grep -v /vendor/` -integration=true	
+	go test -cpu=2 -cover `go list ./... | grep -v /vendor/` -integration=true	
 
 .PHONY: test-race
 test-race:

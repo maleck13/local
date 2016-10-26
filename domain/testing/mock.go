@@ -1,6 +1,8 @@
 package testing
 
 import (
+	"fmt"
+
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/domain"
 )
@@ -26,6 +28,11 @@ func (muf MockUserFinder) FindAllByTypeAndArea(uType, area string) ([]*domain.Us
 	return muf.users, muf.err
 }
 
+func (muf MockUserFinder) FindOneByTypeAndEmail(uType, email string) (*domain.User, error) {
+	fmt.Println("MockUserFinder", muf.user)
+	return muf.user, muf.err
+}
+
 // NewUserFinder returns configured UserFinder
 func NewUserFinder(u *domain.User, us []*domain.User, err error) domain.UserFinder {
 	return MockUserFinder{
@@ -38,6 +45,7 @@ func NewUserFinder(u *domain.User, us []*domain.User, err error) domain.UserFind
 // MockUserFinderSaver implements UserFinderSaver interface
 type MockUserFinderSaver struct {
 	MockUserFinder
+	SaveUpdateAssert func(u *domain.User)
 }
 
 // SaveUpdate mock implements UserSaver
@@ -48,11 +56,14 @@ func (mfs MockUserFinderSaver) SaveUpdate(u *domain.User) error {
 	if "" == u.ID {
 		u.ID = "mockid"
 	}
+	if mfs.SaveUpdateAssert != nil {
+		mfs.SaveUpdateAssert(u)
+	}
 	return nil
 }
 
 // NewUserFinderSaver configures and creates a new UserFinderSaver
-func NewUserFinderSaver(u *domain.User, us []*domain.User, err error) domain.UserFinderSaver {
+func NewUserFinderSaver(u *domain.User, us []*domain.User, err error) MockUserFinderSaver {
 	mf := MockUserFinder{
 		user:  u,
 		users: us,

@@ -133,3 +133,56 @@ func TestUpdate(t *testing.T) {
 		})
 	}
 }
+
+func TestCouncillorUserExists(t *testing.T) {
+	var tests = []struct {
+		Name        string
+		ExpectError bool
+		Email       string
+		ShouldFind  bool
+		User        *domain.User
+		Error       error
+	}{
+		{
+			Name:        "should find councillor user using email",
+			ExpectError: false,
+			ShouldFind:  true,
+			Email:       "testcouncillor@test.com",
+			User:        pt.MakeTestUser("John", "Smith", "test@test.com", "somewhere", "local", "id"),
+			Error:       nil,
+		},
+		{
+			Name:        "should not find councillor user that doesnt exist",
+			ExpectError: false,
+			ShouldFind:  false,
+			Email:       "nothere@test.com",
+			User:        nil,
+			Error:       nil,
+		},
+		{
+			Name:        "should not find councillor in error case",
+			ExpectError: true,
+			ShouldFind:  false,
+			Email:       "nothere@test.com",
+			User:        nil,
+			Error:       fmt.Errorf("an error"),
+		},
+	}
+
+	for _, tv := range tests {
+		t.Run(tv.Name, func(t *testing.T) {
+			userRepo := pt.NewUserFinderSaver(tv.User, nil, tv.Error)
+			localService := local.NewService(config.Conf, userRepo)
+			exists, err := localService.CheckCouncillorExists(tv.Email)
+			if tv.ExpectError && nil == err {
+				t.Fatal("expected an error but got nil")
+			}
+			if !tv.ExpectError && nil != err {
+				t.Fatalf("did not expect an error but got one %s ", err.Error())
+			}
+			if tv.ShouldFind && exists == nil {
+				t.Fatalf("expected exist to be %v a councillor but got %v", tv.ShouldFind, exists)
+			}
+		})
+	}
+}

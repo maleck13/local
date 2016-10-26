@@ -4,6 +4,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -77,6 +78,13 @@ func assetHandler() goa.MuxHandler {
 	base := "./web/dist/"
 	h := http.FileServer(http.Dir(base))
 	return func(rw http.ResponseWriter, req *http.Request, v url.Values) {
+		fmt.Println(req.URL.Path)
+		if req.URL.Path == "/login" {
+			req.URL.Path = "/"
+		}
+		if req.URL.Path == "/passwordreset" {
+			req.URL.Path = "/"
+		}
 		h.ServeHTTP(rw, req)
 	}
 }

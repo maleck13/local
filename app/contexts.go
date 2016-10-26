@@ -96,7 +96,7 @@ type ListCommunicationsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Cid string
+	Rid string
 }
 
 // NewListCommunicationsContext parses the incoming request URL and body, performs validations and creates the
@@ -107,10 +107,10 @@ func NewListCommunicationsContext(ctx context.Context, service *goa.Service) (*L
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	rctx := ListCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramCid := req.Params["cid"]
-	if len(paramCid) > 0 {
-		rawCid := paramCid[0]
-		rctx.Cid = rawCid
+	paramRid := req.Params["rid"]
+	if len(paramRid) > 0 {
+		rawRid := paramRid[0]
+		rctx.Rid = rawRid
 	}
 	return &rctx, err
 }
@@ -458,6 +458,144 @@ func (ctx *ReadUserContext) NotFound() error {
 	return nil
 }
 
+// ResetpasswordUserContext provides the user resetpassword action context.
+type ResetpasswordUserContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *ResetpasswordUserPayload
+}
+
+// NewResetpasswordUserContext parses the incoming request URL and body, performs validations and creates the
+// context used by the user controller resetpassword action.
+func NewResetpasswordUserContext(ctx context.Context, service *goa.Service) (*ResetpasswordUserContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := ResetpasswordUserContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// resetpasswordUserPayload is the user resetpassword action payload.
+type resetpasswordUserPayload struct {
+	Newpassword *string `form:"newpassword,omitempty" json:"newpassword,omitempty" xml:"newpassword,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *resetpasswordUserPayload) Validate() (err error) {
+	if payload.Newpassword == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "newpassword"))
+	}
+
+	return
+}
+
+// Publicize creates ResetpasswordUserPayload from resetpasswordUserPayload
+func (payload *resetpasswordUserPayload) Publicize() *ResetpasswordUserPayload {
+	var pub ResetpasswordUserPayload
+	if payload.Newpassword != nil {
+		pub.Newpassword = *payload.Newpassword
+	}
+	return &pub
+}
+
+// ResetpasswordUserPayload is the user resetpassword action payload.
+type ResetpasswordUserPayload struct {
+	Newpassword string `form:"newpassword" json:"newpassword" xml:"newpassword"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *ResetpasswordUserPayload) Validate() (err error) {
+	if payload.Newpassword == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "newpassword"))
+	}
+
+	return
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ResetpasswordUserContext) OK(r *GoaLocalUser) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ResetpasswordUserContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// SignUpCouncillorUserContext provides the user signUpCouncillor action context.
+type SignUpCouncillorUserContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *SignUpCouncillorUserPayload
+}
+
+// NewSignUpCouncillorUserContext parses the incoming request URL and body, performs validations and creates the
+// context used by the user controller signUpCouncillor action.
+func NewSignUpCouncillorUserContext(ctx context.Context, service *goa.Service) (*SignUpCouncillorUserContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := SignUpCouncillorUserContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// signUpCouncillorUserPayload is the user signUpCouncillor action payload.
+type signUpCouncillorUserPayload struct {
+	// The email of the user
+	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *signUpCouncillorUserPayload) Validate() (err error) {
+	if payload.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "email"))
+	}
+
+	return
+}
+
+// Publicize creates SignUpCouncillorUserPayload from signUpCouncillorUserPayload
+func (payload *signUpCouncillorUserPayload) Publicize() *SignUpCouncillorUserPayload {
+	var pub SignUpCouncillorUserPayload
+	if payload.Email != nil {
+		pub.Email = *payload.Email
+	}
+	return &pub
+}
+
+// SignUpCouncillorUserPayload is the user signUpCouncillor action payload.
+type SignUpCouncillorUserPayload struct {
+	// The email of the user
+	Email string `form:"email" json:"email" xml:"email"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *SignUpCouncillorUserPayload) Validate() (err error) {
+	if payload.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "email"))
+	}
+
+	return
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *SignUpCouncillorUserContext) OK(r *GoaLocalUser) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *SignUpCouncillorUserContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
 // SignupUserContext provides the user signup action context.
 type SignupUserContext struct {
 	context.Context
@@ -529,5 +667,47 @@ func (ctx *UpdateUserContext) Unauthorized() error {
 // NotFound sends a HTTP response with status code 404.
 func (ctx *UpdateUserContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// VerifySignupUserContext provides the user verifySignup action context.
+type VerifySignupUserContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Key *string
+	UID *string
+}
+
+// NewVerifySignupUserContext parses the incoming request URL and body, performs validations and creates the
+// context used by the user controller verifySignup action.
+func NewVerifySignupUserContext(ctx context.Context, service *goa.Service) (*VerifySignupUserContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := VerifySignupUserContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramKey := req.Params["key"]
+	if len(paramKey) > 0 {
+		rawKey := paramKey[0]
+		rctx.Key = &rawKey
+	}
+	paramUID := req.Params["uid"]
+	if len(paramUID) > 0 {
+		rawUID := paramUID[0]
+		rctx.UID = &rawUID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *VerifySignupUserContext) OK(r *GoaLocalUser) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.user+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *VerifySignupUserContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
 	return nil
 }

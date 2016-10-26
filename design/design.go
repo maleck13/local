@@ -13,7 +13,7 @@ var _ = API("locals", func() { // API defines the microservice endpoint and
 	Title("You and local government")                                       // other global properties. There should be one
 	Description("A platform for interacting with you and local government") // and exactly one API definition appearing in
 	Scheme("http")                                                          // the design.
-	Host("localhost:3000")
+	Host("localhost:3000/api")
 	Origin("*", func() {
 		Methods("GET", "POST", "DELETE", "PUT")
 		Headers("x-auth")

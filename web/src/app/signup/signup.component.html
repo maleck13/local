@@ -1,0 +1,73 @@
+<div class="col-md-4"></div>
+<div class="col-md-4">
+    <div *ngIf="signUpError" class="alert alert-warning">
+        <strong>Error</strong> There was a problem during signup: {{signUpError}}
+    </div>
+    
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <p *ngIf="userSignupType === 'local'" >Signup either using the social login or using the form provided.</p>
+            <p *ngIf="userSignupType === 'councillor'">Please enter you council email address. We will send a mail to that address so that you can be validated as a local councillor.</p>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li role="presentation" id="local" class="active" #userType (click)="userTypeSelect($event)"><a href="#">Local</a></li>
+                <li role="presentation" id="councillor" class="" #userType (click)="userTypeSelect($event)"><a href="#">Councillor</a></li>
+            </ul>
+            <div *ngIf="userSignupType === 'local'" class="col-md-12" style="padding:15px;">
+                <div id="google-signin"></div>
+            </div>
+            <hr/>
+            <div *ngIf="userSignupType === 'local'" class="col-md-12 well">
+                <div *ngIf="signUpMessage" class="alert alert-success">
+                    {{signUpMessage}}
+                </div>
+                <form (ngSubmit)="manualSignup()">
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input name="email" [(ngModel)]="signUp.email" type="email" class="form-control required" id="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="token">Password:</label>
+                        <input name="token" [(ngModel)]="signUp.token" type="password" class="form-control required" id="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First name:</label>
+                        <input name="firstName" [(ngModel)]="signUp.firstName" type="text" class="form-control required" id="firstName" value=""
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="secondName">Second name:</label>
+                        <input name="secondName" [(ngModel)]="signUp.secondName" type="text" class="form-control required" id="secondName" value=""
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="county">County:</label><br/>
+                        <select name="county" [(ngModel)]="signUp.county" class="form-control required" required id="county">
+                            <option type="text" value="">Please fill this in</option>
+                            <option type="text" value="Waterford">Waterford</option> 
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign Up</button>
+                </form>
+            </div>
+
+            <div *ngIf="userSignupType === 'councillor'" class="col-md-12 well">
+                 <div *ngIf="signUpMessage" class="alert alert-success">
+                    {{signUpMessage}}
+                </div>
+                <form (ngSubmit)="councillorSignUpCheck()">
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input name="email" [(ngModel)]="signUp.email" type="email" class="form-control required" id="email" placeholder="Email">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign Up</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="col-md-4"></div>

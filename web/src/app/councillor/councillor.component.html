@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row">
+    <div *ngIf="error" class="alert alert-danger">
+      <strong>Error</strong> {{error}}
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div *ngIf="councillor" class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Cllr. {{councillor.firstName}} {{councillor.secondName}}</div>
+        <div class="panel-body">
+          <table class="table">
+            <tr>
+              <td>Party:</td>
+              <td>{{councillor.party}}</td>
+            </tr>
+            <tr>
+              <td>Address:</td>
+              <td>{{councillor.address}}</td>
+            </tr>
+            <tr *ngIf="councillorComunications && councillorComunications.length">
+              <td>Open Communications:</td>
+              <td><span class="badge">{{councillorComunications.length}}</span></td>
+            </tr>
+          </table>
+          <button *ngIf="! communication" class="btn btn-default pull-right" (click)="communicate(councillor)">Contact this councillor</button>
+          <div *ngIf="communication" class="col-md-12">
+            <div class="well well-sm">
+              When sending a communication to your local councillor, ensure you are curtious. This communication will be sent via email
+              and the councillor will be linked to this communication via social media such as facebook and twitter. You
+              will be alerted when a reply is recieved.
+              <br/> Unticking the private option, will allow all users of locals to see your communication and any replies
+              that are sent. This will allow other locals to vote up and show support based on your communication.
+            </div>
+            <form>
+              <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" name="subject" class="form-control" id="subject" required [(ngModel)]="communication.subject">
+              </div>
+              <div class="form-group">
+                <label for="body">Body:</label>
+                <textarea name="body" class="form-control" id="subject" required [(ngModel)]="communication.body"></textarea>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input name="private" [checked]="communication.isPrivate"  [(ngModel)]="communication.isPrivate" type="checkbox"> Private Communication
+                </label>
+              </div>
+              <button class="btn btn-default pull-right" (click)="sendCommunication(councillor)">Send Communication</button>
+              <button class="btn btn-warning pull-right" (click)="cancelCommunication($event)" style="margin-right:5px;">Close</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="councillorComunications && councillorComunications.length > 0 " class="panel panel-default">
+         <div class="panel-heading">Current Communications</div>
+        <div class="panel-body">
+          <table class="table table-condensed table-hover">
+
+            <tr *ngFor="let c of councillorComunications  ">
+              <td>Subject:</td>
+              <td>{{c.subject}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>

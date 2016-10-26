@@ -407,46 +407,69 @@ definitions:
     - signupType
     title: Login
     type: object
+  ResetpasswordUserPayload:
+    example:
+      newpassword: Ab iusto totam quod cupiditate eum consequatur.
+    properties:
+      newpassword:
+        example: Ab iusto totam quod cupiditate eum consequatur.
+        type: string
+    required:
+    - newpassword
+    title: ResetpasswordUserPayload
+    type: object
+  SignUpCouncillorUserPayload:
+    example:
+      email: Cum quis modi voluptas nostrum eum doloribus.
+    properties:
+      email:
+        description: The email of the user
+        example: Cum quis modi voluptas nostrum eum doloribus.
+        type: string
+    required:
+    - email
+    title: SignUpCouncillorUserPayload
+    type: object
   UpdateUser:
     example:
-      area: Molestias reprehenderit molestias impedit sint.
-      county: Exercitationem nihil illum dolores voluptate.
-      email: Nemo itaque.
-      firstName: Asperiores sint deserunt magnam ut.
-      id: Voluptatibus molestiae accusantium error molestias est.
-      image: Quod modi eos incidunt.
-      secondName: Asperiores et voluptas consequuntur ullam.
+      area: Voluptatibus molestiae accusantium error molestias est.
+      county: Quod modi eos incidunt.
+      email: Asperiores et voluptas consequuntur ullam.
+      firstName: Nostrum distinctio rerum.
+      id: Soluta minus quaerat ut corrupti aut.
+      image: Ut culpa tempore sunt aut omnis.
+      secondName: Amet et amet iure omnis.
     properties:
       area:
         default: ""
         description: The area of the users local council
-        example: Molestias reprehenderit molestias impedit sint.
+        example: Voluptatibus molestiae accusantium error molestias est.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Exercitationem nihil illum dolores voluptate.
+        example: Quod modi eos incidunt.
         type: string
       email:
         description: The email of the user
-        example: Nemo itaque.
+        example: Asperiores et voluptas consequuntur ullam.
         type: string
       firstName:
         description: Name of the user
-        example: Asperiores sint deserunt magnam ut.
+        example: Nostrum distinctio rerum.
         type: string
       id:
         description: Unique user ID
-        example: Voluptatibus molestiae accusantium error molestias est.
+        example: Soluta minus quaerat ut corrupti aut.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Quod modi eos incidunt.
+        example: Ut culpa tempore sunt aut omnis.
         type: string
       secondName:
         description: Name of the user
-        example: Asperiores et voluptas consequuntur ullam.
+        example: Amet et amet iure omnis.
         type: string
     required:
     - firstName
@@ -458,25 +481,25 @@ definitions:
     type: object
   User:
     example:
-      ID: Ab iusto totam quod cupiditate eum consequatur.
+      ID: Expedita itaque molestiae totam et dolores consectetur.
       active: false
-      area: Quis modi voluptas nostrum eum.
-      county: Molestiae expedita.
-      email: Molestiae totam et dolores.
-      firstName: Molestiae itaque accusamus dolorem.
-      image: Molestiae quae non provident.
+      area: Accusamus dolorem distinctio molestiae quae non provident.
+      county: Soluta et et est consequatur aut.
+      email: Exercitationem tenetur.
+      firstName: Impedit voluptate voluptate doloremque consequatur amet.
+      image: Nulla id.
       location:
         Lat: 0.96697384
         Lon: 0.10044984
-      secondName: Soluta et et est consequatur aut.
-      signupType: Exercitationem tenetur.
-      token: Impedit voluptate voluptate doloremque consequatur amet.
-      type: Nulla id.
+      secondName: Molestias reprehenderit molestias impedit sint.
+      signupType: Exercitationem nihil illum dolores voluptate.
+      token: Nemo itaque.
+      type: Asperiores sint deserunt magnam ut.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Ab iusto totam quod cupiditate eum consequatur.
+        example: Expedita itaque molestiae totam et dolores consectetur.
         type: string
       active:
         default: true
@@ -486,45 +509,45 @@ definitions:
       area:
         default: ""
         description: The area of the users local council
-        example: Quis modi voluptas nostrum eum.
+        example: Accusamus dolorem distinctio molestiae quae non provident.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Molestiae expedita.
+        example: Soluta et et est consequatur aut.
         type: string
       email:
         description: The email of the user
-        example: Molestiae totam et dolores.
+        example: Exercitationem tenetur.
         type: string
       firstName:
         description: Name of the user
-        example: Molestiae itaque accusamus dolorem.
+        example: Impedit voluptate voluptate doloremque consequatur amet.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Molestiae quae non provident.
+        example: Nulla id.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Soluta et et est consequatur aut.
+        example: Molestias reprehenderit molestias impedit sint.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Exercitationem tenetur.
+        example: Exercitationem nihil illum dolores voluptate.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Impedit voluptate voluptate doloremque consequatur amet.
+        example: Nemo itaque.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Nulla id.
+        example: Asperiores sint deserunt magnam ut.
         type: string
     required:
     - firstName
@@ -571,7 +594,7 @@ definitions:
         type: string
     title: 'Mediatype identifier: application/vnd.goa.error'
     type: object
-host: localhost:3000
+host: localhost:3000/api
 info:
   description: A platform for interacting with you and local government
   title: You and local government
@@ -619,14 +642,14 @@ paths:
       summary: close communications
       tags:
       - communications
-  /communications/councillor/{cid}:
+  /communications/councillor/{rid}:
     get:
       description: "read communications \n\nRequired security scopes:\n  * `api:access`"
       operationId: communications#list
       parameters:
-      - description: councillorID
+      - description: recepientID
         in: path
-        name: cid
+        name: rid
         required: true
         type: string
       responses:
@@ -904,6 +927,29 @@ paths:
       summary: update user
       tags:
       - user
+  /user/councillor/signup:
+    post:
+      description: 'handles a councillor signup. By verify the email address is a
+        councillors email and sending out a verification email '
+      operationId: user#signUpCouncillor
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/SignUpCouncillorUserPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: signUpCouncillor user
+      tags:
+      - user
   /user/login:
     post:
       description: login user
@@ -924,6 +970,31 @@ paths:
       summary: login user
       tags:
       - user
+  /user/resetpassword:
+    post:
+      description: "resets the users password \n\nRequired security scopes:\n  * `password:reset`"
+      operationId: user#resetpassword
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ResetpasswordUserPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - password:reset
+      summary: resetpassword user
+      tags:
+      - user
   /user/signup:
     post:
       description: Signup a user
@@ -942,6 +1013,31 @@ paths:
       schemes:
       - http
       summary: signup user
+      tags:
+      - user
+  /user/signup/verify:
+    get:
+      description: 'verifies a signup using a token in the  url '
+      operationId: user#verifySignup
+      parameters:
+      - in: query
+        name: key
+        required: false
+        type: string
+      - in: query
+        name: uid
+        required: false
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalUser'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      summary: verifySignup user
       tags:
       - user
 produces:

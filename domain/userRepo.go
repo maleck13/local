@@ -70,6 +70,7 @@ type UserDeleter interface {
 type UserFinder interface {
 	FindOneByFieldAndValue(field, val string) (*User, error)
 	FindAllByTypeAndArea(uType, area string) ([]*User, error)
+	FindOneByTypeAndEmail(uType, email string) (*User, error)
 }
 
 // UserFinderDeleterSaver composite interface
@@ -109,6 +110,27 @@ func (ur UserRepo) FindOneByFieldAndValue(field, val string) (*User, error) {
 	}
 	res := &User{}
 	q := map[string]interface{}{field: val}
+	c, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error FindOneByFieldAndValue")
+	}
+	if c.IsNil() {
+		return nil, nil
+	}
+	c.One(res)
+	if err := ur.Authorisor.Authorise(res, "read", ur.Actor); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (ur UserRepo) FindOneByTypeAndEmail(uType, email string) (*User, error) {
+	sess, err := data.DbSession(ur.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error FindOneByFieldAndValue")
+	}
+	res := &User{}
+	q := map[string]string{"Email": email, "Type": uType}
 	c, err := r.DB(data.DB_NAME).Table(data.USER_TABLE).Filter(q).Run(sess)
 	if err != nil {
 		return nil, errors.Wrap(err, "unexpected error FindOneByFieldAndValue")

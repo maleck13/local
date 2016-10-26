@@ -33,6 +33,22 @@ func NewService(config *config.Config, repo domain.UserFinderSaver) *Service {
 	}
 }
 
+// ActivateUser sets a user to active
+func (ls Service) ActivateUser(uid string) error {
+	u, err := ls.UserRepo.FindOneByFieldAndValue("id", uid)
+	if err != nil {
+		return err
+	}
+	if nil == u {
+		return goa.ErrNotFound("no such user")
+	}
+	u.Active = true
+	if err := ls.UserRepo.SaveUpdate(u); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Register a user with locals. If the SignupType is local the passed password is encrypted before being saved.
 // If the user type is google we take the token returned from google and store it.
 func (ls Service) Register(user *app.User) (*domain.User, error) {
@@ -88,4 +104,13 @@ func (ls Service) Update(update *app.UpdateUser) (*domain.User, error) {
 		return nil, err
 	}
 	return existing, nil
+}
+
+// CheckCouncillorExists takes an email address and check if there is a user with that email
+func (ls Service) CheckCouncillorExists(email string) (*domain.User, error) {
+	u, err := ls.UserRepo.FindOneByTypeAndEmail("councillor", email)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }
