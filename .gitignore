@@ -7,3 +7,4 @@ config.json
 .send-grid
 .vscode
 ./local
+config/config-local.json
