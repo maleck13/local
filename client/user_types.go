@@ -19,9 +19,10 @@ import (
 
 // communication user type.
 type communication struct {
-	Body  *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
-	Error *string `form:"error,omitempty" json:"error,omitempty" xml:"error,omitempty"`
-	From  *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body   *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
+	CommID *string `form:"commID,omitempty" json:"commID,omitempty" xml:"commID,omitempty"`
+	Error  *string `form:"error,omitempty" json:"error,omitempty" xml:"error,omitempty"`
+	From   *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
 	ID          *string    `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	IsPrivate   *bool      `form:"isPrivate,omitempty" json:"isPrivate,omitempty" xml:"isPrivate,omitempty"`
@@ -80,6 +81,9 @@ func (ut *communication) Publicize() *Communication {
 	if ut.Body != nil {
 		pub.Body = *ut.Body
 	}
+	if ut.CommID != nil {
+		pub.CommID = ut.CommID
+	}
 	if ut.Error != nil {
 		pub.Error = *ut.Error
 	}
@@ -115,9 +119,10 @@ func (ut *communication) Publicize() *Communication {
 
 // Communication user type.
 type Communication struct {
-	Body  string  `form:"body" json:"body" xml:"body"`
-	Error string  `form:"error" json:"error" xml:"error"`
-	From  *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body   string  `form:"body" json:"body" xml:"body"`
+	CommID *string `form:"commID,omitempty" json:"commID,omitempty" xml:"commID,omitempty"`
+	Error  string  `form:"error" json:"error" xml:"error"`
+	From   *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
 	ID          string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	IsPrivate   bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`

@@ -96,7 +96,8 @@ type ListCommunicationsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Rid string
+	CommsID *string
+	Rid     string
 }
 
 // NewListCommunicationsContext parses the incoming request URL and body, performs validations and creates the
@@ -107,6 +108,11 @@ func NewListCommunicationsContext(ctx context.Context, service *goa.Service) (*L
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	rctx := ListCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramCommsID := req.Params["commsID"]
+	if len(paramCommsID) > 0 {
+		rawCommsID := paramCommsID[0]
+		rctx.CommsID = &rawCommsID
+	}
 	paramRid := req.Params["rid"]
 	if len(paramRid) > 0 {
 		rawRid := paramRid[0]

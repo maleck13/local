@@ -88,13 +88,14 @@ func (c *CommunicationsController) Send(ctx *app.SendCommunicationsContext) erro
 	comm := domain.NewCommunication(ctx.Payload)
 	commsService := communication.NewService(config.Conf, commsRepo)
 	if err := commsService.Send(communication.Email, sender, reciever, message); err != nil {
-		comm.Error = err.Error()
 		return err
 	}
 	now := time.Now()
 	comm.Sent = &now
-	comm.From = &user.Email
-	comm.To = &recipient.Email
+	senderMail := sender.Address()
+	comm.From = &senderMail
+	recieptMail := reciever.Address()
+	comm.To = &recieptMail
 	comm.UserID = user.ID
 	if err := commsRepo.SaveUpdate(comm); err != nil {
 		return err
@@ -112,11 +113,26 @@ func (c *CommunicationsController) List(ctx *app.ListCommunicationsContext) erro
 	actor := ctx.Value("actor").(domain.Actor)
 	authorisor := domain.AuthorisationService{}
 	commsRepo := domain.NewCommunicationRepo(config.Conf, actor, authorisor)
-	comms, err := commsRepo.FindAllByRecepientIDAndUserID(ctx.Rid, actor.Id(), true)
+	var comms = []*domain.Communication{}
+	var err error
+	res := app.GoaLocalCommunicationCollection{}
+	//TODO need to group these communications together to form replies etc
+	fmt.Println(ctx)
+	if ctx.CommsID == nil {
+		comms, err = commsRepo.FindAllByRecepientIDAndUserID(ctx.Rid, actor.Id(), true)
+		if err != nil {
+			return err
+		}
+		for _, c := range comms {
+			res = append(res, communicationToView(c))
+		}
+		return ctx.OK(res)
+	}
+	q := map[string]interface{}{"UserID": actor.Id(), "RecipientID": ctx.Rid, "CommID": ctx.CommsID}
+	comms, err = commsRepo.FindAllByKeyValues(q)
 	if err != nil {
 		return err
 	}
-	res := app.GoaLocalCommunicationCollection{}
 	for _, c := range comms {
 		res = append(res, communicationToView(c))
 	}

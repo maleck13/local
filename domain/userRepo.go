@@ -28,6 +28,13 @@ func (u *User) AccessTypes() map[string][]string {
 		"read":  []string{"admin"},
 		"write": []string{"admin"},
 	}
+	if u.Type() == "councillor" {
+		access["read"] = append(access["read"], "local")
+	}
+	if u.Type() == "local" {
+		access["read"] = append(access["read"], "councillor")
+	}
+
 	return access
 }
 

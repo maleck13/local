@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import {Councillor, CouncillorsService, CouncillorCommunication} from '../councillors/councillors.service'
 import {ActivatedRoute, RouterStateSnapshot, Router }       from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import {ProfileService} from '../profile.service'
+import {ProfileService,UserData} from '../profile.service'
 import {Response} from '@angular/http'
 import {CommunicationsService} from '../communications.service'
 
@@ -20,11 +20,14 @@ export class CouncillorComponent implements OnInit, OnDestroy {
 
   @Input() councillors: Councillor[]
 
-  private councillor: Councillor
-  private paramSub: Subscription
-  private communication: CouncillorCommunication
-  private councillorComunications: CouncillorCommunication[]
-  private error: Response
+  private councillor: Councillor;
+  private paramSub: Subscription;
+  private communication: CouncillorCommunication;
+  private selectedCommunication: CouncillorCommunication;
+  private subComms: CouncillorCommunication[];
+  private councillorComunications: CouncillorCommunication[];
+  private error: Response;
+  private user: UserData;
 
   ngOnInit() {
     this.paramSub = this.route.params.subscribe(params => {
@@ -34,9 +37,8 @@ export class CouncillorComponent implements OnInit, OnDestroy {
           this.service.councillor(id, auth)
             .then((c) => {
               this.councillor = c;
-              this.communications.listForUser(c.id,auth)
+              this.communications.listForUser(c.id,auth,null)
               .then((comms)=>{
-                console.log(comms)
                 this.councillorComunications = comms;
               })
               .catch((err)=>{
@@ -48,6 +50,8 @@ export class CouncillorComponent implements OnInit, OnDestroy {
             });
         });
     });
+     this.profile.getUserData()
+     .then((u)=>this.user = u);
   }
   ngOnDestroy() {
     this.paramSub.unsubscribe();
@@ -55,12 +59,31 @@ export class CouncillorComponent implements OnInit, OnDestroy {
 
   communicate(c: Councillor) {
 
-    this.communication = new CouncillorCommunication("", c.id, "", true,"email");
+    this.communication = new CouncillorCommunication("","", c.id, "", true,"email",null);
   }
   cancelCommunication(ev: any) {
     ev.preventDefault()
     this.communication = null;
 
+  }
+
+  openCommunication(councillorID:string,commID: string, index:number){
+    console.log("openCommunication", commID);
+    //call out to api to list comms by commID
+    this.profile.getTokenHeader()
+        .then((auth) => {
+          return this.communications.listForUser(councillorID,auth,commID)
+        })
+        .then((comms)=>{
+          this.selectedCommunication = this.councillorComunications[index];
+          this.subComms = comms.filter((c)=>{
+            if (c.id != this.selectedCommunication.id){
+              return true
+            }
+          });
+        })
+        .catch((e)=>console.error);
+    
   }
 
   sendCommunication(councillor: Councillor) {

@@ -20,16 +20,19 @@ export class CommunicationsService {
     .catch((err)=>this.handleError);
   }
 
-  listForUser(cid:string, auth:Headers):Promise<CouncillorCommunication[]>{
+  listForUser(cid:string, auth:Headers,commID:string):Promise<CouncillorCommunication[]>{
     auth.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: auth });
     let calURL = this.communicationURL + "/councillor/" + cid
+    if (commID){
+      calURL +="?commID="+ commID
+    }
     return this.http.get(calURL,options).toPromise()
     .then((res)=>{
       let  comms =  res.json()
       if (Array.isArray(comms)){
         let communications = comms.map((c)=>{
-          return new CouncillorCommunication(c.subject,c.recepientID,c.body,c.isPrivate,"email")
+          return new CouncillorCommunication(c.id,c.subject,c.recepientID,c.body,c.isPrivate,"email",c.commID)
         })
         return communications;
       }

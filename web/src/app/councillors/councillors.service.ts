@@ -78,10 +78,12 @@ export class Councillor {
 
 export class CouncillorCommunication{
   constructor(
+    public id:string,
     public subject:string,
     public recepientID:string,
     public body:string,
     public isPrivate:boolean,
-    public type:string 
+    public type:string,
+    public commID:string 
   ){}
 }

@@ -7,31 +7,35 @@ definitions:
   Communication:
     example:
       body: Commodi voluptas consectetur.
-      error: A sapiente ut iure ex aperiam et.
-      from: Alias cumque error consequatur ducimus asperiores iste.
-      id: Praesentium rerum voluptatem ea iusto explicabo.
+      commID: A sapiente ut iure ex aperiam et.
+      error: Alias cumque error consequatur ducimus asperiores iste.
+      from: Praesentium rerum voluptatem ea iusto explicabo.
+      id: Distinctio similique eum et molestiae laudantium voluptatum.
       isPrivate: false
-      open: false
-      recepientID: Eum et.
-      sent: 1997-07-31T15:47:54+01:00
-      subject: Voluptatum magni tempora.
-      to: Aut nesciunt ut accusantium sit velit dolore.
-      type: Voluptate explicabo aut.
+      open: true
+      recepientID: Aut nesciunt ut accusantium sit velit dolore.
+      sent: 1994-03-17T06:24:13Z
+      subject: Explicabo aut laudantium quia.
+      to: Et nemo similique voluptate quae.
+      type: Voluptatem facere.
     properties:
       body:
         example: Commodi voluptas consectetur.
         type: string
-      error:
-        default: ""
+      commID:
         example: A sapiente ut iure ex aperiam et.
         type: string
-      from:
+      error:
+        default: ""
         example: Alias cumque error consequatur ducimus asperiores iste.
+        type: string
+      from:
+        example: Praesentium rerum voluptatem ea iusto explicabo.
         type: string
       id:
         default: ""
         description: db id
-        example: Praesentium rerum voluptatem ea iusto explicabo.
+        example: Distinctio similique eum et molestiae laudantium voluptatum.
         type: string
       isPrivate:
         default: true
@@ -39,23 +43,23 @@ definitions:
         type: boolean
       open:
         default: true
-        example: false
+        example: true
         type: boolean
       recepientID:
-        example: Eum et.
+        example: Aut nesciunt ut accusantium sit velit dolore.
         type: string
       sent:
-        example: 1997-07-31T15:47:54+01:00
+        example: 1994-03-17T06:24:13Z
         format: date-time
         type: string
       subject:
-        example: Voluptatum magni tempora.
+        example: Explicabo aut laudantium quia.
         type: string
       to:
-        example: Aut nesciunt ut accusantium sit velit dolore.
+        example: Et nemo similique voluptate quae.
         type: string
       type:
-        example: Voluptate explicabo aut.
+        example: Voluptatem facere.
         type: string
     required:
     - recepientID
@@ -388,18 +392,18 @@ definitions:
     type: object
   Login:
     example:
-      email: Quia reiciendis et.
-      signupType: Similique voluptate quae.
-      token: Voluptatem facere.
+      email: Ab iusto totam quod cupiditate eum consequatur.
+      signupType: Cum quis modi voluptas nostrum eum doloribus.
+      token: Expedita itaque molestiae totam et dolores consectetur.
     properties:
       email:
-        example: Quia reiciendis et.
+        example: Ab iusto totam quod cupiditate eum consequatur.
         type: string
       signupType:
-        example: Similique voluptate quae.
+        example: Cum quis modi voluptas nostrum eum doloribus.
         type: string
       token:
-        example: Voluptatem facere.
+        example: Expedita itaque molestiae totam et dolores consectetur.
         type: string
     required:
     - email
@@ -409,10 +413,10 @@ definitions:
     type: object
   ResetpasswordUserPayload:
     example:
-      newpassword: Ab iusto totam quod cupiditate eum consequatur.
+      newpassword: Itaque accusamus dolorem distinctio molestiae quae.
     properties:
       newpassword:
-        example: Ab iusto totam quod cupiditate eum consequatur.
+        example: Itaque accusamus dolorem distinctio molestiae quae.
         type: string
     required:
     - newpassword
@@ -420,11 +424,11 @@ definitions:
     type: object
   SignUpCouncillorUserPayload:
     example:
-      email: Cum quis modi voluptas nostrum eum doloribus.
+      email: Provident voluptatem soluta et et est.
     properties:
       email:
         description: The email of the user
-        example: Cum quis modi voluptas nostrum eum doloribus.
+        example: Provident voluptatem soluta et et est.
         type: string
     required:
     - email
@@ -432,44 +436,44 @@ definitions:
     type: object
   UpdateUser:
     example:
-      area: Voluptatibus molestiae accusantium error molestias est.
-      county: Quod modi eos incidunt.
-      email: Asperiores et voluptas consequuntur ullam.
-      firstName: Nostrum distinctio rerum.
-      id: Soluta minus quaerat ut corrupti aut.
-      image: Ut culpa tempore sunt aut omnis.
-      secondName: Amet et amet iure omnis.
+      area: Asperiores et voluptas consequuntur ullam.
+      county: Nostrum distinctio rerum.
+      email: Soluta minus quaerat ut corrupti aut.
+      firstName: Ut culpa tempore sunt aut omnis.
+      id: Amet et amet iure omnis.
+      image: Voluptas animi quod aut in explicabo cum.
+      secondName: Autem qui ipsum fugiat recusandae praesentium in.
     properties:
       area:
         default: ""
         description: The area of the users local council
-        example: Voluptatibus molestiae accusantium error molestias est.
+        example: Asperiores et voluptas consequuntur ullam.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Quod modi eos incidunt.
+        example: Nostrum distinctio rerum.
         type: string
       email:
         description: The email of the user
-        example: Asperiores et voluptas consequuntur ullam.
+        example: Soluta minus quaerat ut corrupti aut.
         type: string
       firstName:
         description: Name of the user
-        example: Nostrum distinctio rerum.
+        example: Ut culpa tempore sunt aut omnis.
         type: string
       id:
         description: Unique user ID
-        example: Soluta minus quaerat ut corrupti aut.
+        example: Amet et amet iure omnis.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Ut culpa tempore sunt aut omnis.
+        example: Voluptas animi quod aut in explicabo cum.
         type: string
       secondName:
         description: Name of the user
-        example: Amet et amet iure omnis.
+        example: Autem qui ipsum fugiat recusandae praesentium in.
         type: string
     required:
     - firstName
@@ -481,25 +485,25 @@ definitions:
     type: object
   User:
     example:
-      ID: Expedita itaque molestiae totam et dolores consectetur.
+      ID: Aut aut.
       active: false
-      area: Accusamus dolorem distinctio molestiae quae non provident.
-      county: Soluta et et est consequatur aut.
-      email: Exercitationem tenetur.
-      firstName: Impedit voluptate voluptate doloremque consequatur amet.
-      image: Nulla id.
+      area: Nisi impedit.
+      county: Voluptate doloremque consequatur amet.
+      email: Nulla id.
+      firstName: Molestias reprehenderit molestias impedit sint.
+      image: Exercitationem nihil illum dolores voluptate.
       location:
         Lat: 0.96697384
         Lon: 0.10044984
-      secondName: Molestias reprehenderit molestias impedit sint.
-      signupType: Exercitationem nihil illum dolores voluptate.
-      token: Nemo itaque.
-      type: Asperiores sint deserunt magnam ut.
+      secondName: Nemo itaque.
+      signupType: Asperiores sint deserunt magnam ut.
+      token: Voluptatibus molestiae accusantium error molestias est.
+      type: Quod modi eos incidunt.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Expedita itaque molestiae totam et dolores consectetur.
+        example: Aut aut.
         type: string
       active:
         default: true
@@ -509,45 +513,45 @@ definitions:
       area:
         default: ""
         description: The area of the users local council
-        example: Accusamus dolorem distinctio molestiae quae non provident.
+        example: Nisi impedit.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Soluta et et est consequatur aut.
+        example: Voluptate doloremque consequatur amet.
         type: string
       email:
         description: The email of the user
-        example: Exercitationem tenetur.
+        example: Nulla id.
         type: string
       firstName:
         description: Name of the user
-        example: Impedit voluptate voluptate doloremque consequatur amet.
+        example: Molestias reprehenderit molestias impedit sint.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Nulla id.
+        example: Exercitationem nihil illum dolores voluptate.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Molestias reprehenderit molestias impedit sint.
+        example: Nemo itaque.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Exercitationem nihil illum dolores voluptate.
+        example: Asperiores sint deserunt magnam ut.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Nemo itaque.
+        example: Voluptatibus molestiae accusantium error molestias est.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Asperiores sint deserunt magnam ut.
+        example: Quod modi eos incidunt.
         type: string
     required:
     - firstName
@@ -647,6 +651,11 @@ paths:
       description: "read communications \n\nRequired security scopes:\n  * `api:access`"
       operationId: communications#list
       parameters:
+      - description: communication id
+        in: query
+        name: commsID
+        required: false
+        type: string
       - description: recepientID
         in: path
         name: rid

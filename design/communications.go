@@ -35,6 +35,7 @@ var _ = Resource("communications", func() {
 		Routing(GET("/councillor/:rid"))
 		Params(func() { // (shape of the request body).
 			Param("rid", String, "recepientID")
+			Param("commsID", String, "communication id")
 		})
 		Response(OK, func() {
 			Media(CollectionOf(Communication))
@@ -109,5 +110,6 @@ var CommunicationPayload = Type("Communication", func() {
 		Default("")
 	})
 	Attribute("sent", DateTime)
+	Attribute("commID", String)
 	Required("recepientID", "subject", "body", "isPrivate", "type")
 })

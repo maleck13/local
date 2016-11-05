@@ -32,7 +32,9 @@ type (
 	// ListCommunicationsCommand is the command line data structure for the list action of communications
 	ListCommunicationsCommand struct {
 		// recepientID
-		Rid         string
+		Rid string
+		// communication id
+		CommsID     string
 		PrettyPrint bool
 	}
 
@@ -228,9 +230,9 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "email": "Quia reiciendis et.",
-   "signupType": "Similique voluptate quae.",
-   "token": "Voluptatem facere."
+   "email": "Ab iusto totam quod cupiditate eum consequatur.",
+   "signupType": "Cum quis modi voluptas nostrum eum doloribus.",
+   "token": "Expedita itaque molestiae totam et dolores consectetur."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -293,7 +295,7 @@ Payload example:
 Payload example:
 
 {
-   "newpassword": "Ab iusto totam quod cupiditate eum consequatur."
+   "newpassword": "Itaque accusamus dolorem distinctio molestiae quae."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
@@ -315,16 +317,17 @@ Payload example:
 
 {
    "body": "Commodi voluptas consectetur.",
-   "error": "A sapiente ut iure ex aperiam et.",
-   "from": "Alias cumque error consequatur ducimus asperiores iste.",
-   "id": "Praesentium rerum voluptatem ea iusto explicabo.",
+   "commID": "A sapiente ut iure ex aperiam et.",
+   "error": "Alias cumque error consequatur ducimus asperiores iste.",
+   "from": "Praesentium rerum voluptatem ea iusto explicabo.",
+   "id": "Distinctio similique eum et molestiae laudantium voluptatum.",
    "isPrivate": false,
-   "open": false,
-   "recepientID": "Eum et.",
-   "sent": "1997-07-31T15:47:54+01:00",
-   "subject": "Voluptatum magni tempora.",
-   "to": "Aut nesciunt ut accusantium sit velit dolore.",
-   "type": "Voluptate explicabo aut."
+   "open": true,
+   "recepientID": "Aut nesciunt ut accusantium sit velit dolore.",
+   "sent": "1994-03-17T06:24:13Z",
+   "subject": "Explicabo aut laudantium quia.",
+   "to": "Et nemo similique voluptate quae.",
+   "type": "Voluptatem facere."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
@@ -345,7 +348,7 @@ Payload example:
 Payload example:
 
 {
-   "email": "Cum quis modi voluptas nostrum eum doloribus."
+   "email": "Provident voluptatem soluta et et est."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
@@ -366,21 +369,21 @@ Payload example:
 Payload example:
 
 {
-   "ID": "Expedita itaque molestiae totam et dolores consectetur.",
+   "ID": "Aut aut.",
    "active": false,
-   "area": "Accusamus dolorem distinctio molestiae quae non provident.",
-   "county": "Soluta et et est consequatur aut.",
-   "email": "Exercitationem tenetur.",
-   "firstName": "Impedit voluptate voluptate doloremque consequatur amet.",
-   "image": "Nulla id.",
+   "area": "Nisi impedit.",
+   "county": "Voluptate doloremque consequatur amet.",
+   "email": "Nulla id.",
+   "firstName": "Molestias reprehenderit molestias impedit sint.",
+   "image": "Exercitationem nihil illum dolores voluptate.",
    "location": {
       "Lat": 0.9669738640370986,
       "Lon": 0.10044983987987859
    },
-   "secondName": "Molestias reprehenderit molestias impedit sint.",
-   "signupType": "Exercitationem nihil illum dolores voluptate.",
-   "token": "Nemo itaque.",
-   "type": "Asperiores sint deserunt magnam ut."
+   "secondName": "Nemo itaque.",
+   "signupType": "Asperiores sint deserunt magnam ut.",
+   "token": "Voluptatibus molestiae accusantium error molestias est.",
+   "type": "Quod modi eos incidunt."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
@@ -401,13 +404,13 @@ Payload example:
 Payload example:
 
 {
-   "area": "Voluptatibus molestiae accusantium error molestias est.",
-   "county": "Quod modi eos incidunt.",
-   "email": "Asperiores et voluptas consequuntur ullam.",
-   "firstName": "Nostrum distinctio rerum.",
-   "id": "Soluta minus quaerat ut corrupti aut.",
-   "image": "Ut culpa tempore sunt aut omnis.",
-   "secondName": "Amet et amet iure omnis."
+   "area": "Asperiores et voluptas consequuntur ullam.",
+   "county": "Nostrum distinctio rerum.",
+   "email": "Soluta minus quaerat ut corrupti aut.",
+   "firstName": "Ut culpa tempore sunt aut omnis.",
+   "id": "Amet et amet iure omnis.",
+   "image": "Voluptas animi quod aut in explicabo cum.",
+   "secondName": "Autem qui ipsum fugiat recusandae praesentium in."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
@@ -702,7 +705,7 @@ func (cmd *ListCommunicationsCommand) Run(c *client.Client, args []string) error
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ListCommunications(ctx, path)
+	resp, err := c.ListCommunications(ctx, path, stringFlagVal("commsID", cmd.CommsID))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -716,6 +719,8 @@ func (cmd *ListCommunicationsCommand) Run(c *client.Client, args []string) error
 func (cmd *ListCommunicationsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var rid string
 	cc.Flags().StringVar(&cmd.Rid, "rid", rid, `recepientID`)
+	var commsID string
+	cc.Flags().StringVar(&cmd.CommsID, "commsID", commsID, `communication id`)
 }
 
 // Run makes the HTTP request corresponding to the RecieveEmailCommunicationsCommand command.

@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
         let ud = new UserData(res.id,res.token,res.type,res.county,res.area);
         let pStore = profileService.storeUserData(ud)
         pStore.then(()=>{
-          router.navigate(["/profile/"+ud.id]);
+          router.navigate([ud.type + "/profile/"+ud.id]);
         });
         pStore.catch((err)=>console.error);
     }

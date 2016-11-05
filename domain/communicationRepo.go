@@ -5,6 +5,7 @@ import (
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/data"
 	"github.com/pkg/errors"
+	"github.com/satori/go.uuid"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
@@ -41,6 +42,7 @@ type CommunicationSaver interface {
 
 type CommunicationFinder interface {
 	FindAllByKeyValue(key string, value interface{}) ([]*Communication, error)
+	FindAllByKeyValues(kv map[string]interface{}) ([]*Communication, error)
 }
 
 type CommunicationRepo struct {
@@ -69,6 +71,10 @@ func (cr CommunicationRepo) SaveUpdate(c *Communication) error {
 	if c.ID != "" {
 		q = q.Update(c)
 	} else {
+		if c.CommID == nil {
+			cid := uuid.NewV4().String()
+			c.CommID = &cid
+		}
 		q = q.Insert(c)
 	}
 	if _, err := q.RunWrite(sess); err != nil {
@@ -76,6 +82,25 @@ func (cr CommunicationRepo) SaveUpdate(c *Communication) error {
 	}
 	return nil
 
+}
+
+func (cr CommunicationRepo) FindAllByKeyValues(kv map[string]interface{}) ([]*Communication, error) {
+	sess, err := data.DbSession(cr.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error getting database session")
+	}
+	c, err := r.DB(data.DB_NAME).Table(data.COMMUNICATIONS_TABLE).Filter(kv).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error listing Communications")
+	}
+	var ret = []*Communication{}
+	if c.IsNil() {
+		return ret, nil
+	}
+	if err := c.All(&ret); err != nil {
+		return nil, errors.Wrap(err, "unexpected error retreiving result set")
+	}
+	return ret, nil
 }
 
 // FindAllByCouncillerIDAndUserID returns a list of Communications between a councillor and a user

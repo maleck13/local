@@ -57,11 +57,23 @@
         <div class="panel-body">
           <table class="table table-condensed table-hover">
 
-            <tr *ngFor="let c of councillorComunications  ">
-              <td>Subject:</td>
-              <td>{{c.subject}}</td>
+            <tr *ngFor="let c of councillorComunications; let i=index;" (click)="openCommunication(councillor.id,c.commID, i)" id="{{i}}">
+              <td id="{{i}}">Subject:</td>
+              <td id="{{i}}">{{c.subject}}</td>
             </tr>
           </table>
+          <div *ngIf="selectedCommunication && selectedCommunication.subject" class="col-md-12">
+            <h2>{{selectedCommunication.subject}}</h2>
+            <p>{{selectedCommunication.body}}</p>
+            {{user.type}}
+            <button *ngIf="user.type == 'councillor'" class="btn-warning pull-right">Reply</button> 
+          </div>
+           <table *ngIf="subComms" class="table table-condensed table-hover"> 
+            <tr *ngFor="let c of subComms; let i=index;" id="{{i}}">
+              <td id="{{i}}">Subject:</td>
+              <td id="{{i}}">{{c.subject}}</td>
+            </tr>
+          </table> 
         </div>
       </div>  
     </div>

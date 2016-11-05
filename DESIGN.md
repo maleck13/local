@@ -25,3 +25,10 @@ Current domains:
 Remove admin countroller and integrate create councillor into the councillor controller with an admin:scope access
 
 Remove duplicated counties and areas in client 
+
+
+## communications
+
+A local constituent is the only one who can initialise communication and they can only communicate with a councillor that is within their area.
+Once communication has been initialised, then the councillor is free to respond.
+Only the initialisor of the communication can decide that the communication is complete.

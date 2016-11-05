@@ -15,8 +15,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li isguest><a routerLink="" routerLinkActive="active">Home</a></li>
-        <li *ngIf="isLoggedIn && userData" ><a routerLink="/profile/{{userData.id}}" routerLinkActive="active">Profile</a></li>
-        <li *ngIf="isLoggedIn && userData.county" ><a routerLink="/councillors/{{userData.county}}/{{userData.area}}" routerLinkActive="active" >Your councillors</a></li>
+        <li *ngIf="isLoggedIn && userData && userData.type === 'local'" ><a routerLink="/local/profile/{{userData.id}}" routerLinkActive="active">Profile</a></li>
+        <li *ngIf="isLoggedIn && userData && userData.type ==='councillor'" ><a routerLink="/councillor/profile/{{userData.id}}" routerLinkActive="active">Council Profile</a></li>
+        <li *ngIf="isLoggedIn && userData.county && userData.type === 'local'" ><a routerLink="/councillors/{{userData.county}}/{{userData.area}}" routerLinkActive="active" >Your Councillors</a></li>
+        <li *ngIf="isLoggedIn && userData.area && userData.type === 'councillor'" ><a routerLink="/constituents/{{userData.county}}/{{userData.area}}" routerLinkActive="active" >Your Constituents</a></li>
         <!-- id is replaced when a user is logged in --> 
         
         </ul>

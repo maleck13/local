@@ -17,6 +17,8 @@ import {Isadmin} from './Isadmin.directive';
 import {HttpModule}from '@angular/http';
 import { UserComponent } from './user/user.component';
 import { IscouncillorDirective } from './iscouncillor.directive';
+import { ConstituentsComponent } from './constituents/constituents.component';
+import { CouncillorProfileComponent } from './councillor/profile/councillor.profile.component';
 
 @NgModule({
   imports: [ 
@@ -27,10 +29,12 @@ import { IscouncillorDirective } from './iscouncillor.directive';
         { path: '', component: HomeComponent },
         { path: 'login', component: LoginComponent },
         { path: 'signup', component: SignupComponent },
-        {path: 'profile/:id', component: ProfileComponent},
+        {path: 'local/profile/:id', component: ProfileComponent},
+        {path: 'councillor/profile/:id', component: CouncillorProfileComponent},
         {path: 'admin/councillor', component:AdminCoucillorComponent},
         {path: 'councillors/:county/:area',component:CouncillorsComponent},
         {path: 'councillor/:county/:id',component:CouncillorComponent},
+        {path: 'constituents/:county/:area',component:ConstituentsComponent},
         {path:'passwordreset', component:UserComponent}
         ])],
   declarations: [ 
@@ -42,12 +46,14 @@ import { IscouncillorDirective } from './iscouncillor.directive';
       AdminCoucillorComponent,
       CouncillorsComponent,
       CouncillorComponent,
+      CouncillorProfileComponent,
       UPLOAD_DIRECTIVES ,
       IsLoggedIn,
       Isguest,
       Isadmin,
       UserComponent,
-      IscouncillorDirective],
+      IscouncillorDirective,
+      ConstituentsComponent],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
