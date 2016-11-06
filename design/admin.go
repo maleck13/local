@@ -5,6 +5,7 @@ import (
 	. "github.com/goadesign/goa/design/apidsl"
 )
 
+//TODO GET RID OF THIS AND MOVE IT INTO THE COUNCILLOR ROUTE
 //User handler definition host:3001/user
 var _ = Resource("admin", func() {
 

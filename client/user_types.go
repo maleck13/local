@@ -152,6 +152,178 @@ func (ut *Communication) Validate() (err error) {
 	return
 }
 
+// councillorUpdate user type.
+type councillorUpdate struct {
+	// a phone contact for the user
+	Address *string `form:"address,omitempty" json:"address,omitempty" xml:"address,omitempty"`
+	Area    *string `form:"area,omitempty" json:"area,omitempty" xml:"area,omitempty"`
+	County  *string `form:"county,omitempty" json:"county,omitempty" xml:"county,omitempty"`
+	Email   *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	// facebook handle for the user
+	Facebook  *string `form:"facebook,omitempty" json:"facebook,omitempty" xml:"facebook,omitempty"`
+	FirstName *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	// whether the councillor is still in office
+	InOffice *bool `form:"inOffice,omitempty" json:"inOffice,omitempty" xml:"inOffice,omitempty"`
+	// the councillors party
+	Party *string `form:"party,omitempty" json:"party,omitempty" xml:"party,omitempty"`
+	// a phone contact for the user
+	Phone      *string `form:"phone,omitempty" json:"phone,omitempty" xml:"phone,omitempty"`
+	SecondName *string `form:"secondName,omitempty" json:"secondName,omitempty" xml:"secondName,omitempty"`
+	// twitter handle for the user
+	Twitter *string `form:"twitter,omitempty" json:"twitter,omitempty" xml:"twitter,omitempty"`
+	// a web link for the user
+	Web *string `form:"web,omitempty" json:"web,omitempty" xml:"web,omitempty"`
+}
+
+// Finalize sets the default values for councillorUpdate type instance.
+func (ut *councillorUpdate) Finalize() {
+	var defaultAddress = ""
+	if ut.Address == nil {
+		ut.Address = &defaultAddress
+	}
+	var defaultInOffice = false
+	if ut.InOffice == nil {
+		ut.InOffice = &defaultInOffice
+	}
+	var defaultParty = ""
+	if ut.Party == nil {
+		ut.Party = &defaultParty
+	}
+	var defaultPhone = ""
+	if ut.Phone == nil {
+		ut.Phone = &defaultPhone
+	}
+	var defaultWeb = ""
+	if ut.Web == nil {
+		ut.Web = &defaultWeb
+	}
+}
+
+// Validate validates the councillorUpdate type instance.
+func (ut *councillorUpdate) Validate() (err error) {
+	if ut.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+	if ut.SecondName == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
+	}
+	if ut.Area == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "area"))
+	}
+	if ut.Phone == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "phone"))
+	}
+	if ut.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	if ut.Party == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "party"))
+	}
+	if ut.Address == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "address"))
+	}
+	if ut.County == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "county"))
+	}
+
+	return
+}
+
+// Publicize creates CouncillorUpdate from councillorUpdate
+func (ut *councillorUpdate) Publicize() *CouncillorUpdate {
+	var pub CouncillorUpdate
+	if ut.Address != nil {
+		pub.Address = *ut.Address
+	}
+	if ut.Area != nil {
+		pub.Area = *ut.Area
+	}
+	if ut.County != nil {
+		pub.County = *ut.County
+	}
+	if ut.Email != nil {
+		pub.Email = *ut.Email
+	}
+	if ut.Facebook != nil {
+		pub.Facebook = ut.Facebook
+	}
+	if ut.FirstName != nil {
+		pub.FirstName = *ut.FirstName
+	}
+	if ut.InOffice != nil {
+		pub.InOffice = *ut.InOffice
+	}
+	if ut.Party != nil {
+		pub.Party = *ut.Party
+	}
+	if ut.Phone != nil {
+		pub.Phone = *ut.Phone
+	}
+	if ut.SecondName != nil {
+		pub.SecondName = *ut.SecondName
+	}
+	if ut.Twitter != nil {
+		pub.Twitter = ut.Twitter
+	}
+	if ut.Web != nil {
+		pub.Web = *ut.Web
+	}
+	return &pub
+}
+
+// CouncillorUpdate user type.
+type CouncillorUpdate struct {
+	// a phone contact for the user
+	Address string `form:"address" json:"address" xml:"address"`
+	Area    string `form:"area" json:"area" xml:"area"`
+	County  string `form:"county" json:"county" xml:"county"`
+	Email   string `form:"email" json:"email" xml:"email"`
+	// facebook handle for the user
+	Facebook  *string `form:"facebook,omitempty" json:"facebook,omitempty" xml:"facebook,omitempty"`
+	FirstName string  `form:"firstName" json:"firstName" xml:"firstName"`
+	// whether the councillor is still in office
+	InOffice bool `form:"inOffice" json:"inOffice" xml:"inOffice"`
+	// the councillors party
+	Party string `form:"party" json:"party" xml:"party"`
+	// a phone contact for the user
+	Phone      string `form:"phone" json:"phone" xml:"phone"`
+	SecondName string `form:"secondName" json:"secondName" xml:"secondName"`
+	// twitter handle for the user
+	Twitter *string `form:"twitter,omitempty" json:"twitter,omitempty" xml:"twitter,omitempty"`
+	// a web link for the user
+	Web string `form:"web" json:"web" xml:"web"`
+}
+
+// Validate validates the CouncillorUpdate type instance.
+func (ut *CouncillorUpdate) Validate() (err error) {
+	if ut.FirstName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "firstName"))
+	}
+	if ut.SecondName == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "secondName"))
+	}
+	if ut.Area == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "area"))
+	}
+	if ut.Phone == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "phone"))
+	}
+	if ut.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	if ut.Party == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "party"))
+	}
+	if ut.Address == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "address"))
+	}
+	if ut.County == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "county"))
+	}
+
+	return
+}
+
 // location user type.
 type location struct {
 	Lat *float64 `form:"Lat,omitempty" json:"Lat,omitempty" xml:"Lat,omitempty"`

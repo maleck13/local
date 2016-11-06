@@ -65,6 +65,20 @@ type (
 		PrettyPrint bool
 	}
 
+	// UpdateCouncillorsCommand is the command line data structure for the update action of councillors
+	UpdateCouncillorsCommand struct {
+		Payload     string
+		ContentType string
+		ID          string
+		PrettyPrint bool
+	}
+
+	// UploadProfilePicCouncillorsCommand is the command line data structure for the uploadProfilePic action of councillors
+	UploadProfilePicCouncillorsCommand struct {
+		ID          string
+		PrettyPrint bool
+	}
+
 	// DeleteUserCommand is the command line data structure for the delete action of user
 	DeleteUserCommand struct {
 		// user ID
@@ -230,9 +244,9 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "email": "Ab iusto totam quod cupiditate eum consequatur.",
-   "signupType": "Cum quis modi voluptas nostrum eum doloribus.",
-   "token": "Expedita itaque molestiae totam et dolores consectetur."
+   "email": "Nemo itaque.",
+   "signupType": "Asperiores sint deserunt magnam ut.",
+   "token": "Voluptatibus molestiae accusantium error molestias est."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -295,7 +309,7 @@ Payload example:
 Payload example:
 
 {
-   "newpassword": "Itaque accusamus dolorem distinctio molestiae quae."
+   "newpassword": "Quod modi eos incidunt."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
@@ -348,7 +362,7 @@ Payload example:
 Payload example:
 
 {
-   "email": "Provident voluptatem soluta et et est."
+   "email": "Asperiores et voluptas consequuntur ullam."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
@@ -369,21 +383,21 @@ Payload example:
 Payload example:
 
 {
-   "ID": "Aut aut.",
+   "ID": "Nostrum distinctio rerum.",
    "active": false,
-   "area": "Nisi impedit.",
-   "county": "Voluptate doloremque consequatur amet.",
-   "email": "Nulla id.",
-   "firstName": "Molestias reprehenderit molestias impedit sint.",
-   "image": "Exercitationem nihil illum dolores voluptate.",
+   "area": "Minus quaerat ut corrupti aut omnis.",
+   "county": "Culpa tempore.",
+   "email": "Aut omnis tenetur.",
+   "firstName": "Et amet iure omnis est voluptas.",
+   "image": "Quod aut in explicabo.",
    "location": {
       "Lat": 0.9669738640370986,
       "Lon": 0.10044983987987859
    },
-   "secondName": "Nemo itaque.",
-   "signupType": "Asperiores sint deserunt magnam ut.",
-   "token": "Voluptatibus molestiae accusantium error molestias est.",
-   "type": "Quod modi eos incidunt."
+   "secondName": "Quia autem qui ipsum fugiat.",
+   "signupType": "Praesentium in natus non asperiores accusantium.",
+   "token": "Deleniti et rem.",
+   "type": "Dolorem quia ipsam consequuntur maiores reprehenderit commodi."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
@@ -393,9 +407,36 @@ Payload example:
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "update",
-		Short: `update a user`,
+		Short: `update action`,
 	}
-	tmp15 := new(UpdateUserCommand)
+	tmp15 := new(UpdateCouncillorsCommand)
+	sub = &cobra.Command{
+		Use:   `councillors ["/councillors/ID"]`,
+		Short: ``,
+		Long: `
+
+Payload example:
+
+{
+   "address": "Ab iusto totam quod cupiditate eum consequatur.",
+   "area": "Cum quis modi voluptas nostrum eum doloribus.",
+   "county": "Expedita itaque molestiae totam et dolores consectetur.",
+   "email": "Itaque accusamus dolorem distinctio molestiae quae.",
+   "facebook": "Provident voluptatem soluta et et est.",
+   "firstName": "Aut aut.",
+   "inOffice": false,
+   "party": "Nisi impedit.",
+   "phone": "Voluptate doloremque consequatur amet.",
+   "secondName": "Nulla id.",
+   "twitter": "Molestias reprehenderit molestias impedit sint.",
+   "web": "Exercitationem nihil illum dolores voluptate."
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
+	}
+	tmp15.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp16 := new(UpdateUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/ID"]`,
 		Short: ``,
@@ -404,32 +445,46 @@ Payload example:
 Payload example:
 
 {
-   "area": "Asperiores et voluptas consequuntur ullam.",
-   "county": "Nostrum distinctio rerum.",
-   "email": "Soluta minus quaerat ut corrupti aut.",
-   "firstName": "Ut culpa tempore sunt aut omnis.",
-   "id": "Amet et amet iure omnis.",
-   "image": "Voluptas animi quod aut in explicabo cum.",
-   "secondName": "Autem qui ipsum fugiat recusandae praesentium in."
+   "area": "Dolorem voluptatem autem nostrum sunt.",
+   "county": "Ducimus accusantium enim voluptatibus perspiciatis deleniti possimus.",
+   "email": "Id sit similique autem necessitatibus ratione.",
+   "firstName": "Dolores praesentium quia nisi cupiditate illo quae.",
+   "id": "Ab voluptatem dolores eaque.",
+   "image": "Fugit officiis veritatis autem aspernatur.",
+   "secondName": "Aut ea debitis voluptatem."
 }`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
 	}
-	tmp15.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp16.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "uploadProfilePic",
+		Short: `update a councillors details`,
+	}
+	tmp17 := new(UploadProfilePicCouncillorsCommand)
+	sub = &cobra.Command{
+		Use:   `councillors ["/councillors/ID/image"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp17.Run(c, args) },
+	}
+	tmp17.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp17.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "verifySignup",
 		Short: `verifies a signup using a token in the  url `,
 	}
-	tmp16 := new(VerifySignupUserCommand)
+	tmp18 := new(VerifySignupUserCommand)
 	sub = &cobra.Command{
 		Use:   `user ["/user/signup/verify"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp18.Run(c, args) },
 	}
-	tmp16.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp18.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp18.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 
@@ -830,6 +885,67 @@ func (cmd *ReadByIDCouncillorsCommand) Run(c *client.Client, args []string) erro
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ReadByIDCouncillorsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id string
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+}
+
+// Run makes the HTTP request corresponding to the UpdateCouncillorsCommand command.
+func (cmd *UpdateCouncillorsCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/councillors/%v", cmd.ID)
+	}
+	var payload client.CouncillorUpdate
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UpdateCouncillors(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UpdateCouncillorsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+	var id string
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+}
+
+// Run makes the HTTP request corresponding to the UploadProfilePicCouncillorsCommand command.
+func (cmd *UploadProfilePicCouncillorsCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/councillors/%v/image", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UploadProfilePicCouncillors(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UploadProfilePicCouncillorsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
 	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
 }

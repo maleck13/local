@@ -69,6 +69,80 @@ definitions:
     - type
     title: Communication
     type: object
+  CouncillorUpdate:
+    example:
+      address: Ab iusto totam quod cupiditate eum consequatur.
+      area: Cum quis modi voluptas nostrum eum doloribus.
+      county: Expedita itaque molestiae totam et dolores consectetur.
+      email: Itaque accusamus dolorem distinctio molestiae quae.
+      facebook: Provident voluptatem soluta et et est.
+      firstName: Aut aut.
+      inOffice: false
+      party: Nisi impedit.
+      phone: Voluptate doloremque consequatur amet.
+      secondName: Nulla id.
+      twitter: Molestias reprehenderit molestias impedit sint.
+      web: Exercitationem nihil illum dolores voluptate.
+    properties:
+      address:
+        default: ""
+        description: a phone contact for the user
+        example: Ab iusto totam quod cupiditate eum consequatur.
+        type: string
+      area:
+        example: Cum quis modi voluptas nostrum eum doloribus.
+        type: string
+      county:
+        example: Expedita itaque molestiae totam et dolores consectetur.
+        type: string
+      email:
+        example: Itaque accusamus dolorem distinctio molestiae quae.
+        type: string
+      facebook:
+        description: facebook handle for the user
+        example: Provident voluptatem soluta et et est.
+        type: string
+      firstName:
+        example: Aut aut.
+        type: string
+      inOffice:
+        default: false
+        description: whether the councillor is still in office
+        example: false
+        type: boolean
+      party:
+        default: ""
+        description: the councillors party
+        example: Nisi impedit.
+        type: string
+      phone:
+        default: ""
+        description: a phone contact for the user
+        example: Voluptate doloremque consequatur amet.
+        type: string
+      secondName:
+        example: Nulla id.
+        type: string
+      twitter:
+        description: twitter handle for the user
+        example: Molestias reprehenderit molestias impedit sint.
+        type: string
+      web:
+        default: ""
+        description: a web link for the user
+        example: Exercitationem nihil illum dolores voluptate.
+        type: string
+    required:
+    - firstName
+    - secondName
+    - area
+    - phone
+    - email
+    - party
+    - address
+    - county
+    title: CouncillorUpdate
+    type: object
   GoaLocalCommunication:
     description: An communication (default view)
     example:
@@ -392,18 +466,18 @@ definitions:
     type: object
   Login:
     example:
-      email: Ab iusto totam quod cupiditate eum consequatur.
-      signupType: Cum quis modi voluptas nostrum eum doloribus.
-      token: Expedita itaque molestiae totam et dolores consectetur.
+      email: Nemo itaque.
+      signupType: Asperiores sint deserunt magnam ut.
+      token: Voluptatibus molestiae accusantium error molestias est.
     properties:
       email:
-        example: Ab iusto totam quod cupiditate eum consequatur.
+        example: Nemo itaque.
         type: string
       signupType:
-        example: Cum quis modi voluptas nostrum eum doloribus.
+        example: Asperiores sint deserunt magnam ut.
         type: string
       token:
-        example: Expedita itaque molestiae totam et dolores consectetur.
+        example: Voluptatibus molestiae accusantium error molestias est.
         type: string
     required:
     - email
@@ -413,10 +487,10 @@ definitions:
     type: object
   ResetpasswordUserPayload:
     example:
-      newpassword: Itaque accusamus dolorem distinctio molestiae quae.
+      newpassword: Quod modi eos incidunt.
     properties:
       newpassword:
-        example: Itaque accusamus dolorem distinctio molestiae quae.
+        example: Quod modi eos incidunt.
         type: string
     required:
     - newpassword
@@ -424,11 +498,11 @@ definitions:
     type: object
   SignUpCouncillorUserPayload:
     example:
-      email: Provident voluptatem soluta et et est.
+      email: Asperiores et voluptas consequuntur ullam.
     properties:
       email:
         description: The email of the user
-        example: Provident voluptatem soluta et et est.
+        example: Asperiores et voluptas consequuntur ullam.
         type: string
     required:
     - email
@@ -436,44 +510,44 @@ definitions:
     type: object
   UpdateUser:
     example:
-      area: Asperiores et voluptas consequuntur ullam.
-      county: Nostrum distinctio rerum.
-      email: Soluta minus quaerat ut corrupti aut.
-      firstName: Ut culpa tempore sunt aut omnis.
-      id: Amet et amet iure omnis.
-      image: Voluptas animi quod aut in explicabo cum.
-      secondName: Autem qui ipsum fugiat recusandae praesentium in.
+      area: Dolorem voluptatem autem nostrum sunt.
+      county: Ducimus accusantium enim voluptatibus perspiciatis deleniti possimus.
+      email: Id sit similique autem necessitatibus ratione.
+      firstName: Dolores praesentium quia nisi cupiditate illo quae.
+      id: Ab voluptatem dolores eaque.
+      image: Fugit officiis veritatis autem aspernatur.
+      secondName: Aut ea debitis voluptatem.
     properties:
       area:
         default: ""
         description: The area of the users local council
-        example: Asperiores et voluptas consequuntur ullam.
+        example: Dolorem voluptatem autem nostrum sunt.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Nostrum distinctio rerum.
+        example: Ducimus accusantium enim voluptatibus perspiciatis deleniti possimus.
         type: string
       email:
         description: The email of the user
-        example: Soluta minus quaerat ut corrupti aut.
+        example: Id sit similique autem necessitatibus ratione.
         type: string
       firstName:
         description: Name of the user
-        example: Ut culpa tempore sunt aut omnis.
+        example: Dolores praesentium quia nisi cupiditate illo quae.
         type: string
       id:
         description: Unique user ID
-        example: Amet et amet iure omnis.
+        example: Ab voluptatem dolores eaque.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Voluptas animi quod aut in explicabo cum.
+        example: Fugit officiis veritatis autem aspernatur.
         type: string
       secondName:
         description: Name of the user
-        example: Autem qui ipsum fugiat recusandae praesentium in.
+        example: Aut ea debitis voluptatem.
         type: string
     required:
     - firstName
@@ -485,25 +559,25 @@ definitions:
     type: object
   User:
     example:
-      ID: Aut aut.
+      ID: Nostrum distinctio rerum.
       active: false
-      area: Nisi impedit.
-      county: Voluptate doloremque consequatur amet.
-      email: Nulla id.
-      firstName: Molestias reprehenderit molestias impedit sint.
-      image: Exercitationem nihil illum dolores voluptate.
+      area: Minus quaerat ut corrupti aut omnis.
+      county: Culpa tempore.
+      email: Aut omnis tenetur.
+      firstName: Et amet iure omnis est voluptas.
+      image: Quod aut in explicabo.
       location:
         Lat: 0.96697384
         Lon: 0.10044984
-      secondName: Nemo itaque.
-      signupType: Asperiores sint deserunt magnam ut.
-      token: Voluptatibus molestiae accusantium error molestias est.
-      type: Quod modi eos incidunt.
+      secondName: Quia autem qui ipsum fugiat.
+      signupType: Praesentium in natus non asperiores accusantium.
+      token: Deleniti et rem.
+      type: Dolorem quia ipsam consequuntur maiores reprehenderit commodi.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Aut aut.
+        example: Nostrum distinctio rerum.
         type: string
       active:
         default: true
@@ -513,45 +587,45 @@ definitions:
       area:
         default: ""
         description: The area of the users local council
-        example: Nisi impedit.
+        example: Minus quaerat ut corrupti aut omnis.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Voluptate doloremque consequatur amet.
+        example: Culpa tempore.
         type: string
       email:
         description: The email of the user
-        example: Nulla id.
+        example: Aut omnis tenetur.
         type: string
       firstName:
         description: Name of the user
-        example: Molestias reprehenderit molestias impedit sint.
+        example: Et amet iure omnis est voluptas.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Exercitationem nihil illum dolores voluptate.
+        example: Quod aut in explicabo.
         type: string
       location:
         $ref: '#/definitions/Location'
       secondName:
         description: Name of the user
-        example: Nemo itaque.
+        example: Quia autem qui ipsum fugiat.
         type: string
       signupType:
         default: ""
         description: the signupType of user google local
-        example: Asperiores sint deserunt magnam ut.
+        example: Praesentium in natus non asperiores accusantium.
         type: string
       token:
         description: This can be an oauth token or a password
-        example: Voluptatibus molestiae accusantium error molestias est.
+        example: Deleniti et rem.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Quod modi eos incidunt.
+        example: Dolorem quia ipsam consequuntur maiores reprehenderit commodi.
         type: string
     required:
     - firstName
@@ -783,6 +857,66 @@ paths:
       - jwt:
         - api:access
       summary: readById councillors
+      tags:
+      - councillors
+    post:
+      description: |-
+        update a councillors details
+
+        Required security scopes:
+          * `api:access`
+      operationId: councillors#update
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CouncillorUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalCouncillor'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: update councillors
+      tags:
+      - councillors
+  /councillors/{id}/image:
+    post:
+      description: |-
+        update a councillors details
+
+        Required security scopes:
+          * `api:access`
+      operationId: councillors#uploadProfilePic
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalCouncillor'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: uploadProfilePic councillors
       tags:
       - councillors
   /swagger-ui/{filepath}:

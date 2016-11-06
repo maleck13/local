@@ -298,6 +298,79 @@ func (ctx *ReadByIDCouncillorsContext) Unauthorized() error {
 	return nil
 }
 
+// UpdateCouncillorsContext provides the councillors update action context.
+type UpdateCouncillorsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID      string
+	Payload *CouncillorUpdate
+}
+
+// NewUpdateCouncillorsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the councillors controller update action.
+func NewUpdateCouncillorsContext(ctx context.Context, service *goa.Service) (*UpdateCouncillorsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := UpdateCouncillorsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateCouncillorsContext) OK(r *GoaLocalCouncillor) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.councillor+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *UpdateCouncillorsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// UploadProfilePicCouncillorsContext provides the councillors uploadProfilePic action context.
+type UploadProfilePicCouncillorsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewUploadProfilePicCouncillorsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the councillors controller uploadProfilePic action.
+func NewUploadProfilePicCouncillorsContext(ctx context.Context, service *goa.Service) (*UploadProfilePicCouncillorsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := UploadProfilePicCouncillorsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UploadProfilePicCouncillorsContext) OK(r *GoaLocalCouncillor) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.councillor+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *UploadProfilePicCouncillorsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
 // DeleteUserContext provides the user delete action context.
 type DeleteUserContext struct {
 	context.Context

@@ -224,6 +224,8 @@ type CouncillorsController interface {
 	goa.Muxer
 	ListForCountyAndArea(*ListForCountyAndAreaCouncillorsContext) error
 	ReadByID(*ReadByIDCouncillorsContext) error
+	Update(*UpdateCouncillorsContext) error
+	UploadProfilePic(*UploadProfilePicCouncillorsContext) error
 }
 
 // MountCouncillorsController "mounts" a Councillors resource controller on the given service.
@@ -232,6 +234,7 @@ func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/councillors", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/councillors/:id", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/councillors/:id/image", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -266,6 +269,46 @@ func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController
 	h = handleSecurity("jwt", h, "api:access")
 	service.Mux.Handle("GET", "/councillors/:id", ctrl.MuxHandler("ReadByID", h, nil))
 	service.LogInfo("mount", "ctrl", "Councillors", "action", "ReadByID", "route", "GET /councillors/:id", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUpdateCouncillorsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*CouncillorUpdate)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Update(rctx)
+	}
+	h = handleCouncillorsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("POST", "/councillors/:id", ctrl.MuxHandler("Update", h, unmarshalUpdateCouncillorsPayload))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "Update", "route", "POST /councillors/:id", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUploadProfilePicCouncillorsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.UploadProfilePic(rctx)
+	}
+	h = handleCouncillorsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("POST", "/councillors/:id/image", ctrl.MuxHandler("UploadProfilePic", h, nil))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "UploadProfilePic", "route", "POST /councillors/:id/image", "security", "jwt")
 }
 
 // handleCouncillorsOrigin applies the CORS response headers corresponding to the origin.
@@ -291,6 +334,22 @@ func handleCouncillorsOrigin(h goa.Handler) goa.Handler {
 
 		return h(ctx, rw, req)
 	}
+}
+
+// unmarshalUpdateCouncillorsPayload unmarshals the request body into the context request data Payload field.
+func unmarshalUpdateCouncillorsPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &councillorUpdate{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	payload.Finalize()
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // SwaggerController is the controller interface for the Swagger actions.

@@ -24,7 +24,7 @@ export class CouncillorsService {
       .toPromise()
       .then((res) => {
         let cs = res.json().map((c) => {
-            return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address)
+            return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address,c.image)
         });
         return cs
       })
@@ -39,10 +39,18 @@ export class CouncillorsService {
       .toPromise()
       .then((res) => {
           let c = res.json();
-          return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address)
+          return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address,c.image)
        })
       .catch(this.handleError);
 
+  }
+  public update(c :Councillor, auth:Headers):Promise<Response>{
+    auth.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: auth });
+    let calURL = this.councillorURL + "/" + c.id;
+    return this.http.post(calURL, c,options)
+      .toPromise()
+      .catch(this.handleError);
   }
 
   private handleError(error: Response) {
@@ -50,7 +58,7 @@ export class CouncillorsService {
   }
   private handleResponse(json: any[]): Councillor[] {
     let cs = json.map((c) => {
-      return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address)
+      return new Councillor(c.id, c.firstName, c.secondName, c.area, c.email, c.twitter, c.facebook, c.phone, c.party, c.web, c.county, c.address,c.image)
     })
     return cs
   }
@@ -72,7 +80,8 @@ export class Councillor {
     public party: string,
     public web: string,
     public county: string,
-    public address: string)
+    public address: string,
+    public image:string)
   { }
 }
 

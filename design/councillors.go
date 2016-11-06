@@ -34,6 +34,29 @@ var _ = Resource("councillors", func() {
 		})
 		Response(Unauthorized) // of HTTP responses.
 	})
+	Action("update", func() {
+		Description("update a councillors details")
+		Routing(POST("/:id"))
+		Payload(CouncillorUpdate)
+		Params(func() { // (shape of the request body).
+			Param("id", String)
+		})
+		Response(OK, func() {
+			Media(Councillor)
+		})
+		Response(Unauthorized) // of HTTP responses.
+	})
+	Action("uploadProfilePic", func() {
+		Description("update a councillors details")
+		Routing(POST("/:id/image"))
+		Params(func() { // (shape of the request body).
+			Param("id", String)
+		})
+		Response(OK, func() {
+			Media(Councillor)
+		})
+		Response(Unauthorized) // of HTTP responses.
+	})
 })
 
 var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
@@ -102,4 +125,30 @@ var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {
 		Attribute("facebook", String, "facebook handle for the user")
 		Attribute("ID", String, "db id")
 	})
+})
+
+var CouncillorUpdate = Type("CouncillorUpdate", func() {
+	Attribute("firstName", String)
+	Attribute("secondName", String)
+	Attribute("area", String)
+	Attribute("county", String)
+	Attribute("email", String)
+	Attribute("inOffice", Boolean, "whether the councillor is still in office", func() {
+		Default(false)
+	})
+	Attribute("phone", String, "a phone contact for the user", func() {
+		Default("")
+	})
+	Attribute("address", String, "a phone contact for the user", func() {
+		Default("")
+	})
+	Attribute("web", String, "a web link for the user", func() {
+		Default("")
+	})
+	Attribute("party", String, "the councillors party", func() {
+		Default("")
+	})
+	Attribute("twitter", String, "twitter handle for the user")
+	Attribute("facebook", String, "facebook handle for the user")
+	Required("firstName", "secondName", "area", "phone", "email", "party", "address", "county")
 })

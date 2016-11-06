@@ -31,7 +31,7 @@ import { CouncillorProfileComponent } from './councillor/profile/councillor.prof
         { path: 'signup', component: SignupComponent },
         {path: 'local/profile/:id', component: ProfileComponent},
         {path: 'councillor/profile/:id', component: CouncillorProfileComponent},
-        {path: 'admin/councillor', component:AdminCoucillorComponent},
+        {path: 'admin/councillor', component:AdminCoucillorComponent}, //TODO CHANGE THIS TO USE THE CouncillorProfileComponent
         {path: 'councillors/:county/:area',component:CouncillorsComponent},
         {path: 'councillor/:county/:id',component:CouncillorComponent},
         {path: 'constituents/:county/:area',component:ConstituentsComponent},

@@ -13,7 +13,7 @@ export class AdminCoucillorComponent implements OnInit {
 
   constructor( private profile: ProfileService) { }
 
-  private councillor: Councillor = new Councillor("", "", "","","","","","","","","");
+  private councillor: Councillor = new Councillor(null,"", "", "","","","","","","","","","assets/blank-profile-picture.png");
   private areas = ["Tramore Waterford City West", "Waterford City East", "Waterford City South"];
   private counties = ["Waterford"];
   private zone: NgZone;

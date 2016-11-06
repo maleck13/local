@@ -117,7 +117,6 @@ func (c *CommunicationsController) List(ctx *app.ListCommunicationsContext) erro
 	var err error
 	res := app.GoaLocalCommunicationCollection{}
 	//TODO need to group these communications together to form replies etc
-	fmt.Println(ctx)
 	if ctx.CommsID == nil {
 		comms, err = commsRepo.FindAllByRecepientIDAndUserID(ctx.Rid, actor.Id(), true)
 		if err != nil {

@@ -63,6 +63,8 @@ func NewUser(u *app.User) *User {
 	return &User{User: u}
 }
 
+//TODO THESE INTERFACES ARE IN THE WRONG PLACE THEY SHOULD BE DEFINED BY THE THING THAT NEEDS THEM IE THE USER SERVICE
+
 // UserSaver defines something that saves users
 type UserSaver interface {
 	SaveUpdate(u *User) error

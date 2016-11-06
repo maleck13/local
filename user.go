@@ -12,6 +12,7 @@ import (
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
 	"github.com/maleck13/local/domain/communication"
+	"github.com/maleck13/local/domain/councillor"
 	"github.com/maleck13/local/domain/local"
 	"github.com/maleck13/local/errors"
 )
@@ -201,11 +202,13 @@ func (c *UserController) SignUpCouncillor(ctx *app.SignUpCouncillorUserContext) 
 // VerifySignup uses a link with a key in it sent from a mail to verify the signup is valid and actives the associated user.
 func (c *UserController) VerifySignup(ctx *app.VerifySignupUserContext) error {
 	var (
-		actor        = domain.NewAdminActor()
-		authorisor   = domain.AuthorisationService{}
-		userRepo     = domain.NewUserRepo(config.Conf, actor, authorisor)
-		authService  = domain.NewAuthenticateService("local", config.Conf, userRepo)
-		localService = local.NewService(config.Conf, userRepo)
+		actor             = domain.NewAdminActor()
+		authorisor        = domain.AuthorisationService{}
+		userRepo          = domain.NewUserRepo(config.Conf, actor, authorisor)
+		councillorRepo    = domain.NewCouncillorRepo(config.Conf, actor, authorisor)
+		authService       = domain.NewAuthenticateService("local", config.Conf, userRepo)
+		localService      = local.NewService(config.Conf, userRepo)
+		councillorService = councillor.NewService(councillorRepo)
 	)
 	key := *ctx.Key
 	uid := *ctx.UID
@@ -219,6 +222,26 @@ func (c *UserController) VerifySignup(ctx *app.VerifySignupUserContext) error {
 
 	if err := localService.ActivateUser(uid); err != nil {
 		return err
+	}
+
+	if actor.Type() == "councillor" {
+		user, err := userRepo.FindOneByFieldAndValue("id", uid)
+		if err != nil {
+			return err
+		}
+		if nil == user {
+			return goa.ErrNotFound("failed to find user")
+		}
+		cllr, err := councillorRepo.FindOneByKeyValue("Email", user.Email)
+		if err != nil {
+			return err
+		}
+		if nil == user {
+			return goa.ErrNotFound("failed to find cllr")
+		}
+		if err := councillorService.SetCouncillorUID(cllr.ID, uid); err != nil {
+			return err
+		}
 	}
 
 	http.Redirect(ctx.ResponseWriter, ctx.Request, config.Conf.SiteHost+"passwordreset?key="+key+"&uid="+uid, http.StatusSeeOther)

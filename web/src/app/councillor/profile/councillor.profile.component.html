@@ -1,1 +1,52 @@
-<h2>Works</h2>
+<div class="col-md-12">
+  <div class="col-md-3"></div>
+  <div class="col-md-6 well">
+    <div *ngIf="councillor" class="col-md-5">
+        <img style="width:100px; height:120px;" src="{{councillor.image}}" />
+    </div>
+    <div class="col-md-7">
+      <form *ngIf="councillor">
+        <label for="file">Profile Pic:</label>
+        <input name="file" type="file" ngFileSelect [options]="basicOptions" [events]="uploadEvents" (onUpload)="handleUpload($event)"
+          name="file" />
+      </form>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="col-md-3"></div>
+  <div class="col-md-6 well">
+    <form *ngIf="councillor">
+      <label for="firstName">First Name:</label>
+      <input type="text" name="firstName" class="form-control" id="firstName" required [(ngModel)]="councillor.firstName" name="firstName">
+      <label for="secondName">Second Name:</label>
+      <input name="secondName" type="text" class="form-control" id="secondName" required [(ngModel)]="councillor.secondName" name="secondName">
+      <label for="address">Address:</label>
+      <input type="text" name="address" class="form-control" id="address" required [(ngModel)]="councillor.address" name="address">
+      <label for="county">County:</label>
+      <select name="county" [(ngModel)]="councillor.county" class="form-control required" id="county">
+          <option type="text" value="">Select an county</option>
+          <option *ngFor="let c of counties" [selected]="councillor.county == c" [value]="c">{{c}}</option> 
+        </select>
+      <label for="area">Area:</label>
+      <select name="area" [(ngModel)]="councillor.area" class="form-control required" id="area">
+          <option type="text" value="">Select an area</option>
+          <option *ngFor="let p of areas" [selected]="councillor.area == p" [value]="p">{{p}}</option> 
+        </select>
+      <label for="email">Email:</label>
+      <input type="email" name="area" [(ngModel)]="councillor.email" class="form-control" id="email" required name="email" />
+      <label for="phone">Phone:</label>
+      <input name="phone" type="text" [(ngModel)]="councillor.phone" class="form-control" id="phone" required name="phone" />
+      <label for="party">Party:</label>
+      <input name="party" type="text" [(ngModel)]="councillor.party" class="form-control" id="party" required name="party" />
+      <label for="web">Web:</label>
+      <input name="web" type="text" [(ngModel)]="councillor.web" class="form-control" id="web" name="web" />
+      <label for="twitter">Twitter:</label>
+      <input name="twitter" type="text" [(ngModel)]="councillor.twitter" class="form-control" id="twitter" name="twitter" />
+      <label for="facebook">Facebook:</label>
+      <input name="facebook" type="text" [(ngModel)]="councillor.facebook" class="form-control" id="facebook" name="facebook" />
+      <br/>
+      <button type="button" class="btn btn-default" (click)="update()">Save</button>
+    </form>
+  </div>
+</div>

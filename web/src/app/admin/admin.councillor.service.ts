@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 export class Councillor{
     constructor(
+        public id:string,
         public firstName:string,
         public secondName:string,
         public area:string,
@@ -15,6 +16,7 @@ export class Councillor{
         public party:string,
         public web:string,
         public county:string,
-        public address:string)
+        public address:string,
+        public image:string)
         {}
 }
