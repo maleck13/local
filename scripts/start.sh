@@ -1,0 +1,1 @@
+docker run --name some-rethink -v "/tmp/rethink:/data" -p 4000:8080 -p 28015:28015 -d rethinkdb

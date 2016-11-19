@@ -22,8 +22,9 @@ import (
 //
 // Identifier: application/vnd.goa.local.communication+json; view=default
 type GoaLocalCommunication struct {
-	Body string  `form:"body" json:"body" xml:"body"`
-	From *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
+	Body   string  `form:"body" json:"body" xml:"body"`
+	CommID *string `form:"commID,omitempty" json:"commID,omitempty" xml:"commID,omitempty"`
+	From   *string `form:"from,omitempty" json:"from,omitempty" xml:"from,omitempty"`
 	// db id
 	ID          string     `form:"id,omitempty" gorethink:"id,omitempty" json:"id,omitempty"`
 	IsPrivate   bool       `form:"isPrivate" json:"isPrivate" xml:"isPrivate"`
@@ -32,6 +33,7 @@ type GoaLocalCommunication struct {
 	Sent        *time.Time `form:"sent,omitempty" json:"sent,omitempty" xml:"sent,omitempty"`
 	Subject     string     `form:"subject" json:"subject" xml:"subject"`
 	To          *string    `form:"to,omitempty" json:"to,omitempty" xml:"to,omitempty"`
+	Type        *string    `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
 	UserID      *string    `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
 }
 
@@ -82,6 +84,100 @@ func (mt GoaLocalCommunicationCollection) Validate() (err error) {
 // DecodeGoaLocalCommunicationCollection decodes the GoaLocalCommunicationCollection instance encoded in resp body.
 func (c *Client) DecodeGoaLocalCommunicationCollection(resp *http.Response) (GoaLocalCommunicationCollection, error) {
 	var decoded GoaLocalCommunicationCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// GoaLocalConsituents media type (default view)
+//
+// Identifier: application/vnd.goa.local.consituents+json; view=default
+type GoaLocalConsituents struct {
+	ID         *string                  `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	FirstName  *string                  `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	OpenComms  []*GoaLocalCommunication `form:"openComms,omitempty" json:"openComms,omitempty" xml:"openComms,omitempty"`
+	SecondName *string                  `form:"secondName,omitempty" json:"secondName,omitempty" xml:"secondName,omitempty"`
+}
+
+// Validate validates the GoaLocalConsituents media type instance.
+func (mt *GoaLocalConsituents) Validate() (err error) {
+	for _, e := range mt.OpenComms {
+		if e.RecepientID == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response.openComms[*]`, "recepientID"))
+		}
+		if e.Subject == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response.openComms[*]`, "subject"))
+		}
+		if e.Body == "" {
+			err = goa.MergeErrors(err, goa.MissingAttributeError(`response.openComms[*]`, "body"))
+		}
+
+	}
+	return
+}
+
+// GoaLocalConsituents media type (nocomms view)
+//
+// Identifier: application/vnd.goa.local.consituents+json; view=nocomms
+type GoaLocalConsituentsNocomms struct {
+	ID           *string `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	FirstName    *string `form:"firstName,omitempty" json:"firstName,omitempty" xml:"firstName,omitempty"`
+	HasOpenComms *bool   `form:"hasOpenComms,omitempty" json:"hasOpenComms,omitempty" xml:"hasOpenComms,omitempty"`
+	SecondName   *string `form:"secondName,omitempty" json:"secondName,omitempty" xml:"secondName,omitempty"`
+}
+
+// DecodeGoaLocalConsituents decodes the GoaLocalConsituents instance encoded in resp body.
+func (c *Client) DecodeGoaLocalConsituents(resp *http.Response) (*GoaLocalConsituents, error) {
+	var decoded GoaLocalConsituents
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// DecodeGoaLocalConsituentsNocomms decodes the GoaLocalConsituentsNocomms instance encoded in resp body.
+func (c *Client) DecodeGoaLocalConsituentsNocomms(resp *http.Response) (*GoaLocalConsituentsNocomms, error) {
+	var decoded GoaLocalConsituentsNocomms
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// GoaLocalConsituentsCollection is the media type for an array of GoaLocalConsituents (default view)
+//
+// Identifier: application/vnd.goa.local.consituents+json; type=collection; view=default
+type GoaLocalConsituentsCollection []*GoaLocalConsituents
+
+// Validate validates the GoaLocalConsituentsCollection media type instance.
+func (mt GoaLocalConsituentsCollection) Validate() (err error) {
+	for _, e := range mt {
+		for _, e := range e.OpenComms {
+			if e.RecepientID == "" {
+				err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*].openComms[*]`, "recepientID"))
+			}
+			if e.Subject == "" {
+				err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*].openComms[*]`, "subject"))
+			}
+			if e.Body == "" {
+				err = goa.MergeErrors(err, goa.MissingAttributeError(`response[*].openComms[*]`, "body"))
+			}
+
+		}
+	}
+	return
+}
+
+// GoaLocalConsituentsCollection is the media type for an array of GoaLocalConsituents (nocomms view)
+//
+// Identifier: application/vnd.goa.local.consituents+json; type=collection; view=nocomms
+type GoaLocalConsituentsNocommsCollection []*GoaLocalConsituentsNocomms
+
+// DecodeGoaLocalConsituentsCollection decodes the GoaLocalConsituentsCollection instance encoded in resp body.
+func (c *Client) DecodeGoaLocalConsituentsCollection(resp *http.Response) (GoaLocalConsituentsCollection, error) {
+	var decoded GoaLocalConsituentsCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// DecodeGoaLocalConsituentsNocommsCollection decodes the GoaLocalConsituentsNocommsCollection instance encoded in resp body.
+func (c *Client) DecodeGoaLocalConsituentsNocommsCollection(resp *http.Response) (GoaLocalConsituentsNocommsCollection, error) {
+	var decoded GoaLocalConsituentsNocommsCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

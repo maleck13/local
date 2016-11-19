@@ -42,8 +42,8 @@ func ListCommunicationsPath(rid string) string {
 }
 
 // read communications
-func (c *Client) ListCommunications(ctx context.Context, path string, commsID *string) (*http.Response, error) {
-	req, err := c.NewListCommunicationsRequest(ctx, path, commsID)
+func (c *Client) ListCommunications(ctx context.Context, path string, commID *string) (*http.Response, error) {
+	req, err := c.NewListCommunicationsRequest(ctx, path, commID)
 	if err != nil {
 		return nil, err
 	}
@@ -51,15 +51,15 @@ func (c *Client) ListCommunications(ctx context.Context, path string, commsID *s
 }
 
 // NewListCommunicationsRequest create the request corresponding to the list action endpoint of the communications resource.
-func (c *Client) NewListCommunicationsRequest(ctx context.Context, path string, commsID *string) (*http.Request, error) {
+func (c *Client) NewListCommunicationsRequest(ctx context.Context, path string, commID *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	if commsID != nil {
-		values.Set("commsID", *commsID)
+	if commID != nil {
+		values.Set("commID", *commID)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)

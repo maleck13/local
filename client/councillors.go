@@ -8,6 +8,37 @@ import (
 	"net/url"
 )
 
+// ListConstituentsCouncillorsPath computes a request path to the listConstituents action of councillors.
+func ListConstituentsCouncillorsPath(id string) string {
+	return fmt.Sprintf("/councillors/%v/consituents", id)
+}
+
+// list of consituents for a councillor
+func (c *Client) ListConstituentsCouncillors(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewListConstituentsCouncillorsRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewListConstituentsCouncillorsRequest create the request corresponding to the listConstituents action endpoint of the councillors resource.
+func (c *Client) NewListConstituentsCouncillorsRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	if c.JWTSigner != nil {
+		c.JWTSigner.Sign(req)
+	}
+	return req, nil
+}
+
 // ListForCountyAndAreaCouncillorsPath computes a request path to the listForCountyAndArea action of councillors.
 func ListForCountyAndAreaCouncillorsPath() string {
 	return fmt.Sprintf("/councillors")

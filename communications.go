@@ -28,6 +28,7 @@ func communicationToView(dc *domain.Communication) *app.GoaLocalCommunication {
 		Open:        dc.Open,
 		From:        dc.From,
 		To:          dc.To,
+		CommID:      dc.CommID,
 		RecepientID: dc.RecepientID,
 	}
 }
@@ -117,7 +118,7 @@ func (c *CommunicationsController) List(ctx *app.ListCommunicationsContext) erro
 	var err error
 	res := app.GoaLocalCommunicationCollection{}
 	//TODO need to group these communications together to form replies etc
-	if ctx.CommsID == nil {
+	if ctx.CommID == nil {
 		comms, err = commsRepo.FindAllByRecepientIDAndUserID(ctx.Rid, actor.Id(), true)
 		if err != nil {
 			return err
@@ -127,7 +128,7 @@ func (c *CommunicationsController) List(ctx *app.ListCommunicationsContext) erro
 		}
 		return ctx.OK(res)
 	}
-	q := map[string]interface{}{"UserID": actor.Id(), "RecipientID": ctx.Rid, "CommID": ctx.CommsID}
+	q := map[string]interface{}{"UserID": actor.Id(), "RecipientID": ctx.Rid, "CommID": ctx.CommID}
 	comms, err = commsRepo.FindAllByKeyValues(q)
 	if err != nil {
 		return err

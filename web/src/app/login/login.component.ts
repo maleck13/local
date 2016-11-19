@@ -56,6 +56,10 @@ export class LoginComponent implements OnInit {
         let ud = new UserData(res.id,res.token,res.type,res.county,res.area);
         let pStore = profileService.storeUserData(ud)
         pStore.then(()=>{
+          if (res.type == "admin"){
+             router.navigate(['/']);
+             return  
+          }
           router.navigate([ud.type + "/profile/"+ud.id]);
         });
         pStore.catch((err)=>console.error);

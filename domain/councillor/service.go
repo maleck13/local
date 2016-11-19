@@ -7,40 +7,40 @@ import (
 	"github.com/maleck13/local/domain"
 )
 
-type Saver interface {
+type CouncillorSaver interface {
 	SaveUpdate(*domain.Councillor) error
 }
 
-type Finder interface {
+type CouncillorFinder interface {
 	FindOneByKeyValue(key string, value interface{}) (*domain.Councillor, error)
 }
 
-type SaverFinder interface {
-	Saver
-	Finder
+type CouncillorSaverFinder interface {
+	CouncillorSaver
+	CouncillorFinder
 }
 
 type councillorService struct {
-	SaverFinder SaverFinder
+	CouncillorSaverFinder CouncillorSaverFinder
 }
 
-func NewService(sf SaverFinder) councillorService {
+func NewService(sf CouncillorSaverFinder) councillorService {
 	return councillorService{
-		SaverFinder: sf,
+		CouncillorSaverFinder: sf,
 	}
 }
 
 func (cs councillorService) SetCouncillorUID(cid, uid string) error {
-	existing, err := cs.SaverFinder.FindOneByKeyValue("id", cid)
+	existing, err := cs.CouncillorSaverFinder.FindOneByKeyValue("id", cid)
 	if err != nil {
 		return err
 	}
 	existing.UserID = uid
-	return cs.SaverFinder.SaveUpdate(existing)
+	return cs.CouncillorSaverFinder.SaveUpdate(existing)
 }
 
 func (cs councillorService) Update(id string, incoming *app.CouncillorUpdate) (*domain.Councillor, error) {
-	existing, err := cs.SaverFinder.FindOneByKeyValue("id", id)
+	existing, err := cs.CouncillorSaverFinder.FindOneByKeyValue("id", id)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (cs councillorService) Update(id string, incoming *app.CouncillorUpdate) (*
 	existing.Twitter = incoming.Twitter
 	existing.Phone = incoming.Phone
 	existing.Web = incoming.Web
-	if err := cs.SaverFinder.SaveUpdate(existing); err != nil {
+	if err := cs.CouncillorSaverFinder.SaveUpdate(existing); err != nil {
 		return nil, err
 	}
 	return existing, nil

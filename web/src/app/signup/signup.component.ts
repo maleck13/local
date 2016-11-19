@@ -112,7 +112,7 @@ export class SignupComponent implements OnInit {
               let ud = new UserData(res.id, res.token, res.type, "", "");
               let pStore = this.profileService.storeUserData(ud)
               pStore.then(() => {
-                this.router.navigate(["/profile/" + res.id], { "queryParams": { "newSignUp": true } });
+                this.router.navigate([res.type + "/profile/" + res.id], { "queryParams": { "newSignUp": true } });
               });
               pStore.catch((err) => {
                 console.error("signup error", err);

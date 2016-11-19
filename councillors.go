@@ -5,6 +5,7 @@ import (
 	"github.com/maleck13/local/app"
 	"github.com/maleck13/local/config"
 	"github.com/maleck13/local/domain"
+	"github.com/maleck13/local/domain/constituents"
 	"github.com/maleck13/local/domain/councillor"
 	"github.com/pkg/errors"
 )
@@ -100,6 +101,23 @@ func (c *CouncillorsController) UploadProfilePic(ctx *app.UploadProfilePicCounci
 		return err
 	}
 	return ctx.OK(councillor.GoaLocalCouncillor)
+}
+
+// ListConstituents will return a list of constituents based on a counciller id
+func (c *CouncillorsController) ListConstituents(ctx *app.ListConstituentsCouncillorsContext) error {
+	var (
+		actor        = ctx.Value("actor").(domain.Actor)
+		cRepo        = domain.NewCouncillorRepo(config.Conf, actor, domain.AuthorisationService{})
+		lRepo        = domain.NewUserRepo(config.Conf, actor, domain.AuthorisationService{})
+		commsRepo    = domain.NewCommunicationRepo(config.Conf, actor, domain.AuthorisationService{})
+		constService = constituents.Service{ConstituentFinder: lRepo, CouncillorFinder: cRepo, CommsFinder: commsRepo}
+	)
+
+	constituents, err := constService.ConsistuentsForCouncillor(ctx.ID)
+	if err != nil {
+		return err
+	}
+	return ctx.OKNocomms(constituents)
 }
 
 func parseCouncillorFormPost(ctx *app.UpdateCouncillorsContext) *app.GoaLocalCouncillor {

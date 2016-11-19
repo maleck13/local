@@ -24,20 +24,19 @@ func TestRegister(t *testing.T) {
 		Name           string
 		ExpectError    bool
 		ShouldFindUser bool
-		Assert         func(*domain.User) error
+		Assert         func(*testing.T, *domain.User)
 	}{
 		{
 			Name:           "test register succeeds",
 			ExpectError:    false,
 			ShouldFindUser: false,
-			Assert: func(u *domain.User) error {
+			Assert: func(t *testing.T, u *domain.User) {
 				if u.ID == "" {
-					return fmt.Errorf("expected an id to be set on user")
+					t.Errorf("expected an id to be set on user")
 				}
 				if u.Email != "test@test.com" {
-					return fmt.Errorf("expected users email to match")
+					t.Errorf("expected users email to match")
 				}
-				return nil
 			},
 		},
 		{

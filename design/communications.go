@@ -35,7 +35,7 @@ var _ = Resource("communications", func() {
 		Routing(GET("/councillor/:rid"))
 		Params(func() { // (shape of the request body).
 			Param("rid", String, "recepientID")
-			Param("commsID", String, "communication id")
+			Param("commID", String, "communication id")
 		})
 		Response(OK, func() {
 			Media(CollectionOf(Communication))
@@ -71,6 +71,7 @@ var Communication = MediaType("application/vnd.goa.local.communication+json", fu
 		Attribute("userID", String)
 		Attribute("error")
 		Attribute("sent")
+		Attribute("commID", String)
 	})
 	View("default", func() {
 		Attribute("isPrivate")
@@ -80,11 +81,13 @@ var Communication = MediaType("application/vnd.goa.local.communication+json", fu
 		Attribute("body")
 		Attribute("from")
 		Attribute("to")
+		Attribute("type")
 		Attribute("open")
 		Attribute("id")
 		Attribute("sent")
+		Attribute("commID")
 	})
-	Required("recepientID", "subject", "body", "isPrivate", "type")
+	Required("recepientID", "subject", "body", "isPrivate")
 })
 
 var CommunicationPayload = Type("Communication", func() {

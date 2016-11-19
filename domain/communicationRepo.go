@@ -145,6 +145,26 @@ func (cr CommunicationRepo) FindAllByKeyValue(key string, value interface{}) ([]
 	return cr.filterEntities(ret, "read"), nil
 }
 
+func (cr CommunicationRepo) FindFirstOpenBySenderAndReceipent(sender, receipient string) (*Communication, error) {
+	sess, err := data.DbSession(cr.Config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error getting database session")
+	}
+	f := map[string]interface{}{"RecepientID": receipient, "UserID": sender, "Open": true}
+	c, err := r.DB(data.DB_NAME).Table(data.COMMUNICATIONS_TABLE).Filter(f).Limit(1).Run(sess)
+	if err != nil {
+		return nil, errors.Wrap(err, "unexpected error finding Communications")
+	}
+	if c.IsNil() {
+		return nil, nil
+	}
+	comm := &Communication{}
+	if err := c.One(comm); err != nil {
+		return nil, errors.Wrap(err, "failed to find one communication")
+	}
+	return comm, nil
+}
+
 func (cr CommunicationRepo) filterEntities(entities []*Communication, action string) []*Communication {
 	filtered := []*Communication{}
 	for _, e := range entities {

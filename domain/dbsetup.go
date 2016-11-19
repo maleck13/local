@@ -65,6 +65,14 @@ func CreateTables(session *r.Session) error {
 					return errors.NewServiceError("failed to create index on table "+t+err.Error(), 500)
 				}
 			}
+			if t == data.COMMUNICATIONS_TABLE {
+				if _, err := r.Table(data.COMMUNICATIONS_TABLE).IndexCreate("RecepientID", r.IndexCreateOpts{}).RunWrite(session); err != nil {
+					return errors.NewServiceError("failed to create index on COMMUNICATIONS_TABLE "+err.Error(), 500)
+				}
+				if _, err := r.Table(data.COMMUNICATIONS_TABLE).IndexCreate("UserID", r.IndexCreateOpts{}).RunWrite(session); err != nil {
+					return errors.NewServiceError("failed to create index on COMMUNICATIONS_TABLE "+err.Error(), 500)
+				}
+			}
 		}
 	}
 	return nil

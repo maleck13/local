@@ -26,6 +26,8 @@ Remove admin countroller and integrate create councillor into the councillor con
 
 Remove duplicated counties and areas in client 
 
+sort out the councillors area of the client. It is disperate and needs more cohesion 
+
 
 ## communications
 

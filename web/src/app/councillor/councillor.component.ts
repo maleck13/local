@@ -28,6 +28,7 @@ export class CouncillorComponent implements OnInit, OnDestroy {
   private councillorComunications: CouncillorCommunication[];
   private error: Response;
   private user: UserData;
+  private success: String 
 
   ngOnInit() {
     this.paramSub = this.route.params.subscribe(params => {
@@ -93,6 +94,17 @@ export class CouncillorComponent implements OnInit, OnDestroy {
         this.communications.communicate(this.communication, auth)
           .then((res) => {
             console.log("sent communication");
+            this.success = "Communication Sent";
+            setTimeout(()=>{
+              this.success = null;
+              this.communication = null;
+            },500);
+          })
+          .then(()=>{
+              return this.communications.listForUser(councillor.id,auth,null)
+          })
+          .then((comms)=>{
+                this.councillorComunications = comms;
           })
           .catch((err) => {
             this.handleErrorResponse(err);

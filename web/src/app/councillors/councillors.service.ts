@@ -44,6 +44,24 @@ export class CouncillorsService {
       .catch(this.handleError);
 
   }
+
+  public constituents(id: string, auth:Headers):Promise<Constituent[]>{
+    auth.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: auth });
+    let calURL = this.councillorURL + "/" + id + "/constituents"
+    return this.http.get(calURL, options)
+      .toPromise()
+      .then((res) => {
+          let cs = res.json();
+          let constituents = []
+          cs.each((item)=>{
+            constituents.push(new Constituent(item.id,item.firstName,item.secondName));
+          })
+          return constituents;
+       })
+      .catch(this.handleError);
+  }
+
   public update(c :Councillor, auth:Headers):Promise<Response>{
     auth.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: auth });
@@ -83,6 +101,14 @@ export class Councillor {
     public address: string,
     public image:string)
   { }
+}
+
+export class Constituent{
+  constructor(
+    public id: string,
+    public firstName: string,
+    public secondName: string
+  ){}
 }
 
 export class CouncillorCommunication{

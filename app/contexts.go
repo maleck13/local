@@ -96,8 +96,8 @@ type ListCommunicationsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	CommsID *string
-	Rid     string
+	CommID *string
+	Rid    string
 }
 
 // NewListCommunicationsContext parses the incoming request URL and body, performs validations and creates the
@@ -108,10 +108,10 @@ func NewListCommunicationsContext(ctx context.Context, service *goa.Service) (*L
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	rctx := ListCommunicationsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramCommsID := req.Params["commsID"]
-	if len(paramCommsID) > 0 {
-		rawCommsID := paramCommsID[0]
-		rctx.CommsID = &rawCommsID
+	paramCommID := req.Params["commID"]
+	if len(paramCommID) > 0 {
+		rawCommID := paramCommID[0]
+		rctx.CommID = &rawCommID
 	}
 	paramRid := req.Params["rid"]
 	if len(paramRid) > 0 {
@@ -214,6 +214,45 @@ func (ctx *SendCommunicationsContext) Unauthorized() error {
 // InternalServerError sends a HTTP response with status code 500.
 func (ctx *SendCommunicationsContext) InternalServerError() error {
 	ctx.ResponseData.WriteHeader(500)
+	return nil
+}
+
+// ListConstituentsCouncillorsContext provides the councillors listConstituents action context.
+type ListConstituentsCouncillorsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewListConstituentsCouncillorsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the councillors controller listConstituents action.
+func NewListConstituentsCouncillorsContext(ctx context.Context, service *goa.Service) (*ListConstituentsCouncillorsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	rctx := ListConstituentsCouncillorsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OKNocomms sends a HTTP response with status code 200.
+func (ctx *ListConstituentsCouncillorsContext) OKNocomms(r GoaLocalConsituentsNocommsCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.local.consituents+json; type=collection")
+	if r == nil {
+		r = GoaLocalConsituentsNocommsCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListConstituentsCouncillorsContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
 	return nil
 }
 

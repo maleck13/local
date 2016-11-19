@@ -190,7 +190,7 @@ func CloseCommunicationsUnauthorized(t *testing.T, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCommunicationsInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commsID *string) http.ResponseWriter {
+func ListCommunicationsInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commID *string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -211,9 +211,9 @@ func ListCommunicationsInternalServerError(t *testing.T, ctx context.Context, se
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		query["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		query["commID"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/communications/councillor/%v", rid),
@@ -225,9 +225,9 @@ func ListCommunicationsInternalServerError(t *testing.T, ctx context.Context, se
 	}
 	prms := url.Values{}
 	prms["rid"] = []string{fmt.Sprintf("%v", rid)}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		prms["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		prms["commID"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -257,7 +257,7 @@ func ListCommunicationsInternalServerError(t *testing.T, ctx context.Context, se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCommunicationsOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commsID *string) (http.ResponseWriter, app.GoaLocalCommunicationCollection) {
+func ListCommunicationsOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commID *string) (http.ResponseWriter, app.GoaLocalCommunicationCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -278,9 +278,9 @@ func ListCommunicationsOK(t *testing.T, ctx context.Context, service *goa.Servic
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		query["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		query["commID"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/communications/councillor/%v", rid),
@@ -292,9 +292,9 @@ func ListCommunicationsOK(t *testing.T, ctx context.Context, service *goa.Servic
 	}
 	prms := url.Values{}
 	prms["rid"] = []string{fmt.Sprintf("%v", rid)}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		prms["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		prms["commID"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -336,7 +336,7 @@ func ListCommunicationsOK(t *testing.T, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCommunicationsUnauthorized(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commsID *string) http.ResponseWriter {
+func ListCommunicationsUnauthorized(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CommunicationsController, rid string, commID *string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -357,9 +357,9 @@ func ListCommunicationsUnauthorized(t *testing.T, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		query["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		query["commID"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/communications/councillor/%v", rid),
@@ -371,9 +371,9 @@ func ListCommunicationsUnauthorized(t *testing.T, ctx context.Context, service *
 	}
 	prms := url.Values{}
 	prms["rid"] = []string{fmt.Sprintf("%v", rid)}
-	if commsID != nil {
-		sliceVal := []string{*commsID}
-		prms["commsID"] = sliceVal
+	if commID != nil {
+		sliceVal := []string{*commID}
+		prms["commID"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()

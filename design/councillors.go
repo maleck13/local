@@ -57,6 +57,39 @@ var _ = Resource("councillors", func() {
 		})
 		Response(Unauthorized) // of HTTP responses.
 	})
+	Action("listConstituents", func() {
+		Description("list of consituents for a councillor")
+		Routing(GET("/:id/consituents"))
+		Params(func() { // (shape of the request body).
+			Param("id", String)
+		})
+		Response(OK, func() {
+			Media(CollectionOf(Consituent), "nocomms")
+		})
+		Response(Unauthorized) // of HTTP responses.
+	})
+})
+
+var Consituent = MediaType("application/vnd.goa.local.consituents+json", func() {
+	Attributes(func() {
+		Attribute("ID", String)
+		Attribute("firstName", String)
+		Attribute("secondName", String)
+		Attribute("openComms", ArrayOf(Communication))
+		Attribute("hasOpenComms", Boolean)
+	})
+	View("default", func() {
+		Attribute("ID", String)
+		Attribute("firstName", String)
+		Attribute("secondName", String)
+		Attribute("openComms", ArrayOf(Communication))
+	})
+	View("nocomms", func() {
+		Attribute("ID", String)
+		Attribute("firstName", String)
+		Attribute("secondName", String)
+		Attribute("hasOpenComms", Boolean)
+	})
 })
 
 var Councillor = MediaType("application/vnd.goa.local.councillor+json", func() {

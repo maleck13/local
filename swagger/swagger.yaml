@@ -6,36 +6,36 @@ consumes:
 definitions:
   Communication:
     example:
-      body: Commodi voluptas consectetur.
-      commID: A sapiente ut iure ex aperiam et.
-      error: Alias cumque error consequatur ducimus asperiores iste.
-      from: Praesentium rerum voluptatem ea iusto explicabo.
-      id: Distinctio similique eum et molestiae laudantium voluptatum.
+      body: Sapiente ut iure ex aperiam et.
+      commID: Alias cumque error consequatur ducimus asperiores iste.
+      error: Praesentium rerum voluptatem ea iusto explicabo.
+      from: Distinctio similique eum et molestiae laudantium voluptatum.
+      id: Tempora aut aut nesciunt.
       isPrivate: false
-      open: true
-      recepientID: Aut nesciunt ut accusantium sit velit dolore.
-      sent: 1994-03-17T06:24:13Z
-      subject: Explicabo aut laudantium quia.
-      to: Et nemo similique voluptate quae.
-      type: Voluptatem facere.
+      open: false
+      recepientID: Velit dolore et.
+      sent: 1988-01-02T10:49:03Z
+      subject: Aut laudantium quia reiciendis.
+      to: Nemo similique voluptate quae ut voluptatem.
+      type: Optio ab iusto.
     properties:
       body:
-        example: Commodi voluptas consectetur.
+        example: Sapiente ut iure ex aperiam et.
         type: string
       commID:
-        example: A sapiente ut iure ex aperiam et.
+        example: Alias cumque error consequatur ducimus asperiores iste.
         type: string
       error:
         default: ""
-        example: Alias cumque error consequatur ducimus asperiores iste.
+        example: Praesentium rerum voluptatem ea iusto explicabo.
         type: string
       from:
-        example: Praesentium rerum voluptatem ea iusto explicabo.
+        example: Distinctio similique eum et molestiae laudantium voluptatum.
         type: string
       id:
         default: ""
         description: db id
-        example: Distinctio similique eum et molestiae laudantium voluptatum.
+        example: Tempora aut aut nesciunt.
         type: string
       isPrivate:
         default: true
@@ -43,23 +43,23 @@ definitions:
         type: boolean
       open:
         default: true
-        example: true
+        example: false
         type: boolean
       recepientID:
-        example: Aut nesciunt ut accusantium sit velit dolore.
+        example: Velit dolore et.
         type: string
       sent:
-        example: 1994-03-17T06:24:13Z
+        example: 1988-01-02T10:49:03Z
         format: date-time
         type: string
       subject:
-        example: Explicabo aut laudantium quia.
+        example: Aut laudantium quia reiciendis.
         type: string
       to:
-        example: Et nemo similique voluptate quae.
+        example: Nemo similique voluptate quae ut voluptatem.
         type: string
       type:
-        example: Voluptatem facere.
+        example: Optio ab iusto.
         type: string
     required:
     - recepientID
@@ -71,7 +71,7 @@ definitions:
     type: object
   CouncillorUpdate:
     example:
-      address: Ab iusto totam quod cupiditate eum consequatur.
+      address: Quod cupiditate eum consequatur.
       area: Cum quis modi voluptas nostrum eum doloribus.
       county: Expedita itaque molestiae totam et dolores consectetur.
       email: Itaque accusamus dolorem distinctio molestiae quae.
@@ -87,7 +87,7 @@ definitions:
       address:
         default: ""
         description: a phone contact for the user
-        example: Ab iusto totam quod cupiditate eum consequatur.
+        example: Quod cupiditate eum consequatur.
         type: string
       area:
         example: Cum quis modi voluptas nostrum eum doloribus.
@@ -147,26 +147,31 @@ definitions:
     description: An communication (default view)
     example:
       body: Velit quia commodi dolorem.
-      from: Ipsum optio magnam eos.
-      id: Et non similique.
+      commID: In harum dolores consequatur et.
+      from: Et non similique.
+      id: Eos earum vitae magnam sunt.
       isPrivate: false
       open: true
-      recepientID: Vitae magnam sunt qui quod.
-      sent: 1988-04-10T15:14:27+01:00
-      subject: Suscipit eos sequi dolores nulla.
-      to: Mollitia velit recusandae aut vitae id recusandae.
-      userID: Aspernatur dignissimos eligendi facere.
+      recepientID: Quibusdam suscipit eos.
+      sent: 1988-04-18T12:40:12+01:00
+      subject: Nulla dolor mollitia velit recusandae.
+      to: Vitae id recusandae qui mollitia blanditiis corrupti.
+      type: Omnis aspernatur dignissimos eligendi.
+      userID: Eligendi aut corporis.
     properties:
       body:
         example: Velit quia commodi dolorem.
         type: string
+      commID:
+        example: In harum dolores consequatur et.
+        type: string
       from:
-        example: Ipsum optio magnam eos.
+        example: Et non similique.
         type: string
       id:
         default: ""
         description: db id
-        example: Et non similique.
+        example: Eos earum vitae magnam sunt.
         type: string
       isPrivate:
         default: true
@@ -177,20 +182,23 @@ definitions:
         example: true
         type: boolean
       recepientID:
-        example: Vitae magnam sunt qui quod.
+        example: Quibusdam suscipit eos.
         type: string
       sent:
-        example: 1988-04-10T15:14:27+01:00
+        example: 1988-04-18T12:40:12+01:00
         format: date-time
         type: string
       subject:
-        example: Suscipit eos sequi dolores nulla.
+        example: Nulla dolor mollitia velit recusandae.
         type: string
       to:
-        example: Mollitia velit recusandae aut vitae id recusandae.
+        example: Vitae id recusandae qui mollitia blanditiis corrupti.
+        type: string
+      type:
+        example: Omnis aspernatur dignissimos eligendi.
         type: string
       userID:
-        example: Aspernatur dignissimos eligendi facere.
+        example: Eligendi aut corporis.
         type: string
     required:
     - recepientID
@@ -204,100 +212,210 @@ definitions:
       GoaLocalCommunication (default view)
     example:
     - body: Velit quia commodi dolorem.
-      from: Ipsum optio magnam eos.
-      id: Et non similique.
+      commID: In harum dolores consequatur et.
+      from: Et non similique.
+      id: Eos earum vitae magnam sunt.
       isPrivate: false
       open: true
-      recepientID: Vitae magnam sunt qui quod.
-      sent: 1988-04-10T15:14:27+01:00
-      subject: Suscipit eos sequi dolores nulla.
-      to: Mollitia velit recusandae aut vitae id recusandae.
-      userID: Aspernatur dignissimos eligendi facere.
+      recepientID: Quibusdam suscipit eos.
+      sent: 1988-04-18T12:40:12+01:00
+      subject: Nulla dolor mollitia velit recusandae.
+      to: Vitae id recusandae qui mollitia blanditiis corrupti.
+      type: Omnis aspernatur dignissimos eligendi.
+      userID: Eligendi aut corporis.
     items:
       $ref: '#/definitions/GoaLocalCommunication'
     title: 'Mediatype identifier: application/vnd.goa.local.communication+json; type=collection'
     type: array
+  GoaLocalConsituents:
+    description: GoaLocalConsituents media type (default view)
+    example:
+      ID: Cumque cum.
+      firstName: Quod accusamus aliquam qui.
+      openComms:
+      - body: Velit quia commodi dolorem.
+        commID: In harum dolores consequatur et.
+        from: Et non similique.
+        id: Eos earum vitae magnam sunt.
+        isPrivate: false
+        open: true
+        recepientID: Quibusdam suscipit eos.
+        sent: 1988-04-18T12:40:12+01:00
+        subject: Nulla dolor mollitia velit recusandae.
+        to: Vitae id recusandae qui mollitia blanditiis corrupti.
+        type: Omnis aspernatur dignissimos eligendi.
+        userID: Eligendi aut corporis.
+      - body: Velit quia commodi dolorem.
+        commID: In harum dolores consequatur et.
+        from: Et non similique.
+        id: Eos earum vitae magnam sunt.
+        isPrivate: false
+        open: true
+        recepientID: Quibusdam suscipit eos.
+        sent: 1988-04-18T12:40:12+01:00
+        subject: Nulla dolor mollitia velit recusandae.
+        to: Vitae id recusandae qui mollitia blanditiis corrupti.
+        type: Omnis aspernatur dignissimos eligendi.
+        userID: Eligendi aut corporis.
+      secondName: Natus aut sapiente omnis.
+    properties:
+      ID:
+        example: Cumque cum.
+        type: string
+      firstName:
+        example: Quod accusamus aliquam qui.
+        type: string
+      openComms:
+        example:
+        - body: Velit quia commodi dolorem.
+          commID: In harum dolores consequatur et.
+          from: Et non similique.
+          id: Eos earum vitae magnam sunt.
+          isPrivate: false
+          open: true
+          recepientID: Quibusdam suscipit eos.
+          sent: 1988-04-18T12:40:12+01:00
+          subject: Nulla dolor mollitia velit recusandae.
+          to: Vitae id recusandae qui mollitia blanditiis corrupti.
+          type: Omnis aspernatur dignissimos eligendi.
+          userID: Eligendi aut corporis.
+        - body: Velit quia commodi dolorem.
+          commID: In harum dolores consequatur et.
+          from: Et non similique.
+          id: Eos earum vitae magnam sunt.
+          isPrivate: false
+          open: true
+          recepientID: Quibusdam suscipit eos.
+          sent: 1988-04-18T12:40:12+01:00
+          subject: Nulla dolor mollitia velit recusandae.
+          to: Vitae id recusandae qui mollitia blanditiis corrupti.
+          type: Omnis aspernatur dignissimos eligendi.
+          userID: Eligendi aut corporis.
+        items:
+          $ref: '#/definitions/GoaLocalCommunication'
+        type: array
+      secondName:
+        example: Natus aut sapiente omnis.
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.local.consituents+json; view=default'
+    type: object
+  GoaLocalConsituentsCollection:
+    description: GoaLocalConsituentsCollection is the media type for an array of GoaLocalConsituents
+      (default view)
+    example:
+    - ID: Cumque cum.
+      firstName: Quod accusamus aliquam qui.
+      openComms:
+      - body: Velit quia commodi dolorem.
+        commID: In harum dolores consequatur et.
+        from: Et non similique.
+        id: Eos earum vitae magnam sunt.
+        isPrivate: false
+        open: true
+        recepientID: Quibusdam suscipit eos.
+        sent: 1988-04-18T12:40:12+01:00
+        subject: Nulla dolor mollitia velit recusandae.
+        to: Vitae id recusandae qui mollitia blanditiis corrupti.
+        type: Omnis aspernatur dignissimos eligendi.
+        userID: Eligendi aut corporis.
+      - body: Velit quia commodi dolorem.
+        commID: In harum dolores consequatur et.
+        from: Et non similique.
+        id: Eos earum vitae magnam sunt.
+        isPrivate: false
+        open: true
+        recepientID: Quibusdam suscipit eos.
+        sent: 1988-04-18T12:40:12+01:00
+        subject: Nulla dolor mollitia velit recusandae.
+        to: Vitae id recusandae qui mollitia blanditiis corrupti.
+        type: Omnis aspernatur dignissimos eligendi.
+        userID: Eligendi aut corporis.
+      secondName: Natus aut sapiente omnis.
+    items:
+      $ref: '#/definitions/GoaLocalConsituents'
+    title: 'Mediatype identifier: application/vnd.goa.local.consituents+json; type=collection'
+    type: array
   GoaLocalCouncillor:
     description: GoaLocalCouncillor media type (default view)
     example:
-      ID: Corporis et iste cumque cum ea quod.
-      address: Aliquam qui.
-      area: Officia eum natus aut sapiente omnis.
-      county: Ratione odio et culpa doloribus in.
-      email: Inventore optio.
-      facebook: Rerum debitis.
-      firstName: Et sapiente nihil quod.
-      image: Harum dolorum similique earum voluptas.
-      party: Mollitia error impedit.
-      phone: Voluptas ea ex aut sed.
-      secondName: Nemo rerum eum rem qui dolores dolores.
-      twitter: Labore nobis enim nesciunt minima.
-      userID: Veniam qui.
-      web: Natus officia reiciendis aut et recusandae.
+      ID: Odio et culpa doloribus in.
+      address: Inventore optio.
+      area: Rerum debitis.
+      county: Et sapiente nihil quod.
+      email: Harum dolorum similique earum voluptas.
+      facebook: Ipsa mollitia error impedit minima.
+      firstName: Ea ex.
+      image: Sed sapiente nemo rerum eum.
+      party: Dolores dolores incidunt.
+      phone: Nobis enim nesciunt minima.
+      secondName: Veniam qui.
+      twitter: Natus officia reiciendis aut et recusandae.
+      userID: Et optio.
+      web: Expedita omnis.
     properties:
       ID:
         default: ""
         description: Unique user ID
-        example: Corporis et iste cumque cum ea quod.
+        example: Odio et culpa doloribus in.
         type: string
       address:
         default: ""
         description: a phone contact for the user
-        example: Aliquam qui.
+        example: Inventore optio.
         type: string
       area:
         default: ""
         description: The area of the users local council
-        example: Officia eum natus aut sapiente omnis.
+        example: Rerum debitis.
         type: string
       county:
         default: ""
         description: The area of the users local council
-        example: Ratione odio et culpa doloribus in.
+        example: Et sapiente nihil quod.
         type: string
       email:
         description: The email of the user
-        example: Inventore optio.
+        example: Harum dolorum similique earum voluptas.
         type: string
       facebook:
         description: facebook handle for the user
-        example: Rerum debitis.
+        example: Ipsa mollitia error impedit minima.
         type: string
       firstName:
         description: Name of the user
-        example: Et sapiente nihil quod.
+        example: Ea ex.
         type: string
       image:
         default: ""
         description: an image url for the user
-        example: Harum dolorum similique earum voluptas.
+        example: Sed sapiente nemo rerum eum.
         type: string
       party:
         default: ""
         description: the councillors party
-        example: Mollitia error impedit.
+        example: Dolores dolores incidunt.
         type: string
       phone:
         default: ""
         description: a phone contact for the user
-        example: Voluptas ea ex aut sed.
+        example: Nobis enim nesciunt minima.
         type: string
       secondName:
         description: Name of the user
-        example: Nemo rerum eum rem qui dolores dolores.
+        example: Veniam qui.
         type: string
       twitter:
         description: twitter handle for the user
-        example: Labore nobis enim nesciunt minima.
+        example: Natus officia reiciendis aut et recusandae.
         type: string
       userID:
         description: reference to the user associated with this councillor
-        example: Veniam qui.
+        example: Et optio.
         type: string
       web:
         default: ""
         description: a web link for the user
-        example: Natus officia reiciendis aut et recusandae.
+        example: Expedita omnis.
         type: string
     required:
     - firstName
@@ -316,34 +434,20 @@ definitions:
     description: GoaLocalCouncillorCollection is the media type for an array of GoaLocalCouncillor
       (default view)
     example:
-    - ID: Corporis et iste cumque cum ea quod.
-      address: Aliquam qui.
-      area: Officia eum natus aut sapiente omnis.
-      county: Ratione odio et culpa doloribus in.
-      email: Inventore optio.
-      facebook: Rerum debitis.
-      firstName: Et sapiente nihil quod.
-      image: Harum dolorum similique earum voluptas.
-      party: Mollitia error impedit.
-      phone: Voluptas ea ex aut sed.
-      secondName: Nemo rerum eum rem qui dolores dolores.
-      twitter: Labore nobis enim nesciunt minima.
-      userID: Veniam qui.
-      web: Natus officia reiciendis aut et recusandae.
-    - ID: Corporis et iste cumque cum ea quod.
-      address: Aliquam qui.
-      area: Officia eum natus aut sapiente omnis.
-      county: Ratione odio et culpa doloribus in.
-      email: Inventore optio.
-      facebook: Rerum debitis.
-      firstName: Et sapiente nihil quod.
-      image: Harum dolorum similique earum voluptas.
-      party: Mollitia error impedit.
-      phone: Voluptas ea ex aut sed.
-      secondName: Nemo rerum eum rem qui dolores dolores.
-      twitter: Labore nobis enim nesciunt minima.
-      userID: Veniam qui.
-      web: Natus officia reiciendis aut et recusandae.
+    - ID: Odio et culpa doloribus in.
+      address: Inventore optio.
+      area: Rerum debitis.
+      county: Et sapiente nihil quod.
+      email: Harum dolorum similique earum voluptas.
+      facebook: Ipsa mollitia error impedit minima.
+      firstName: Ea ex.
+      image: Sed sapiente nemo rerum eum.
+      party: Dolores dolores incidunt.
+      phone: Nobis enim nesciunt minima.
+      secondName: Veniam qui.
+      twitter: Natus officia reiciendis aut et recusandae.
+      userID: Et optio.
+      web: Expedita omnis.
     items:
       $ref: '#/definitions/GoaLocalCouncillor'
     title: 'Mediatype identifier: application/vnd.goa.local.councillor+json; type=collection'
@@ -352,15 +456,15 @@ definitions:
     description: A User of locals (default view)
     example:
       active: true
-      area: Id expedita omnis aliquam exercitationem earum provident.
-      county: Accusantium pariatur ut.
-      email: Molestiae voluptatem quis voluptates.
-      firstName: Eaque quia ut ut.
-      href: Ad quia quo sequi minus dolores.
-      id: Praesentium veniam soluta quia delectus dolor facere.
-      secondName: Et non eveniet earum.
-      signupType: Qui repudiandae dicta.
-      type: Sed iure.
+      area: Provident qui accusantium pariatur ut.
+      county: Molestiae voluptatem quis voluptates.
+      email: Eaque quia ut ut.
+      firstName: Ad quia quo sequi minus dolores.
+      href: Praesentium veniam soluta quia delectus dolor facere.
+      id: Qui aliquid fugit.
+      secondName: Dicta praesentium.
+      signupType: Rem aliquam.
+      type: Voluptas consectetur.
     properties:
       active:
         default: true
@@ -369,41 +473,41 @@ definitions:
         type: boolean
       area:
         description: The area of the users local council
-        example: Id expedita omnis aliquam exercitationem earum provident.
+        example: Provident qui accusantium pariatur ut.
         type: string
       county:
         default: ""
         description: The county the user lives in
-        example: Accusantium pariatur ut.
+        example: Molestiae voluptatem quis voluptates.
         type: string
       email:
         description: The email of the user
-        example: Molestiae voluptatem quis voluptates.
+        example: Eaque quia ut ut.
         type: string
       firstName:
         description: Name of the user
-        example: Eaque quia ut ut.
+        example: Ad quia quo sequi minus dolores.
         type: string
       href:
         description: API href for making requests on the bottle
-        example: Ad quia quo sequi minus dolores.
+        example: Praesentium veniam soluta quia delectus dolor facere.
         type: string
       id:
         description: Unique bottle ID
-        example: Praesentium veniam soluta quia delectus dolor facere.
+        example: Qui aliquid fugit.
         type: string
       secondName:
         description: Name of the user
-        example: Et non eveniet earum.
+        example: Dicta praesentium.
         type: string
       signupType:
         description: the signupType of user google local
-        example: Qui repudiandae dicta.
+        example: Rem aliquam.
         type: string
       type:
         default: local
         description: the type of user admin local councillor
-        example: Sed iure.
+        example: Voluptas consectetur.
         type: string
     required:
     - firstName
@@ -416,50 +520,40 @@ definitions:
       (default view)
     example:
     - active: true
-      area: Id expedita omnis aliquam exercitationem earum provident.
-      county: Accusantium pariatur ut.
-      email: Molestiae voluptatem quis voluptates.
-      firstName: Eaque quia ut ut.
-      href: Ad quia quo sequi minus dolores.
-      id: Praesentium veniam soluta quia delectus dolor facere.
-      secondName: Et non eveniet earum.
-      signupType: Qui repudiandae dicta.
-      type: Sed iure.
+      area: Provident qui accusantium pariatur ut.
+      county: Molestiae voluptatem quis voluptates.
+      email: Eaque quia ut ut.
+      firstName: Ad quia quo sequi minus dolores.
+      href: Praesentium veniam soluta quia delectus dolor facere.
+      id: Qui aliquid fugit.
+      secondName: Dicta praesentium.
+      signupType: Rem aliquam.
+      type: Voluptas consectetur.
     - active: true
-      area: Id expedita omnis aliquam exercitationem earum provident.
-      county: Accusantium pariatur ut.
-      email: Molestiae voluptatem quis voluptates.
-      firstName: Eaque quia ut ut.
-      href: Ad quia quo sequi minus dolores.
-      id: Praesentium veniam soluta quia delectus dolor facere.
-      secondName: Et non eveniet earum.
-      signupType: Qui repudiandae dicta.
-      type: Sed iure.
-    - active: true
-      area: Id expedita omnis aliquam exercitationem earum provident.
-      county: Accusantium pariatur ut.
-      email: Molestiae voluptatem quis voluptates.
-      firstName: Eaque quia ut ut.
-      href: Ad quia quo sequi minus dolores.
-      id: Praesentium veniam soluta quia delectus dolor facere.
-      secondName: Et non eveniet earum.
-      signupType: Qui repudiandae dicta.
-      type: Sed iure.
+      area: Provident qui accusantium pariatur ut.
+      county: Molestiae voluptatem quis voluptates.
+      email: Eaque quia ut ut.
+      firstName: Ad quia quo sequi minus dolores.
+      href: Praesentium veniam soluta quia delectus dolor facere.
+      id: Qui aliquid fugit.
+      secondName: Dicta praesentium.
+      signupType: Rem aliquam.
+      type: Voluptas consectetur.
     items:
       $ref: '#/definitions/GoaLocalUser'
     title: 'Mediatype identifier: application/vnd.goa.local.user+json; type=collection'
     type: array
   Location:
     example:
-      Lat: 0.96697384
-      Lon: 0.10044984
+      Lat: 0.3862223
+      Lon: 0.78709936
     properties:
       Lat:
-        example: 0.96697384
+        example: 0.3862223
         format: double
         type: number
       Lon:
-        example: 0.10044984
+        example: 0.78709936
         format: double
         type: number
     title: Location
@@ -567,8 +661,8 @@ definitions:
       firstName: Et amet iure omnis est voluptas.
       image: Quod aut in explicabo.
       location:
-        Lat: 0.96697384
-        Lon: 0.10044984
+        Lat: 0.3862223
+        Lon: 0.78709936
       secondName: Quia autem qui ipsum fugiat.
       signupType: Praesentium in natus non asperiores accusantium.
       token: Deleniti et rem.
@@ -727,7 +821,7 @@ paths:
       parameters:
       - description: communication id
         in: query
-        name: commsID
+        name: commID
         required: false
         type: string
       - description: recepientID
@@ -889,6 +983,34 @@ paths:
       - jwt:
         - api:access
       summary: update councillors
+      tags:
+      - councillors
+  /councillors/{id}/consituents:
+    get:
+      description: |-
+        list of consituents for a councillor
+
+        Required security scopes:
+          * `api:access`
+      operationId: councillors#listConstituents
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GoaLocalConsituentsCollection'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:access
+      summary: listConstituents councillors
       tags:
       - councillors
   /councillors/{id}/image:

@@ -222,6 +222,7 @@ func unmarshalSendCommunicationsPayload(ctx context.Context, service *goa.Servic
 // CouncillorsController is the controller interface for the Councillors actions.
 type CouncillorsController interface {
 	goa.Muxer
+	ListConstituents(*ListConstituentsCouncillorsContext) error
 	ListForCountyAndArea(*ListForCountyAndAreaCouncillorsContext) error
 	ReadByID(*ReadByIDCouncillorsContext) error
 	Update(*UpdateCouncillorsContext) error
@@ -232,9 +233,27 @@ type CouncillorsController interface {
 func MountCouncillorsController(service *goa.Service, ctrl CouncillorsController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/councillors/:id/consituents", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/councillors", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/councillors/:id", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/councillors/:id/image", ctrl.MuxHandler("preflight", handleCouncillorsOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListConstituentsCouncillorsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.ListConstituents(rctx)
+	}
+	h = handleCouncillorsOrigin(h)
+	h = handleSecurity("jwt", h, "api:access")
+	service.Mux.Handle("GET", "/councillors/:id/consituents", ctrl.MuxHandler("ListConstituents", h, nil))
+	service.LogInfo("mount", "ctrl", "Councillors", "action", "ListConstituents", "route", "GET /councillors/:id/consituents", "security", "jwt")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
